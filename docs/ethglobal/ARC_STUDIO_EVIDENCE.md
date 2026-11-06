@@ -5,3 +5,9 @@ The [Arc Studio owner workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82
 ![GuardLinkPool in the Arc Studio Contracts workspace](arc-studio-deployment.jpg)
 
 The active contract in the capture is [GuardLinkPool on Arc Testnet](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895). Its [creation receipt](https://testnet.arcscan.app/tx/0x7e2bc3db994a3698ebd612e8d22dbd212b36b486f4f4f37dfccea4b62da78326) and [confirmed 0.25 test USDC payout](https://testnet.arcscan.app/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63) are public. The [verified source evidence](source-verification.json) records the bytecode matches. [Open the live GuardLink testnet app](https://guardlink.ajnasnb.com).
+
+## Source cross-check
+
+On November 6, 2026, we compared the public Solidity source with the Arc Studio pull recorded for `contracts/GuardLinkPool.sol`. The local export has SHA-256 `ddd4d986cb5d1e16f81484d05816c750383e435d42f879d146380b1a4ad489e7`, matching the pull manifest. The GitHub file matches the Solidity source returned by Sourcify. Sourcify reports creation and runtime matches, and Arc RPC returned the runtime bytecode recorded by Sourcify. We also confirmed the deployment receipt and read the owner of Policy #4 directly from Arc.
+
+[Solidity source](../../onchain/contracts/GuardLinkPool.sol) · [Sourcify verification](https://repo.sourcify.dev/5042002/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895) · [Backend health](https://api.guardlink.ajnasnb.com/health)
