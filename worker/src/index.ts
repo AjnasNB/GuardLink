@@ -17,7 +17,7 @@ import {
 import { guardlinkAbi } from "@guardlink/domain/abi";
 import { arcClient, syncFromArc } from "./adapters/arc";
 import { publishPending, queryPublicRecords } from "./adapters/arkiv";
-import { ledgerQuery, loadLedger } from "./adapters/ledger";
+import { ledgerQuery, loadLedger, loadPayoutSummary } from "./adapters/ledger";
 import { jwtVerify, importSPKI } from "jose";
 import { z } from "zod";
 import {
@@ -311,6 +311,15 @@ app.get("/api/v1/ledger", async (c) => {
     return c.json(await loadLedger(c.env.ARC_POOL_ADDRESS, query.data));
   } catch {
     return c.json({ error: "The Arc ledger is temporarily unavailable. Try again shortly." }, 503);
+  }
+});
+app.get("/api/v1/ledger/payout-summary", async (c) => {
+  try {
+    return c.json(await loadPayoutSummary(c.env.ARC_POOL_ADDRESS), 200, {
+      "Cache-Control": "public, max-age=15",
+    });
+  } catch {
+    return c.json({ error: "Confirmed Arc payouts are temporarily unavailable." }, 503);
   }
 });
 app.get("/api/v1/governance/public", async (c) => {

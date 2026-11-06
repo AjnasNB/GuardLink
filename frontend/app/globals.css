@@ -401,6 +401,13 @@ small {
 .story-actions .button {
   min-height: 44px;
 }
+.public-demo-video {
+  display: block;
+  width: min(100%, 64rem);
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
 .results-section {
   padding: clamp(44px, 6.5vw, 96px) 6%;
   margin-bottom: clamp(44px, 6.5vw, 96px);

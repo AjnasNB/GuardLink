@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BrandMark from "../components/BrandMark";
 import LandingMotion from "../components/LandingMotion";
+import TestnetResults from "../components/TestnetResults";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -8,26 +9,6 @@ import {
   Check,
   LockKeyhole,
 } from "lucide-react";
-
-const demoPayouts = [
-  {
-    caseId: "GL-DFD3E4F9",
-    amount: "0.50",
-    hash: "0x99b9ff5721caaf32b2263f9b13d0dbaf37ce9415a3ff2d01d12d35dd4ef8fb4f",
-  },
-  {
-    caseId: "GL-BECA3842",
-    amount: "0.40",
-    hash: "0x9740c683d839971953d61afad540597c17ffee9a144864bc85e3ea1f271c7a99",
-    appeal: true,
-  },
-  {
-    caseId: "GL-377CFC03",
-    amount: "0.25",
-    hash: "0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63",
-  },
-];
-const arcReceipt = "https://testnet.arcscan.app/tx/";
 
 export default function Home() {
   return (
@@ -159,59 +140,16 @@ export default function Home() {
             <Link className="button button-lime" href="/login">
               Open the testnet app <ArrowRight size={17} aria-hidden="true" />
             </Link>
+            <Link className="button button-ghost" href="/demo-video/">
+              Watch the demo video <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
             <Link className="button button-ghost" href="/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81">
               View a public claim timeline <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
-      <section id="results" className="results-section" aria-labelledby="results-title">
-        <div className="results-intro">
-          <h2 id="results-title">What we proved on testnet.</h2>
-          <p>
-            Three synthetic claims from the Mumbai demo reached confirmed payment.
-            The Arc receipts show exactly what the pool paid.
-          </p>
-        </div>
-        <dl className="results-metrics">
-          <div>
-            <dt>Claims paid</dt>
-            <dd>{demoPayouts.length}</dd>
-          </div>
-          <div>
-            <dt>Total paid in test USDC</dt>
-            <dd>1.15</dd>
-          </div>
-          <div>
-            <dt>Claim paid after appeal</dt>
-            <dd>1</dd>
-          </div>
-          <div>
-            <dt>Demo votes for future coverage</dt>
-            <dd>9 of 9</dd>
-          </div>
-        </dl>
-        <ul className="results-receipts" aria-label="Verified testnet claim payouts">
-          {demoPayouts.map(({ caseId, amount, hash, appeal }) => (
-            <li key={caseId}>
-              <a href={`${arcReceipt}${hash}`}>
-                <span>
-                  {caseId}{appeal && <small>Paid after appeal</small>}
-                </span>
-                <strong>{amount} test USDC</strong>
-                <ArrowUpRight size={17} aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-        <a
-          className="text-link results-governance"
-          href={`${arcReceipt}0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646`}
-        >
-          Verify the vote to raise future coverage from 5 to 6 test USDC
-          <ArrowUpRight size={17} aria-hidden="true" />
-        </a>
-      </section>
+      <TestnetResults />
       <section id="how" className="how-section">
         <div className="section-heading">
           <div>
