@@ -1,11 +1,11 @@
 # ETHGlobal Mumbai submission handoff
 
-GuardLink's ETHGlobal Mumbai draft has the Continuity Track selected. The draft describes the founder's experience after his father's eye surgery, the year of community outreach and the earlier cooperative coverage prototype. It identifies the new Arc deployment and the sponsor integrations. [Entrant project editor](https://ethglobal.com/events/mumbai/project) · [Continuity baseline](CONTINUITY_BASELINE.md)
+GuardLink was submitted to ETHGlobal Mumbai on the Continuity Track with Top 10 finalist judging and Arc, Arkiv and Uniswap selected. The public entry describes the founder's experience after his father's eye surgery, the year of community outreach and the earlier cooperative coverage prototype. It identifies the new Arc deployment and the sponsor integrations. [Public ETHGlobal entry](https://ethglobal.com/showcase/guardlink-qcbtr) · [Continuity baseline](CONTINUITY_BASELINE.md)
 
 | Item | Status and action |
 | --- | --- |
 | Live app and public source | GuardLink runs on Arc Testnet. Use the [live app](https://guardlink.ajnasnb.com/) and the [public event repo](https://github.com/AjnasNB/GuardLink). |
-| Walkthrough video | The 3:44, 1080p outreach edition is saved in the project draft. It uses the founder’s recorded voice. The uploaded cut shows Uniswap at **1:03**, Arc Studio at **2:41**, Arkiv at **3:10** and Swarm at **3:20**. |
+| Walkthrough video | The 3:44, 1080p `GuardLink-Mumbai-Final-Pauses.mp4` cut was saved before final submission. It uses the founder’s recorded voice. The cut shows Uniswap at **1:03**, Arc Studio at **2:41**, Arkiv at **3:10** and Swarm at **3:20**. |
 | Cover and pitch | The [pitch presentation](../../deliverables/GuardLink-Pitch.pptx) is ready for live judging and covers the member workflow, jury decisions, governance and Arc settlement. The project editor has no separate PowerPoint upload field. [Outreach cover](assets/guardlink-mumbai-cover.jpg) · [Claim flow graphic](assets/guardlink-claim-flow.svg) · [Proposed reserve chart](assets/guardlink-pool-model.svg) · [Architecture diagram](ARCHITECTURE.md) |
 | Arc Studio Continuity | [Judge evidence](ARC_STUDIO_EVIDENCE.md) links the [public Studio preview](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs), [fresh test contribution](https://testnet.arcscan.app/tx/0x3ea87ce7dd5b3b875b99594043a6ca98dfb10fc1f79c38b885bb88c502e7be29), workspace and capture, live frontend and backend, diagram, presentation, source and payout. Judge access to the owner workspace still needs confirmation. |
 | Arkiv existing projects | [Criterion files](../../arkiv/README.md) link the writer, schema, public milestone lookup and read-only verifier. |
@@ -28,4 +28,4 @@ Members contribute test USDC, receive a policy NFT and track a private claim. Hu
 
 [Try GuardLink](https://guardlink.ajnasnb.com/) · [Open the public Arc Studio preview](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs) · [Inspect the ledger](https://guardlink.ajnasnb.com/ledger/) · [Read the source](https://github.com/AjnasNB/GuardLink)
 
-Publish to [Ecosystem Showcase & Launches](https://community.arc.io/public/forum/boards/ecosystem-showcase-and-launches-pdq) and add the public ETHGlobal Showcase URL when the entry has one.
+Arc House accepted the post with the ETHGlobal and Arc Studio links and marked it pending moderation. [Arc House post](https://community.arc.io/home/forum/boards/ecosystem-showcase-and-launches-pdq/posts/guardlink-cooperative-health-coverage-on-arc-testnet-typ4hhwiju) · [Public ETHGlobal entry](https://ethglobal.com/showcase/guardlink-qcbtr)
