@@ -1,0 +1,48 @@
+{
+  "network": "Arc Testnet",
+  "chainId": 5042002,
+  "pool": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895",
+  "wallet": "0x6ae2eFC2323c55DFD48005549De980cd181C0Fc8",
+  "receipts": {
+    "testFunding": {
+      "hash": "0xc53a67eb80ba33d2f46a53bfb8340c3f16162ca9d01d8f03fb15218e003bd6cb",
+      "block": 71020994
+    },
+    "walletRegistration": {
+      "hash": "0xa4d85966414f620d1a9963343cde8a414c193b71c9acc17793bf3c471f2dcd75",
+      "block": 71021207
+    },
+    "operatorVerification": {
+      "hash": "0xc0adce4f8d3a64f5d224218cf46a1c9874466c42bd62cf5bd1650beb72229e17",
+      "block": 71021313
+    },
+    "usdcApproval": {
+      "hash": "0xe7262fce578b7be8c7dc4c678869dcbe77eeb0ce5e0d3e5249eae96d7e68a9ae",
+      "block": 71021362
+    },
+    "contribution": {
+      "hash": "0xaec9d1fe84e65088f254b579f2d0025f976efc5008e31e09bc60db5478935ee1",
+      "block": 71021366
+    }
+  },
+  "startedAt": "2026-11-06T11:22:59.550Z",
+  "terms": {
+    "contribution": "1",
+    "coverageLimit": "6",
+    "termDays": 30,
+    "poolAddress": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895"
+  },
+  "stages": [
+    "Fresh wallet registered with the app, no Arc membership or policy",
+    "Live membership request persisted after Arc registration",
+    "Operator signed Arc verification and synchronized the member record",
+    "Contribution receipt proves exactly 1 test USDC transferred; Arc ownerOf confirms the minted policy"
+  ],
+  "policy": {
+    "id": "4",
+    "owner": "0x6ae2eFC2323c55DFD48005549De980cd181C0Fc8",
+    "coverageLimitTestUsdc": "6",
+    "termDays": 30
+  },
+  "completedAt": "2026-11-06T11:26:11.521Z"
+}

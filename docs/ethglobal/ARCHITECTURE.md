@@ -7,7 +7,7 @@ flowchart LR
   W -->|same-origin API| B[Worker API and D1]
   B -->|verified receipts and state| A
   B -->|private evidence preparation| Q[Analysis workflow]
-  Q -->|synthetic documents and structured findings| Z[Azure document analysis]
+  Q -->|synthetic documents and structured findings| Z[AI evidence assistant]
   B -->|AES-GCM ciphertext| S[Swarm gateway]
   B -->|safe indexed projections| K[Arkiv Rabdi]
   K -->|case or community query| B

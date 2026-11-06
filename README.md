@@ -1,67 +1,84 @@
 # GuardLink · Protection, together
 
-A cooperative health-insurance prototype inspired by the founder's experience with his father's delayed reimbursement and conversations with families in Kerala. Members contribute, receive a non-transferable policy NFT, submit evidence under one case ID, receive human jury review and follow an approved payment to their wallet. A rejected case can receive one independent appeal.
+![GuardLink at ETHGlobal Mumbai. Four policy NFTs, three synthetic claims paid and one independent appeal paid on testnet.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
 
-**Live testnet app:** https://guardlink.ajnasnb.com
-**Public API:** https://guardlink-api.ajnasnb.workers.dev
-**Arc Studio owner workspace:** https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d (requires access to the Studio project)
+GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. A year of conversations with families and people connected to Kudumbashree shaped the product around three questions a member should be able to answer. What does my policy cover? Why was my claim decided this way? Where did the payment go?
 
-This is a testnet demonstration using synthetic medical evidence. It does not sell real insurance or establish sustainable pricing, clinical accuracy or a regulated operating model.
+[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public event source](https://github.com/AjnasNB/guardlink-mumbai) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
 
-## Demonstrated behavior
+**Environment** Arc Testnet, synthetic medical documents and test USDC. This prototype does not sell real insurance.
 
-- Nine separate, labelled demo wallets with distinct member, helper, initial-jury and appeal-jury roles. They represent test identities, not nine independent participants.
-- Three confirmed contributions and policy NFTs, including one funded by a verified Uniswap-to-Arc route.
-- A missing prescription requested and supplied under the same member/case ID.
-- Azure-hosted evidence recommendations with document references. Humans hold all voting authority.
-- A 0.50 test-USDC initial approval/payment and a 0.40 test-USDC rejection/independent-appeal/payment.
-- A nine-voter DAO proposal increasing future coverage from 5 to 6 test USDC while existing policies retain their original limit.
-- Public status projections omit identifying details and medical documents. Authorized evidence retrieval decrypts authenticated ciphertext.
-- 185 contract tests passed with OpenZeppelin 5.6.1: 152 for the Arc pool and 33 for the mock contribution token. Both deployments have matching creation and runtime source verification.
+## Try it as a member
 
-Receipts and checks: [live verification](docs/ethglobal/live-verification.json), [run ledger](docs/ethglobal/demo-run.public.json), [source verification](docs/ethglobal/source-verification.json).
+1. Sign in with a separate Arc Testnet wallet. Open **My community → Kerala Care Cooperative**.
+2. Read and accept the eligibility criteria. Request membership and confirm wallet registration. The cooperative operator reviews the request and verifies the wallet on Arc.
+3. Refresh membership status. Approve and contribute **1 test USDC** from the same wallet. Open **My coverage** after confirmation. The pool issues a non-transferable policy NFT for **30 days** with a **6 test USDC** limit under current rules.
+4. Submit a synthetic claim against that policy. Use the same claim ID to respond to any missing-document request. Authorized jurors review the private evidence and vote. Two matching votes establish a decision and, for approvals, the payout amount.
+5. Open the claim to see its decision and payment link. A rejected claim can be appealed once to a different panel. Use **Follow the fund** to query public milestones.
 
-## Why these components
+![Live My coverage view for the fresh demo wallet, showing active Policy #4.](docs/ethglobal/assets/membership-04-policy.jpg)
 
-Arc enforces the pool's USDC contributions, coverage, jury authority, prospective governance and payouts. Its stablecoin-native model lets the demo use USDC for both contributions and gas. An independent ledger makes these rules and movements inspectable. It does not prove that a bill is genuine or that a juror is fair.
+The fresh-wallet run checked the live API at each step, verified exactly 1 test USDC entering the pool, and checked NFT ownership on Arc and Policy #4 in the app. [Registration](https://testnet.arcscan.app/tx/0xa4d85966414f620d1a9963343cde8a414c193b71c9acc17793bf3c471f2dcd75) · [Operator verification](https://testnet.arcscan.app/tx/0xc0adce4f8d3a64f5d224218cf46a1c9874466c42bd62cf5bd1650beb72229e17) · [Contribution and mint](https://testnet.arcscan.app/tx/0xaec9d1fe84e65088f254b579f2d0025f976efc5008e31e09bc60db5478935ee1) · [Complete run](docs/ethglobal/membership-live.public.json)
 
-Arkiv holds wallet-owned, queryable public case, agreement and governance records with a 30-day expiry. Swarm holds encrypted evidence linked from Arkiv; an authorized read recovered the matching PDF. Uniswap v3 converted 0.001 WETH into 2.243326 USDC on Base Sepolia; CCTP moved 1.1 USDC to the Arc member, who made a confirmed 1 USDC pool deposit and received policy #3. See [the verified conversion](docs/ethglobal/contribution-route.base-sepolia.public.json), [Arkiv proof](docs/ethglobal/arkiv-verification.json), and [Swarm proof](docs/ethglobal/swarm-verification.json).
+## Who controls what?
 
-## Arkiv query for judges
+| Action | Authority |
+| --- | --- |
+| Edit cooperative description and joining criteria | The cooperative operator edits the profile. The app records which criteria the applicant accepted. |
+| Verify a member or appoint a claim panel | The designated operator signs on Arc. The pool enforces eligibility, excludes conflicts it can identify, and requires a separate appeal panel. |
+| Add a policy for a member | A verified member signs a contribution. The pool mints the NFT to that wallet using current terms. |
+| Change policy terms for future members and contributions | Verified members propose and vote on contribution, limit and term. Executed changes apply to future policies. An existing policy keeps its original terms. |
+| Review evidence and resolve a claim | The AI evidence assistant prepares findings and flags missing items. Eligible human jurors sign the votes. The contract authorizes settlement after the required votes. |
 
-GuardLink's project wallet `0xd8E339b19353afDAF75EfeEdA7fDB88320420553` owns the public records it writes on Rabdi testnet (chain ID 7794095). The app's **Follow the fund** view reads these records. Open **Follow public milestones** from a claim to see its case history.
+The current demo runs one configured cooperative pool. Its policy terms form one active set per pool, with historical versions preserved in issued NFTs. The app currently has no product catalog for multiple simultaneous coverage tiers.
 
-Anyone can run this [case A query](https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81) without a wallet:
+## Verified demo milestones
+
+- **Enrollment:** Four policy NFTs across the current Arc deployment, including the optional swap-funded policy and the fresh-wallet enrollment.
+- **Evidence assistant:** On three authenticated, paid synthetic cases, the live API returned completed model recommendations. Case C returned five findings after a missing prescription was supplied under the same claim ID. This audit re-read those completed runs.
+- **Decisions and payments:** Initial claims paid 0.50 and 0.25 test USDC. An independent appeal paid 0.40 test USDC. The audit matched recipients, amounts and claim IDs to chain receipts.
+- **Governance:** Nine demo wallets voted to raise future coverage from 5 to 6 test USDC. The earlier policy retained its original 5 test USDC limit.
+- **Privacy:** Assigned reviewers could retrieve evidence. Cross-member and unassigned-helper reads were denied. Public projections omit medical evidence and member identity.
+
+[Live audit](docs/ethglobal/live-verification.json) · [Claim and governance receipts](docs/ethglobal/demo-run.public.json) · [Contract source verification](docs/ethglobal/source-verification.json)
+
+## How the integrations fit
+
+![GuardLink integrations showing Uniswap v3 for swaps, Arc for coverage and settlement, and Arkiv for public case milestones.](docs/ethglobal/assets/guardlink-integrations.jpg)
+
+| Integration | What it does | How to check |
+| --- | --- | --- |
+| **Arc and Arc Studio** | Arc holds the test USDC reserve and enforces policy issuance, voting authority, governance and payment. Arc Studio was the starting point for the new Arc contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [pool source](onchain/contracts/GuardLinkPool.sol) |
+| **Arkiv** | A wallet-owned read layer for public case status, agreements and governance, with 30-day expiry. The app queries it in **Follow the fund**. | [Arkiv implementation](worker/src/adapters/arkiv.ts), [schema and examples](arkiv/schema.md) |
+| **Swarm** | Stores encrypted synthetic evidence. A public Arkiv entity can link to ciphertext. Authenticated retrieval checks case access before decryption. | [Swarm implementation](worker/src/adapters/swarm.ts), [upload and retrieval evidence](arkiv/swarm.md) |
+| **Uniswap v3 and CCTP** | The optional route swaps WETH into canonical USDC on Base Sepolia. CCTP moves USDC to Arc. A separate member deposit issues coverage. | [Live route receipts](docs/ethglobal/CONVERSION_RUN.md), [route script](scripts/contribution-route.mjs), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
+
+Blockchain makes wallet authority and movements from the shared reserve independently verifiable. Evidence still requires human judgment. The AI workflow organizes the case for reviewers and has no wallet, voting or payout authority. [Analysis workflow](worker/src/workflow.ts)
+
+### Query Arkiv as a judge
+
+The writer wallet is `0xd8E339b19353afDAF75EfeEdA7fDB88320420553` on Rabdi testnet (chain ID `7794095`). This [case A query](https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81) requires no wallet.
 
 ```sh
 curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81'
 ```
 
-The API queries `project = guardlink` and the exact case ID, filtered by the writer wallet. Look for a `paid` record with an Arc transaction hash and an archive record with a ciphertext reference. Evidence, identities and private jury reasons stay out of the public records. See [schema](arkiv/schema.md), [integration and query](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md), [friction](arkiv/friction.md) and [Swarm proof](arkiv/swarm.md).
+Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. See [query implementation](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md) and [friction](arkiv/friction.md).
 
-## Project structure
+## Run and verify locally
 
-- `onchain/`: Arc Studio contract, ABI, deployment provenance, independent local tests.
-- `packages/domain/`: exact USDC arithmetic, claims, follow-ups, jury rules and safe projections.
-- `worker/`: Hono API, D1 migrations, retriable analysis Workflow and integration adapters.
-- `frontend/`: Next.js/OpenNext UI deployed to Cloudflare Workers, including onboarding, coverage, claims, reviews, governance, transparency and guarded operator controls.
-- `scripts/`: encrypted Windows-local demo identities, testnet-only funding and read-only live verification.
-- `fixtures/`: synthetic PDFs only.
-
-## Local setup
-
-Use Node.js 22+ and npm. Secrets belong in ignored `.dev.vars` or Cloudflare secrets, never source files. Copy required variable names from the Worker configuration and bind your own D1 database. The deployed project uses Azure document analysis; email OTP requires a configured Privy application and verified server credentials. Wallet sign-in works independently.
+Use Node.js 22+ and npm. See the [demo runbook](docs/ethglobal/DEMO_RUNBOOK.md) for wallet roles, Arc Testnet settings and synthetic uploads. Keep credentials in ignored local configuration or Cloudflare secrets.
 
 ```sh
 npm ci
 npm run db:local -w worker
-npm run dev:api
-npm run dev
 npm test
 npm run typecheck
 ```
 
-For Cloudflare deployment, authenticate Wrangler, bind D1, apply migrations, upload secrets, then deploy the API followed by the web app:
+Start the API and web app in separate terminals with `npm run dev:api` and `npm run dev`. The [web app](frontend/) is Next.js on Cloudflare Workers via OpenNext. The [API](worker/) uses Hono, D1 and a retriable analysis Workflow. The [domain package](packages/domain/) handles claim rules, vote matching and public projections. Run `node scripts/verify-contribution.mjs` to independently verify the published swap, bridge, deposit and NFT without sending a transaction. The [contract test guide](onchain/LOCAL_TESTING.md) documents 185 tests.
+
+For deployment, configure the Cloudflare bindings, add Worker secrets, apply D1 migrations and deploy the API before the frontend.
 
 ```sh
 npm run db:remote -w worker
@@ -69,22 +86,14 @@ npm run deploy:api
 npm run deploy:web
 ```
 
-Contract reproduction: [onchain/LOCAL_TESTING.md](onchain/LOCAL_TESTING.md). The live app uses the Worker API. Set your own Worker bindings, D1 database ID and optional analysis configuration before deploying this source.
+## Continuity and scope
 
-## Demo and MetaMask
+| Before Mumbai | Added for Mumbai |
+| --- | --- |
+| Cooperative insurance concept, founder research and prior prototype. | New Arc settlement and policy NFTs, cooperative enrollment, a redesigned member workspace, private evidence follow-ups, jury voting and appeals, prospective governance, Arkiv milestones, Swarm retrieval and a verified Uniswap contribution route. |
 
-Play the local demo cut and record your narration separately using a desktop microphone. See [DEMO_RUNBOOK.md](docs/ethglobal/DEMO_RUNBOOK.md) for accounts, role switching, network settings, fixture uploads and exact receipt checks. Dedicated encrypted test-wallet keystores stay outside Git under Windows LocalAppData. Never import the deployment key into a browser or use a funded personal account for the walkthrough.
+[Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md) · [Submission and partner requirements](docs/ethglobal/SPONSOR_CHECKLIST.md) · [Asset sources](docs/ethglobal/assets/README.md)
 
-## Continuity and limitations
+The demo uses a designated operator for membership and panel assignment. Evidence encryption is server-managed, so the Worker and authorized analysis workflow can access plaintext. Real deployment would require a lawful insurance operating structure, actuarial pricing, reserve management, a consented pilot, and independent security review. Email OTP needs provider configuration and wallet-linking validation. Wallet sign-in is the tested path.
 
-This continues `AjnasNB/guardchain.ai` from baseline `370a135a7eb1fa883a4fca00111a3a8c2e5c226b`. The inherited insurance concept, code, story and earlier demos are pre-existing work. The Arc contracts/USDC integration, Worker API, new interface and verified testnet flows are event additions. See [the full disclosure](docs/ethglobal/CONTINUITY_BASELINE.md). Public product branding is GuardLink; the original repository preserves the event history.
-
-Bootstrap verification and panel assignment currently depend on a designated operator. The current evidence key is server-managed, and revoked reviewers' prior downloads cannot be recalled. A real launch needs independent security review, a lawful insurance operating structure, actuarial pricing, reserve management, consent and a real pilot. The dependency audit still reports unresolved upstream advisories; this deployment is a synthetic-data testnet prototype.
-
-AI assisted code, artwork, test scaffolding and presentation/video preparation. The founder supplies the personal story and must record the official human narration. No verified partnership, insured-user count or winning probability is asserted.
-
-## Public source export
-
-This repository contains a reviewed snapshot of GuardLink event source at private project commit `cf28f9cd908377c24f44b88898db67891e6e2941`. It excludes historical services, personal or local deployment files, databases, private wallet files and logs. The [event commit manifest](EVENT_HISTORY.md) records the original chronology. The MIT license applies to GuardLink source in this export. Dependencies retain their own licenses.
-
-The [Arc Studio deployment evidence](docs/ethglobal/ARC_STUDIO_EVIDENCE.md) is publicly reviewable.
+AI assisted code, artwork, test scaffolding and media preparation. The founder supplies the personal story and records the submission narration. Demo wallets are labelled role identities.

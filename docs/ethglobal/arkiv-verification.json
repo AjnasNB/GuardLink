@@ -1,11 +1,11 @@
 {
-  "checkedAt": "2026-11-05T20:09:48.238Z",
+  "checkedAt": "2026-11-06T11:31:17.005Z",
   "chainId": 7794095,
   "writer": "0xd8E339b19353afDAF75EfeEdA7fDB88320420553",
   "publish": {
     "published": 3
   },
-  "queriedRecords": 21,
+  "queriedRecords": 24,
   "caseQuery": {
     "claimId": "dfd3e4f9-9008-4e60-b420-f10ae15c5f81",
     "matched": 14
