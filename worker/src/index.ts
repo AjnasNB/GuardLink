@@ -568,7 +568,7 @@ app.get("/api/v1/evidence/:id", async (c) => {
     .bind(c.req.param("id"))
     .first<{
       claim_id: string;
-      ciphertext: number[];
+      ciphertext: number[] | null;
       iv: string;
       swarm_reference: string;
       name: string;
@@ -577,10 +577,25 @@ app.get("/api/v1/evidence/:id", async (c) => {
   const claim = await loadClaim(c.env.DB, row.claim_id);
   if (!authorized(claim, c.get("member")))
     return c.json({ error: "Document access denied." }, 403);
-  const encrypted = row.swarm_reference
-    ? await downloadCiphertext(c.env.SWARM_BEE_URL, row.swarm_reference)
-    : new Uint8Array(row.ciphertext).buffer;
-  const plain = await decrypt(encrypted, row.iv, c.env.EVIDENCE_KEY);
+  const key = c.env.EVIDENCE_KEY;
+  let plain: ArrayBuffer | undefined;
+  if (row.swarm_reference) {
+    try {
+      const encrypted = await downloadCiphertext(
+        c.env.SWARM_BEE_URL,
+        row.swarm_reference,
+        row.ciphertext ? 5000 : undefined,
+      );
+      plain = await decrypt(encrypted, row.iv, key);
+    } catch (error) {
+      if (!row.ciphertext) throw error;
+      console.warn("Evidence archive read failed. Using the encrypted copy.");
+    }
+  }
+  if (!plain) {
+    if (!row.ciphertext) throw new Error("Evidence retrieval unavailable.");
+    plain = await decrypt(new Uint8Array(row.ciphertext).buffer, row.iv, key);
+  }
   return new Response(plain, {
     headers: {
       "Content-Type": row.name.endsWith(".pdf")

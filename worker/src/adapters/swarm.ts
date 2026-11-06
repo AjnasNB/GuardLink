@@ -23,11 +23,11 @@ export async function uploadCiphertext(
     throw new Error("Invalid ciphertext reference.");
   return result.reference;
 }
-export async function downloadCiphertext(url: string, reference: string) {
+export async function downloadCiphertext(url: string, reference: string, timeoutMs = 30000) {
   if (!/^[0-9a-f]{64}$/i.test(reference))
     throw new Error("Invalid evidence reference.");
   const response = await fetch(new URL(`/bytes/${reference}`, url), {
-    signal: AbortSignal.timeout(30000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error("Evidence retrieval unavailable.");
   return response.arrayBuffer();
