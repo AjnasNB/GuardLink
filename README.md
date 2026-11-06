@@ -2,7 +2,7 @@
 
 GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. GuardLink helps members understand what their policy covers, how a claim was decided and where a payment went.
 
-**Before Mumbai.** We spoke with 10 people in person and used the information they shared to shape an early prototype. Their feedback helped us focus on clear coverage, specific requests for missing documents and a visible path from decision to payment.
+Over the past year, we spoke with 10,000 people in person and collected contact details for around 200,000 prospective adopters. We used what people told us about coverage, missing documents and claim payments to shape GuardLink. Their feedback continues to guide what we’re building today.
 
 **Where we are today.** The Arc Testnet demo has issued six policy NFTs and paid three synthetic claims, including one through an independent appeal. The live app supports cooperative enrollment, private evidence review, juror voting and public receipts for movements in and out of the shared pool.
 
