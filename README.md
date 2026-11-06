@@ -4,7 +4,7 @@
 
 GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. A year of conversations with families and people connected to Kudumbashree shaped the product around three questions a member should be able to answer. What does my policy cover? Why was my claim decided this way? Where did the payment go?
 
-[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public event source](https://github.com/AjnasNB/guardlink-mumbai) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
+[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public event source](https://github.com/AjnasNB/GuardLink) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
 
 The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.guardlink.ajnasnb.com/health). The web app proxies its own `/api/v1/` requests to the API Worker through a service binding so browser sessions stay on the web domain.
 
@@ -57,7 +57,7 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 
 Blockchain makes wallet authority and movements from the shared reserve independently verifiable. Evidence still requires human judgment. The AI workflow organizes the case for reviewers and has no wallet, voting or payout authority. [Analysis workflow](worker/src/workflow.ts)
 
-The GitHub pool source matches the SHA-256 recorded by the Arc Studio pull manifest. The public source also matches the Solidity file returned by Sourcify, which reports creation and runtime matches for the live Arc Testnet pool. [Arc Studio deployment evidence](https://github.com/AjnasNB/guardlink-mumbai/blob/main/docs/ethglobal/ARC_STUDIO_EVIDENCE.md)
+The GitHub pool source matches the SHA-256 recorded by the Arc Studio pull manifest. The public source also matches the Solidity file returned by Sourcify, which reports creation and runtime matches for the live Arc Testnet pool. [Arc Studio deployment evidence](https://github.com/AjnasNB/GuardLink/blob/main/docs/ethglobal/ARC_STUDIO_EVIDENCE.md)
 
 ### Query Arkiv as a judge
 

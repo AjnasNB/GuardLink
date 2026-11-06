@@ -1,10 +1,10 @@
 # GuardLink · Mumbai founder voiceover (3:44)
 
-Read the paragraphs only. Timestamps and headings are cues. Let the first lines breathe; read the demo like you are showing one person how it works. Play the picture cut muted while recording. The three-second family scene at 0:10 is a labelled dramatization. The product footage uses synthetic documents and testnet funds.
+Read the paragraphs only. Timestamps and headings are cues. Let the first lines breathe and play the picture cut muted while recording. The first ten seconds show a fictional family dramatization. The product footage uses synthetic documents and testnet funds.
 
 ### 0:00–0:19 · Why I started
 
-It all started last year, when my father had to go through eye surgery. Every visit brought another request. The claim waited. The bills didn't. We borrowed. When the money came, it felt like pity. I believed protection was our right.
+It all started last year, when my father needed eye surgery. Every visit meant more paperwork. The claim waited. The bills didn’t. We had to borrow. I wanted families to know where they stood. That’s why I built GuardLink.
 
 ### 0:19–0:29.5 · Listening in Kerala
 
