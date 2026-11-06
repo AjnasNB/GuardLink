@@ -1,17 +1,20 @@
 import Link from "next/link";
 import PublicLedger from "../../components/PublicLedger";
-import { PageHeading } from "../../components/WorkspaceParts";
 
 export const metadata = { title: "Public transaction ledger" };
 
 export default function LedgerPage() {
   return (
     <main className="workspace-content ledger-page">
-      <div className="header-actions ledger-actions">
+      <nav className="ledger-nav" aria-label="GuardLink public pages">
         <Link className="text-link" href="/">← GuardLink</Link>
         <Link className="text-link" href="/transparency">Public case milestones</Link>
-      </div>
-      <PageHeading title="Public transaction ledger" description="Follow confirmed contributions, claim payouts and treasury transfers from the cooperative pool. Each entry links to its Arc receipt." />
+      </nav>
+      <header className="ledger-heading">
+        <span className="ledger-network">Arc Testnet</span>
+        <h1>Public transaction ledger</h1>
+        <p>Follow confirmed USDC movements in and out of the GuardLink pool. Open any transaction to check its receipt on the Arc explorer.</p>
+      </header>
       <PublicLedger />
     </main>
   );

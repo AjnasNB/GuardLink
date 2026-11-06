@@ -5,8 +5,8 @@ export async function api<T = unknown>(
   const url = new URL(`/api/v1${path}`, "https://guardlink.invalid");
   if (!url.pathname.endsWith("/")) url.pathname += "/";
   const response = await fetch(url.pathname + url.search, {
-    ...options,
     credentials: "include",
+    ...options,
     headers: {
       ...(options.body instanceof FormData
         ? {}

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { ArrowRight, Box, CheckCircle2, ExternalLink, Search } from "lucide-react";
 import { api, short } from "../lib/api";
 
 const views = [
@@ -15,15 +15,23 @@ type LedgerPage = {
   entries: { block: number; time: string; hash: string; index: number; wallet: string; amount: string; reference: string }[];
   next: string | null;
 };
-const explorer = "https://testnet.arcscan.app";
+const explorer = "https://explorer.testnet.arc.io";
 const date = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "medium", timeZone: "UTC" });
+
+function explorerPath(input: string) {
+  if (/^0x[\da-f]{64}$/i.test(input)) return `/tx/${input}`;
+  if (/^0x[\da-f]{40}$/i.test(input)) return `/address/${input}`;
+  if (/^\d{1,15}$/.test(input)) return `/block/${input}`;
+}
 
 export default function PublicLedger() {
   const [view, setView] = useState<{ kind: Kind; cursors: string[] }>({ kind: "contributions", cursors: [] });
   const [retry, setRetry] = useState(0);
+  const [searchError, setSearchError] = useState(false);
   const [result, setResult] = useState<{ view: typeof view; retry: number; page?: LedgerPage; error?: string }>();
   const current = result?.view === view && result.retry === retry ? result : undefined;
   const page = current?.page;
+  const poolAddress = page?.pool ?? result?.page?.pool;
   useEffect(() => {
     const request = new AbortController();
     const query = new URLSearchParams({ kind: view.kind });
@@ -39,55 +47,94 @@ export default function PublicLedger() {
     return () => request.abort();
   }, [view, retry]);
 
+  function searchExplorer(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const input = String(new FormData(event.currentTarget).get("lookup") ?? "").trim();
+    const path = explorerPath(input);
+    if (path) window.location.assign(explorer + path);
+    else setSearchError(true);
+  }
+
   return (
     <>
-      <div className="header-actions ledger-actions" aria-label="Transaction type">
+      <form className="ledger-search" role="search" aria-label="Arc Testnet lookup" onSubmit={searchExplorer}>
+        <Search size={18} aria-hidden="true" />
+        <input name="lookup" type="search" autoComplete="off" spellCheck={false}
+          aria-label="Transaction hash, wallet address or block number"
+          aria-invalid={searchError} aria-describedby={searchError ? "ledger-search-error" : undefined}
+          placeholder="Search by transaction hash, wallet address or block"
+          onChange={() => setSearchError(false)} />
+        <button type="submit">Search <span>Arc</span></button>
+      </form>
+      {searchError && <p className="ledger-search-error" id="ledger-search-error" role="alert">Enter a full transaction hash, wallet address, or block number.</p>}
+      {poolAddress && (
+        <div className="ledger-pool">
+          <Box size={18} aria-hidden="true" />
+          <div>
+            <strong>GuardLinkPool</strong>
+            <a href={`${explorer}/address/${poolAddress}`} target="_blank" rel="noreferrer" aria-label={`Pool contract ${poolAddress} on Arc explorer`}>{poolAddress} <ExternalLink size={14} aria-hidden="true" /></a>
+          </div>
+        </div>
+      )}
+      <div className="ledger-tabs" role="group" aria-label="Transaction type">
         {views.map(({ value, label }) => (
-          <button key={value} className={`button ${view.kind === value ? "button-lime" : "button-outline"}`}
-            aria-pressed={view.kind === value} onClick={() => setView({ kind: value, cursors: [] })}>
+          <button key={value} type="button" aria-pressed={view.kind === value}
+            onClick={() => { if (view.kind !== value) setView({ kind: value, cursors: [] }); }}>
             {label}
           </button>
         ))}
       </div>
-      {!current && <p role="status">Loading confirmed Arc transactions…</p>}
-      {current?.error && (
-        <div className="inline-note" role="alert">
-          <span>{current.error}</span><button className="button button-outline" onClick={() => setRetry((n) => n + 1)}>Retry</button>
+      <section className="ledger-results" aria-label="Transaction results" aria-busy={!current}>
+        <div className="ledger-toolbar">
+          <span><CheckCircle2 size={15} aria-hidden="true" /> Confirmed events</span>
+          <span>Test USDC · UTC</span>
         </div>
-      )}
-      {page && (
-        <>
-          <div className="inline-note">
-            <span>Arc Testnet · Amounts in test USDC · Timestamps in UTC</span>
-            <a className="text-link" href={`${explorer}/address/${page.pool}`} target="_blank" rel="noreferrer">Pool on ArcScan <ExternalLink size={14} /></a>
+        {!current && <p className="ledger-message" role="status">Loading confirmed Arc transactions…</p>}
+        {current?.error && (
+          <div className="ledger-message" role="alert">
+            <p>{current.error}</p><button className="button button-outline" onClick={() => setRetry((n) => n + 1)}>Retry</button>
           </div>
-          {page.entries.length ? (
-            <div className="table-wrap">
-              <table className="claims-table" aria-label="Confirmed Arc pool transactions">
-                <thead><tr><th scope="col">Time (UTC)</th><th scope="col">Record</th><th scope="col">Amount</th><th scope="col">{view.kind === "contributions" ? "From wallet" : "To wallet"}</th><th scope="col">Block</th><th scope="col">Receipt</th></tr></thead>
-                <tbody>
-                  {page.entries.map((row) => (
-                    <tr key={`${row.hash}:${row.index}`}>
-                      <td><time dateTime={row.time}>{date.format(new Date(row.time))}</time></td>
-                      <td>{row.reference}</td>
-                      <td>{row.amount} USDC</td>
-                      <td><a href={`${explorer}/address/${row.wallet}`} target="_blank" rel="noreferrer" title={row.wallet} aria-label={`Wallet ${row.wallet}`}>{short(row.wallet)}</a></td>
-                      <td>{row.block}</td>
-                      <td><a className="text-link" href={`${explorer}/tx/${row.hash}`} target="_blank" rel="noreferrer" title={row.hash} aria-label={`ArcScan receipt ${row.hash}`}>{short(row.hash)} <ExternalLink size={14} /></a></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : <p className="empty-state compact">No confirmed transactions in this view.</p>}
-          {(page.next || view.cursors.length > 0) && (
-            <div className="header-actions ledger-actions" aria-label="Ledger pages">
-              <button className="button button-outline" disabled={!view.cursors.length} onClick={() => setView({ ...view, cursors: view.cursors.slice(0, -1) })}>Newer</button>
-              <button className="button button-outline" disabled={!page.next} onClick={() => { if (page.next) setView({ ...view, cursors: [...view.cursors, page.next] }); }}>Older</button>
-            </div>
-          )}
-        </>
-      )}
+        )}
+        {page && (
+          <>
+            {page.entries.length ? (
+              <div className="ledger-table-wrap" tabIndex={0} role="region" aria-label="Scrollable transaction table">
+                <table className="ledger-table" aria-label="Confirmed Arc pool transactions">
+                  <thead>
+                    <tr><th scope="col">Txn hash</th><th scope="col">Event</th><th scope="col">Block</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Value</th></tr>
+                  </thead>
+                  <tbody>
+                    {page.entries.map((row) => {
+                      const incoming = view.kind === "contributions";
+                      const pool = <a href={`${explorer}/address/${page.pool}`} target="_blank" rel="noreferrer" title={page.pool}>GuardLinkPool</a>;
+                      const wallet = <a href={`${explorer}/address/${row.wallet}`} target="_blank" rel="noreferrer" title={row.wallet} aria-label={`Wallet ${row.wallet}`}>{short(row.wallet)}</a>;
+                      return (
+                        <tr key={`${row.hash}:${row.index}`}>
+                          <td>
+                            <a className="ledger-hash" href={`${explorer}/tx/${row.hash}`} target="_blank" rel="noreferrer" title={row.hash} aria-label={`Arc receipt ${row.hash}`}>{row.hash.slice(0, 12)}…{row.hash.slice(-4)} <ExternalLink size={13} aria-hidden="true" /></a>
+                            <time dateTime={row.time}>{date.format(new Date(row.time))}</time>
+                          </td>
+                          <td><span className="ledger-event">{incoming ? "Contribution" : view.kind === "payouts" ? "Claim payout" : "Treasury transfer"}</span>{view.kind !== "payouts" && <small>{row.reference}</small>}</td>
+                          <td><a href={`${explorer}/block/${row.block}`} target="_blank" rel="noreferrer">{row.block}</a></td>
+                          <td>{incoming ? wallet : pool}</td>
+                          <td><span className="ledger-recipient"><ArrowRight size={16} className={incoming ? "ledger-in" : "ledger-out"} aria-hidden="true" />{incoming ? pool : wallet}</span></td>
+                          <td><strong>{row.amount}</strong> <span className="ledger-unit">USDC</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : <p className="ledger-message" role="status">No confirmed transactions in this view.</p>}
+            {(page.next || view.cursors.length > 0) && (
+              <div className="ledger-pagination" role="group" aria-label="Ledger pages">
+                <button className="button button-outline" disabled={!view.cursors.length} onClick={() => setView({ ...view, cursors: view.cursors.slice(0, -1) })}>Newer</button>
+                <button className="button button-outline" disabled={!page.next} onClick={() => { if (page.next) setView({ ...view, cursors: [...view.cursors, page.next] }); }}>Older</button>
+              </div>
+            )}
+          </>
+        )}
+      </section>
     </>
   );
 }

@@ -14,6 +14,18 @@ The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.g
 
 **Environment** Arc Testnet, synthetic medical documents and test USDC. This prototype does not sell real insurance.
 
+## Explore the public ledger
+
+[Open the live GuardLink ledger](https://guardlink.ajnasnb.com/ledger/) without signing in. Switch between **Contributions**, **Claim payouts**, and **Treasury transfers**. Each confirmed event shows its transaction hash, UTC timestamp, block, sender, recipient, and test USDC amount. Open a hash, wallet, or block to check it independently on the Arc Testnet explorer.
+
+| Recorded event | From → To | Test USDC | Arc receipt |
+| --- | --- | ---: | --- |
+| Contribution for Policy #4 | Member wallet → GuardLinkPool | 1.00 | [Block 71021366](https://explorer.testnet.arc.io/tx/0xaec9d1fe84e65088f254b579f2d0025f976efc5008e31e09bc60db5478935ee1) |
+| Claim payout | GuardLinkPool → Member wallet | 0.25 | [View receipt](https://explorer.testnet.arc.io/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63) |
+| Claim payout after appeal | GuardLinkPool → Member wallet | 0.40 | [View receipt](https://explorer.testnet.arc.io/tx/0x9740c683d839971953d61afad540597c17ffee9a144864bc85e3ea1f271c7a99) |
+
+The ledger is scoped to the [GuardLinkPool contract](https://explorer.testnet.arc.io/address/0x335D2CE0c397016ac0E1D6930EB98A1Dfe47c895?tab=token_transfers) and reads its public on-chain events. Private claim documents and member profiles stay in the authenticated workspace. [Public ledger API](https://guardlink.ajnasnb.com/api/v1/ledger/?kind=payouts)
+
 ## Try it as a member
 
 For the recording, follow the [wallet and DAO screenshot walkthrough](docs/ethglobal/DAO_WALLET_WALKTHROUGH.md). The [public proposal board](https://guardlink.ajnasnb.com/governance/proposals/) opens without a wallet.
@@ -74,10 +86,6 @@ curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-90
 ```
 
 Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. See [query implementation](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md) and [friction](arkiv/friction.md).
-
-### Audit the pool without a wallet
-
-The [public transaction ledger](https://guardlink.ajnasnb.com/ledger/) reads the pool's contribution, claim payout and treasury transfer events from ArcScan. Each row shows the amount, public wallet address, block, time and receipt. The ledger uses only chain data. It does not read claim documents or member profiles.
 
 ## Run and verify locally
 
