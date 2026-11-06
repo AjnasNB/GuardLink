@@ -5,6 +5,7 @@ import {
   type Address,
   type Abi,
   encodeFunctionData,
+  parseUnits,
 } from "viem";
 import { arc, wallet, switchArc, usdcAddress } from "./wallet";
 import { api, type Member } from "./api";
@@ -70,7 +71,7 @@ export async function poolWrite(
     throw new Error("The transaction failed. No success has been recorded.");
   return hash;
 }
-export async function contribute(address: string) {
+export async function contribute(address: string, expectedContribution?: string) {
   if (!address) throw new Error("Community settlement is not connected yet.");
   const { client, account } = await authorizedWallet();
   const amount = await publicClient.readContract({
@@ -78,6 +79,9 @@ export async function contribute(address: string) {
     abi: poolAbi,
     functionName: "contributionAmount",
   });
+  if (expectedContribution !== undefined && amount !== parseUnits(expectedContribution, 6)) {
+    throw new Error("The contribution amount changed. Refresh the community terms before continuing.");
+  }
   const approval = await client.writeContract({
     address: usdcAddress,
     abi: erc20,

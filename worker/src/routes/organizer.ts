@@ -4,6 +4,7 @@ import { isAddress } from "viem";
 import { guardlinkAbi } from "@guardlink/domain/abi";
 import type { Claim, Role } from "@guardlink/domain";
 import { arcClient } from "../adapters/arc";
+import { communityProfile, isCommunityOperator } from "./community";
 type Member = {
   id: string;
   wallet: string | null;
@@ -18,22 +19,28 @@ export const organizer = new Hono<{
   Variables: { member: Member };
 }>({ strict: false });
 organizer.use("*", async (c, next) => {
-  const wallet = c.get("member").wallet;
-  if (!wallet || !c.env.ARC_POOL_ADDRESS)
-    return c.json({ error: "The community operator wallet is required." }, 403);
-  const admin = await arcClient(c.env.ARC_RPC).readContract({
-    address: c.env.ARC_POOL_ADDRESS as `0x${string}`,
-    abi: guardlinkAbi,
-    functionName: "admin",
-  });
-  if (admin.toLowerCase() !== wallet.toLowerCase())
+  if (!(await isCommunityOperator(c.env, c.get("member").wallet)))
     return c.json({ error: "The community operator wallet is required." }, 403);
   await next();
+});
+organizer.patch("/community", async (c) => {
+  const fields = z.object({
+    name: z.string().trim().min(2).max(80),
+    location: z.string().trim().min(2).max(100),
+    description: z.string().trim().min(10).max(2000),
+    joiningCriteria: z.string().trim().min(10).max(1000),
+  }).parse(await c.req.json());
+  const id = c.get("member").community_id;
+  const profile = await c.env.DB.prepare(
+    "UPDATE communities SET name=?,location=?,description=?,joining_criteria=? WHERE id=? RETURNING id,name,location,description,joining_criteria AS joiningCriteria",
+  ).bind(fields.name, fields.location, fields.description, fields.joiningCriteria, id).first();
+  if (!profile) return c.json({ error: "Community not found." }, 404);
+  return c.json(profile);
 });
 organizer.get("/", async (c) => {
   const community = c.get("member").community_id;
   const members = await c.env.DB.prepare(
-    "SELECT id,wallet,name,role,verified FROM members WHERE community_id=? AND wallet IS NOT NULL",
+    "SELECT m.id,m.wallet,m.name,m.role,m.verified,r.status AS request_status,r.accepted_criteria FROM members m LEFT JOIN membership_requests r ON r.member_id=m.id AND r.community_id=m.community_id WHERE m.community_id=? AND m.wallet IS NOT NULL",
   )
     .bind(community)
     .all();
@@ -56,6 +63,7 @@ organizer.get("/", async (c) => {
   return c.json({
     members: members.results,
     cases,
+    community: await communityProfile(c.env.DB, community),
     notice:
       "Operator access does not grant access to medical evidence. Eligibility and panel selection are centralized in this prototype.",
   });

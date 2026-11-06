@@ -4,10 +4,12 @@ import Link from "next/link";
 import BrandMark from "./BrandMark";
 import Governance from "./Governance";
 import Organizer from "./Organizer";
+import Transparency from "./Transparency";
 import ClaimDetail from "./ClaimDetail";
 import ContributionRouteProof from "./ContributionRouteProof";
+import Community from "./Community";
 import { PageHeading, ClaimList, Status } from "./WorkspaceParts";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -29,9 +31,7 @@ import {
   LoaderCircle,
   AlertCircle,
   Scale,
-  Search,
   Globe,
-  ExternalLink,
   RefreshCw,
   CheckCircle2,
 } from "lucide-react";
@@ -42,7 +42,6 @@ import {
   contribute,
   ownedPolicies,
   poolWrite,
-  joinCommunity,
 } from "../lib/contracts";
 const navigation = [
   { path: "/app", label: "Overview", icon: LayoutDashboard },
@@ -119,13 +118,22 @@ export default function Workspace() {
     }
   }
   const route = path.replace("/app", "") || "/";
+  const inCommunity = route === "/communities" || route.startsWith("/communities/");
+  function fundCoverage(expectedContribution?: string) {
+    return action(async () => {
+      if (!config?.poolAddress) {
+        throw new Error("Settlement is unavailable. Try again when the community terms load.");
+      }
+      await contribute(config.poolAddress, expectedContribution);
+    }, "Your contribution is confirmed. Your coverage record is ready.");
+  }
   const active =
     navigation.find((n) => n.path === path)?.label ??
     (route.startsWith("/claims/")
       ? "Claim details"
       : route === "/onboarding"
         ? "Welcome to your community"
-        : "Your community");
+        : inCommunity ? "My community" : "Your community");
   return (
     <div className="workspace">
       <aside className={`sidebar ${navOpen ? "is-open" : ""}`}>
@@ -135,20 +143,20 @@ export default function Workspace() {
           </span>
           GuardLink
         </Link>
-        <div className="community-switch">
-          <span className="community-symbol">K</span>
+        <Link className="community-switch" href="/app/communities">
+          <span className="community-symbol">{member?.community_name?.[0] ?? "C"}</span>
           <div>
-            Kerala Care<small>Demo cooperative</small>
+            {member?.community_name ?? "Your cooperative"}<small>Testnet cooperative</small>
           </div>
           <ChevronRight size={15} />
-        </div>
+        </Link>
         <span className="nav-caption">Your protection</span>
         <nav>
           {navigation.map((n) => (
             <Link
               href={n.path}
               key={n.path}
-              className={path === n.path ? "active" : ""}
+              className={path === n.path || (n.path === "/app/communities" && inCommunity) ? "active" : ""}
             >
               <n.icon size={18} />
               {n.label}
@@ -241,30 +249,22 @@ export default function Workspace() {
                     }, "Your profile is saved.")
                   }
                 />
-              ) : route === "/communities" ? (
+              ) : inCommunity ? (
                 <Community
                   member={member}
-                  onJoin={() =>
-                    action(async () => {
-                      await joinCommunity(config?.poolAddress ?? "");
-                      await api("/community/join", { method: "POST" });
-                    }, "Membership request recorded.")
-                  }
+                  communityId={route === "/communities" ? undefined : route.slice("/communities/".length)}
+                  poolAddress={config?.poolAddress}
+                  hasActiveCoverage={policies.some((p) => p.start * 1000 <= Date.now() && p.end * 1000 > Date.now())}
+                  busy={busy}
+                  refreshAccount={refresh}
+                  onContribute={fundCoverage}
                 />
               ) : route === "/coverage" ? (
                 <Coverage
                   policies={policies}
                   member={member}
                   busy={busy}
-                  onContribute={() =>
-                    action(async () => {
-                      if (!config?.poolAddress)
-                        throw new Error(
-                          "Settlement is being connected. No contribution will be collected yet.",
-                        );
-                      await contribute(config.poolAddress);
-                    }, "Your contribution is confirmed. Your coverage record is ready.")
-                  }
+                  onContribute={() => void fundCoverage()}
                 />
               ) : route === "/claims/new" ? (
                 <NewClaim
@@ -511,88 +511,6 @@ function Onboarding({
     </div>
   );
 }
-function Community({
-  member,
-  onJoin,
-}: {
-  member: Member | null;
-  onJoin: () => void;
-}) {
-  const [terms, setTerms] = useState<{
-    contribution: string;
-    coverageLimit: string;
-    termDays: number;
-  } | null>(null);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    api<typeof terms>("/terms")
-      .then(setTerms)
-      .catch((e) => setError(e.message));
-  }, []);
-  return (
-    <>
-      <PageHeading
-        title="Protection begins with people."
-        description="Small communities. Shared contributions. Rules members can understand."
-      />
-      <div className="community-detail">
-        <div className="community-cover">
-          <img
-            src="/images/community-dusk.webp"
-            alt="Illustrative Kerala community house"
-          />
-          <span className="status-pill">Demonstration cooperative</span>
-        </div>
-        <div className="panel community-details">
-          <span className="section-note">Kerala, India</span>
-          <h2>Kerala Care Cooperative</h2>
-          <p>
-            A test community inspired by the solidarity of Kerala’s self-help
-            groups. Members contribute together, help review claims and vote on
-            future coverage.
-          </p>
-          <div className="terms-row">
-            <div>
-              <small>Contribution</small>
-              <strong>
-                {terms ? `${terms.contribution} USDC` : "Loading…"}
-              </strong>
-            </div>
-            <div>
-              <small>Coverage limit</small>
-              <strong>
-                {terms ? `${terms.coverageLimit} USDC` : "Loading…"}
-              </strong>
-            </div>
-            <div>
-              <small>Coverage term</small>
-              <strong>{terms ? `${terms.termDays} days` : "Loading…"}</strong>
-            </div>
-          </div>
-          <p className="subtle">
-            {error
-              ? `Live terms unavailable: ${error}`
-              : "Live terms for a new policy, read from the community contract."}{" "}
-            These amounts do not represent a priced or regulated insurance
-            product.
-          </p>
-          {member?.verified ? (
-            <span className="status-pill good">
-              <Check size={14} /> Verified demo member
-            </span>
-          ) : (
-            <button className="button button-lime" onClick={onJoin}>
-              Request membership <ArrowUpRight size={17} />
-            </button>
-          )}
-          <Link href="/app/governance" className="text-link">
-            Read community decisions <ArrowUpRight size={16} />
-          </Link>
-        </div>
-      </div>
-    </>
-  );
-}
 function Coverage({
   policies,
   member,
@@ -640,7 +558,7 @@ function Coverage({
               <ShieldCheck size={27} />
               <div>
                 <span className="section-note">
-                  Kerala Care / Policy #{p.id}
+                  {member?.community_name ?? "Cooperative"} / Policy #{p.id}
                 </span>
                 <h2>Your community protection</h2>
                 <p>
@@ -720,7 +638,7 @@ function NewClaim({
             <option value="">Choose a policy</option>
             {policies.map((p) => (
               <option key={p.id} value={p.id}>
-                Policy #{p.id} · Kerala Care
+                Policy #{p.id}
               </option>
             ))}
           </select>
@@ -784,116 +702,3 @@ function NewClaim({
   );
 }
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
-function Transparency() {
-  const caseId = useSearchParams().get("caseId");
-  const [records, setRecords] = useState<
-      {
-        id: string;
-        kind: string;
-        public_data: string;
-        created_at: string;
-        arkiv_key: string | null;
-      }[]
-    >([]),
-    [query, setQuery] = useState(""),
-    [error, setError] = useState("");
-  useEffect(() => {
-    api<typeof records>(
-      caseId
-        ? `/transparency?caseId=${encodeURIComponent(caseId)}`
-        : "/transparency",
-    )
-      .then((rows) =>
-        setRecords(
-          [...rows].sort((a, b) => b.created_at.localeCompare(a.created_at)),
-        ),
-      )
-      .catch((e) => setError(e.message));
-  }, [caseId]);
-  return (
-    <>
-      <PageHeading
-        title="A fund you can follow."
-        description="Public process records. Private medical evidence. A distinction that matters."
-      />
-      {caseId && (
-        <div className="inline-note">
-          <span>
-            Public milestones for case {caseId.slice(0, 8).toUpperCase()}.
-          </span>
-          <Link href="/app/transparency">Show all records</Link>
-        </div>
-      )}
-      <div className="search-field">
-        <Search size={18} />
-        <input
-          aria-label="Search public records"
-          placeholder="Search a case ID or event"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </div>
-      {error && <p className="error-text">{error}</p>}
-      <section className="panel">
-        {records
-          .filter((r) =>
-            `${r.kind} ${r.public_data}`
-              .toLowerCase()
-              .includes(query.toLowerCase()),
-          )
-          .map((r) => {
-            const data = JSON.parse(r.public_data) as {
-              claimId?: string;
-              coverageLimit?: string;
-              contribution?: string;
-              termDays?: number;
-              proposalId?: string;
-              yesVotes?: string;
-              eligible?: string;
-              transactionHash?: string;
-            };
-            return (
-              <div className="record-row" key={r.id}>
-                <span className="record-dot" />
-                <div>
-                  <strong>{r.kind.replaceAll("_", " ")}</strong>
-                  <small>
-                    {data.coverageLimit
-                      ? `${data.contribution} USDC contribution · ${data.coverageLimit} USDC limit · ${data.termDays} days`
-                      : data.proposalId
-                        ? `Proposal #${data.proposalId} · ${data.yesVotes}/${data.eligible} in support`
-                        : (data.claimId ?? "Community record")}
-                  </small>
-                </div>
-                <time>{new Date(r.created_at).toLocaleString()}</time>
-                {r.arkiv_key && (
-                  <span className="status-pill good">Published</span>
-                )}
-                {data.transactionHash &&
-                  /^0x[0-9a-fA-F]{64}$/.test(data.transactionHash) && (
-                    <a
-                      className="text-link"
-                      href={`https://testnet.arcscan.app/tx/${data.transactionHash}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Receipt <ExternalLink size={14} />
-                    </a>
-                  )}
-              </div>
-            );
-          })}
-        {!records.length && (
-          <div className="empty-state compact">
-            <Globe />
-            <h3>The record starts with your community.</h3>
-            <p>
-              Confirmed contributions, case milestones and governance events
-              will appear here.
-            </p>
-          </div>
-        )}
-      </section>
-    </>
-  );
-}

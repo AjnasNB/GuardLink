@@ -1,13 +1,15 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { api, type Config } from "../lib/api";
-import { poolWrite } from "../lib/contracts";
+import { poolAbi, poolWrite, publicClient } from "../lib/contracts";
 type RosterMember = {
   id: string;
   wallet: string;
   name: string;
   role: string;
   verified: number;
+  request_status: string | null;
+  accepted_criteria: string | null;
 };
 type Case = {
   id: string;
@@ -17,7 +19,12 @@ type Case = {
   jurors: string[];
   appealJurors: string[];
 };
-type Data = { members: RosterMember[]; cases: Case[]; notice: string };
+type Data = {
+  members: RosterMember[];
+  cases: Case[];
+  community: { joiningCriteria: string } | null;
+  notice: string;
+};
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
 export default function Organizer({
   config,
@@ -69,6 +76,7 @@ export default function Organizer({
           <p className="inline-note">{data.notice}</p>
           <section className="panel">
             <h2>Membership verification</h2>
+            {data.community && <p className="subtle community-description">{data.community.joiningCriteria}</p>}
             {data.members.map((m) => (
               <article className="proposal-row" key={m.id}>
                 <div>
@@ -76,20 +84,29 @@ export default function Organizer({
                   <small>
                     {m.wallet} · {m.role}
                   </small>
+                  {!m.verified && m.accepted_criteria && (
+                    <details>
+                      <summary>{m.accepted_criteria === data.community?.joiningCriteria ? "Accepted joining criteria" : "Criteria accepted before the latest edit"}</summary>
+                      <p className="community-description">{m.accepted_criteria}</p>
+                    </details>
+                  )}
                 </div>
                 <span className="status-pill">
-                  {m.verified ? "Verified" : "Pending verification"}
+                  {m.verified ? "Verified" : m.request_status ? "Requested" : "No request"}
                 </span>
                 <button
                   className="button button-outline"
-                  disabled={busy}
+                  disabled={busy || !config?.poolAddress || (!m.verified && !m.request_status)}
                   onClick={() =>
                     void act(async () => {
-                      await poolWrite(
-                        config?.poolAddress ?? "",
-                        "verifyMember",
-                        [m.wallet, !m.verified],
-                      );
+                      const address = config?.poolAddress as `0x${string}`;
+                      const wallet = m.wallet as `0x${string}`;
+                      const verified = await publicClient.readContract({
+                        address, abi: poolAbi, functionName: "verifiedMembers", args: [wallet],
+                      });
+                      if (verified !== !m.verified) {
+                        await poolWrite(address, "verifyMember", [wallet, !m.verified]);
+                      }
                       await api("/organizer/membership/sync", {
                         method: "POST",
                         body: JSON.stringify({ memberId: m.id }),

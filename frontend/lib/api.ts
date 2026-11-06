@@ -34,6 +34,16 @@ export type Member = {
   verified: number;
   demo: number;
   community_id: string;
+  community_name?: string | null;
+};
+export type CommunityProfile = {
+  id: string;
+  name: string;
+  location: string;
+  description: string;
+  joiningCriteria: string;
+  canEdit: boolean;
+  membership: "verified" | "requested" | "eligible_to_apply";
 };
 export type Config = {
   testnet: boolean;

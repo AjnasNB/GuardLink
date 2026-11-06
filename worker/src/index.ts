@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { organizer } from "./routes/organizer";
+import { community } from "./routes/community";
 import { governance } from "./routes/governance";
 import { swarm } from "./routes/swarm";
 import { bodyLimit } from "hono/body-limit";
@@ -44,6 +45,7 @@ type Member = {
   name: string;
   role: Role;
   community_id: string;
+  community_name: string | null;
   verified: number;
   demo: number;
 };
@@ -327,7 +329,7 @@ app.use("/api/v1/*", async (c, next) => {
   const token = getCookie(c, "guardlink_session");
   const member = token
     ? await c.env.DB.prepare(
-        "SELECT m.* FROM sessions s JOIN members m ON m.id=s.member_id WHERE s.token_hash=? AND s.expires_at>?",
+        "SELECT m.*,c.name AS community_name FROM sessions s JOIN members m ON m.id=s.member_id LEFT JOIN communities c ON c.id=m.community_id WHERE s.token_hash=? AND s.expires_at>?",
       )
         .bind(await hash(token), Date.now())
         .first<Member>()
@@ -337,6 +339,7 @@ app.use("/api/v1/*", async (c, next) => {
   await next();
 });
 app.route("/api/v1/organizer", organizer);
+app.route("/api/v1/community", community);
 app.route("/api/v1/integrations/swarm", swarm);
 app.get("/api/v1/me", (c) => c.json(c.get("member")));
 app.post("/api/v1/auth/handoff", async (c) => {
@@ -371,20 +374,6 @@ app.post("/api/v1/integrations/arkiv/publish", async (c) => {
       503,
     );
   }
-});
-app.post("/api/v1/community/join", async (c) => {
-  const m = c.get("member");
-  await c.env.DB.prepare(
-    "INSERT OR IGNORE INTO membership_requests(member_id,community_id,created_at) VALUES(?,?,?)",
-  )
-    .bind(m.id, m.community_id, now())
-    .run();
-  return c.json({
-    status: m.verified ? "verified" : "requested",
-    message: m.verified
-      ? "Your demo membership is verified."
-      : "Your membership request is waiting for community verification.",
-  });
 });
 app.route("/api/v1/governance", governance);
 app.patch("/api/v1/me", async (c) => {

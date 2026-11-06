@@ -7,7 +7,9 @@ export default function LandingMotion() {
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          e.target.classList.add("has-arrived");
+        e.target.classList.add(
+          e.target.hasAttribute("data-scene-motion") ? "scene-in-view" : "has-arrived",
+        );
           observer.unobserve(e.target);
         }
       },
@@ -15,7 +17,7 @@ export default function LandingMotion() {
     );
     document
       .querySelectorAll(
-        ".story-section,.steps article,.community-copy,.closing",
+        ".story-section,.steps article,.community-copy,.closing,[data-scene-motion]",
       )
       .forEach((el) => observer.observe(el));
     return () => observer.disconnect();
