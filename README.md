@@ -1,10 +1,14 @@
 # GuardLink · Protection, together
 
-![GuardLink at ETHGlobal Mumbai. Four policy NFTs, three synthetic claims paid and one independent appeal paid on testnet.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
+GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. GuardLink helps members understand what their policy covers, how a claim was decided and where a payment went.
 
-GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. A year of conversations with families and people connected to Kudumbashree shaped the product around three questions a member should be able to answer. What does my policy cover? Why was my claim decided this way? Where did the payment go?
+**Before Mumbai.** We spoke with 10 people in person and used the information they shared to shape an early prototype. Their feedback helped us focus on clear coverage, specific requests for missing documents and a visible path from decision to payment.
 
-[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public event source](https://github.com/AjnasNB/GuardLink) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
+**Where we are today.** The Arc Testnet demo has issued four policy NFTs and paid three synthetic claims, including one through an independent appeal. The live app supports cooperative enrollment, private evidence review, juror voting and public receipts for movements in and out of the shared pool.
+
+![GuardLink at ETHGlobal Mumbai. Four policy NFTs and three synthetic payouts, including one after an independent appeal.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
+
+[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public transaction ledger](https://guardlink.ajnasnb.com/ledger/) · [Public event source](https://github.com/AjnasNB/GuardLink) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
 
 The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.guardlink.ajnasnb.com/health). The web app proxies its own `/api/v1/` requests to the API Worker through a service binding so browser sessions stay on the web domain.
 
@@ -12,9 +16,9 @@ The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.g
 
 ## Try it as a member
 
-1. Sign in with a separate Arc Testnet wallet. Open **My community → Kerala Care Cooperative**.
+1. Keep your wallet account selected and sign in with it on Arc Testnet. From a demo session, choose **Use my connected wallet** on **My coverage** or **My community**. Then open **Kerala Care Cooperative**.
 2. Read and accept the eligibility criteria. Request membership and confirm wallet registration. The cooperative operator reviews the request and verifies the wallet on Arc.
-3. Refresh membership status. Approve and contribute **1 test USDC** from the same wallet. Open **My coverage** after confirmation. The pool issues a non-transferable policy NFT for **30 days** with a **6 test USDC** limit under current rules.
+3. Refresh membership status. Fund the wallet with **1 test USDC plus transaction fees** on Arc Testnet. Confirm the approval if prompted, then confirm the contribution. The pool issues a non-transferable policy NFT for **30 days** with a **6 test USDC** limit under current rules. Check it in **My coverage** and find the receipt in the public ledger.
 4. Submit a synthetic claim against that policy. Use the same claim ID to respond to any missing-document request. Authorized jurors review the private evidence and vote. Two matching votes establish a decision and, for approvals, the payout amount.
 5. Open the claim to see its decision and payment link. A rejected claim can be appealed once to a different panel. Use **Follow the fund** to query public milestones.
 
@@ -68,6 +72,10 @@ curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-90
 ```
 
 Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. See [query implementation](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md) and [friction](arkiv/friction.md).
+
+### Audit the pool without a wallet
+
+The [public transaction ledger](https://guardlink.ajnasnb.com/ledger/) reads the pool's contribution, claim payout and treasury transfer events from ArcScan. Each row shows the amount, public wallet address, block, time and receipt. The ledger uses only chain data. It does not read claim documents or member profiles.
 
 ## Run and verify locally
 
