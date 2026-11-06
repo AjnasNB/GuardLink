@@ -119,6 +119,7 @@ export default function Workspace() {
   }
   const route = path.replace("/app", "") || "/";
   const inCommunity = route === "/communities" || route.startsWith("/communities/");
+  const inGovernance = route === "/governance" || route.startsWith("/governance/");
   function fundCoverage(expectedContribution?: string) {
     return action(async () => {
       if (!config?.poolAddress) {
@@ -133,7 +134,7 @@ export default function Workspace() {
       ? "Claim details"
       : route === "/onboarding"
         ? "Welcome to your community"
-        : inCommunity ? "My community" : "Your community");
+        : inCommunity ? "My community" : inGovernance ? "Community votes" : "Your community");
   return (
     <div className="workspace">
       <aside className={`sidebar ${navOpen ? "is-open" : ""}`}>
@@ -156,7 +157,7 @@ export default function Workspace() {
             <Link
               href={n.path}
               key={n.path}
-              className={path === n.path || (n.path === "/app/communities" && inCommunity) ? "active" : ""}
+              className={path === n.path || (n.path === "/app/communities" && inCommunity) || (n.path === "/app/governance" && inGovernance) ? "active" : ""}
             >
               <n.icon size={18} />
               {n.label}
@@ -328,8 +329,8 @@ export default function Workspace() {
                 </>
               ) : route === "/organizer" ? (
                 <Organizer config={config} busy={busy} run={action} />
-              ) : route === "/governance" ? (
-                <Governance config={config} busy={busy} run={action} />
+              ) : inGovernance ? (
+                <Governance config={config} member={member} busy={busy} run={action} route={route} />
               ) : route === "/transparency" ? (
                 <Transparency />
               ) : (

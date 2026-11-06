@@ -17,6 +17,17 @@ export const governance = new Hono<{
   Bindings: Cloudflare.Env;
   Variables: { member: Member };
 }>({ strict: false });
+governance.get("/treasury", async (c) => {
+  if (!c.env.ARC_POOL_ADDRESS) return c.json({ error: "The treasury is unavailable." }, 503);
+  const client = arcClient(c.env.ARC_RPC);
+  const pool = { address: c.env.ARC_POOL_ADDRESS as `0x${string}`, abi: guardlinkAbi };
+  const [available, committed, exposure] = await Promise.all([
+    client.readContract({ ...pool, functionName: "freeTreasury" }),
+    client.readContract({ ...pool, functionName: "committedPayouts" }),
+    client.readContract({ ...pool, functionName: "openClaimExposure" }),
+  ]);
+  return c.json({ available: formatUnits(available, 6), committed: formatUnits(committed, 6), exposure: formatUnits(exposure, 6) });
+});
 governance.get("/", async (c) => {
   if (!c.env.ARC_POOL_ADDRESS) return c.json([]);
   const client = arcClient(c.env.ARC_RPC),
@@ -53,6 +64,15 @@ governance.get("/", async (c) => {
               args: [id, wallet],
             })
           : false;
+        const votingOpen = !p.executed && Number(p.deadline) * 1000 > Date.now();
+        const canVote = votingOpen && !hasVoted && wallet !== null
+          ? await client.readContract({
+              address,
+              abi: guardlinkAbi,
+              functionName: "verifiedAt",
+              args: [wallet, p.snapshotEpoch],
+            })
+          : false;
         return {
           id: id.toString(),
           description:
@@ -60,7 +80,7 @@ governance.get("/", async (c) => {
               ?.description ?? `Community proposal #${id}`,
           status: p.executed
             ? "Executed"
-            : Number(p.deadline) * 1000 > Date.now()
+            : votingOpen
               ? "Voting open"
               : passed
                 ? "Ready to execute"
@@ -70,12 +90,23 @@ governance.get("/", async (c) => {
           eligible: p.eligibleCount.toString(),
           deadline: Number(p.deadline),
           hasVoted,
+          canVote,
           canExecute:
             !p.executed &&
             passed &&
             (Number(p.deadline) * 1000 <= Date.now() ||
               cast === p.eligibleCount),
           kind: p.kind,
+          proposer: p.proposer,
+          terms: p.kind === 0 ? {
+            contribution: formatUnits(p.contribution, 6),
+            limit: formatUnits(p.limit, 6),
+            days: p.term,
+          } : null,
+          transfer: p.kind === 1 ? {
+            recipient: p.recipient,
+            amount: formatUnits(p.amount, 6),
+          } : null,
         };
       },
     ),
