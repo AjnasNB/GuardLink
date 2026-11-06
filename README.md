@@ -1,18 +1,22 @@
-# GuardLink · Protection, together
+# GuardLink · Cooperative health coverage
 
-GuardLink is a cooperative health coverage prototype inspired by a personal experience in Kerala. After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. GuardLink helps members understand what their policy covers, how a claim was decided and where a payment went.
+![GuardLink cover with illustrative community artwork and founder-reported outreach figures.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
 
-Over the past year, we spoke with 10,000 people in person and collected contact details for around 200,000 prospective adopters. We used what people told us about coverage, missing documents and claim payments to shape GuardLink. Their feedback continues to guide what we’re building today.
+**Built at ETHGlobal Mumbai.** A working Arc Testnet prototype for cooperative enrollment, USDC contributions, policy NFTs, private claim evidence, juror decisions, independent appeals and public payment receipts. The demo also shows an optional Uniswap v3 contribution route and searchable public claim milestones. [Open GuardLink](https://guardlink.ajnasnb.com/) · [Explore the ledger](https://guardlink.ajnasnb.com/ledger/) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
 
-**Where we are today.** The Arc Testnet demo has issued six policy NFTs and paid three synthetic claims, including one through an independent appeal. The live app supports cooperative enrollment, private evidence review, juror voting and public receipts for movements in and out of the shared pool.
+**Community outreach.** The founder reports reaching **10,000 people directly** and collecting contact details for **around 200,000 prospective contacts**. Those conversations shaped the prototype's focus on understandable coverage, specific document requests and verifiable claim payments.
 
-![GuardLink at ETHGlobal Mumbai. Four policy NFTs and three synthetic payouts, including one after an independent appeal.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
+After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. The cooperative insurance concept, community outreach, founder research and earlier prototype form the Continuity baseline. [Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md)
 
-[Open GuardLink](https://guardlink.ajnasnb.com/) · [Public transaction ledger](https://guardlink.ajnasnb.com/ledger/) · [Public event source](https://github.com/AjnasNB/GuardLink) · [Arc Studio workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) · [Architecture diagram](docs/ethglobal/ARCHITECTURE.md) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
+![Coverage begins with an Arc deposit and policy NFT. Evidence stays private for human review. Arkiv records milestones and Swarm stores encrypted files.](docs/ethglobal/assets/guardlink-claim-flow.svg)
 
-The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.guardlink.ajnasnb.com/health). The web app proxies its own `/api/v1/` requests to the API Worker through a service binding so browser sessions stay on the web domain.
+## The pool and policy NFT
 
-**Environment** Arc Testnet, synthetic medical documents and test USDC. This prototype does not sell real insurance.
+The proposed contribution allocation is **90% for claims and 10% for operating expenses**. The Arc Testnet contract currently deposits **100%** of each contribution into the pool. Its separate treasury vote can authorize a one-off transfer of up to 10% of the free treasury after claim reservations, subject to the contract's rules. Approved claims can wait for funding when available liquidity is insufficient. [Pool contract](onchain/contracts/GuardLinkPool.sol)
+
+![Proposed contribution allocation of 90 percent to claims and 10 percent to operations.](docs/ethglobal/assets/guardlink-pool-model.svg)
+
+A confirmed contribution mints a non-transferable policy NFT to the member's wallet. **My coverage** shows the policy number, term and remaining coverage. The contribution receipt records the mint and payment into the pool. The demo uses test USDC and synthetic records. [My coverage](https://guardlink.ajnasnb.com/app/coverage/) · [Example mint receipt](https://testnet.arcscan.app/tx/0xaec9d1fe84e65088f254b579f2d0025f976efc5008e31e09bc60db5478935ee1)
 
 ## Explore the public ledger
 
@@ -53,7 +57,7 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 
 ## Verified demo milestones
 
-- **Enrollment:** Six policy NFTs on the current Arc deployment, including the optional swap-funded policy and the fresh-wallet enrollment. [Confirmed contributions](https://guardlink.ajnasnb.com/ledger/)
+- **Enrollment:** Confirmed contributions include an optional swap-funded policy and a fresh-wallet enrollment. [Confirmed contributions](https://guardlink.ajnasnb.com/ledger/)
 - **Evidence assistant:** On three authenticated, paid synthetic cases, the live API returned completed model recommendations. Case C returned five findings after a missing prescription was supplied under the same claim ID. This audit re-read those completed runs.
 - **Decisions and payments:** Initial claims paid 0.50 and 0.25 test USDC. An independent appeal paid 0.40 test USDC. The audit matched recipients, amounts and claim IDs to chain receipts.
 - **Governance:** Nine demo wallets voted to raise future coverage from 5 to 6 test USDC. The earlier policy retained its original 5 test USDC limit. Two later proposals from different demo wallets show split ballots for a coverage change and a treasury transfer. [Public proposals](https://guardlink.ajnasnb.com/governance/proposals/)
@@ -67,12 +71,14 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 
 | Integration | What it does | How to check |
 | --- | --- | --- |
-| **Arc and Arc Studio** | Arc holds the test USDC reserve and enforces policy issuance, voting authority, governance and payment. Arc Studio was the starting point for the new Arc contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [pool source](onchain/contracts/GuardLinkPool.sol) |
-| **Arkiv** | A wallet-owned read layer for public case status, agreements and governance, with 30-day expiry. The app queries it in **Follow the fund**. | [Arkiv implementation](worker/src/adapters/arkiv.ts), [schema and examples](arkiv/schema.md) |
-| **Swarm** | Stores encrypted synthetic evidence. A public Arkiv entity can link to ciphertext. Authenticated retrieval checks case access before decryption. | [Swarm implementation](worker/src/adapters/swarm.ts), [upload and retrieval evidence](arkiv/swarm.md) |
-| **Uniswap v3 and CCTP** | The optional route swaps WETH into canonical USDC on Base Sepolia. CCTP moves USDC to Arc. A separate member deposit issues coverage. | [Live route receipts](docs/ethglobal/CONVERSION_RUN.md), [route script](scripts/contribution-route.mjs), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
+| **Arc and Arc Studio** | Arc keeps the USDC reserve, policy issuance, voting authority and settlement independently verifiable in one contract. Arc Studio was the starting point for the contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [pool source](onchain/contracts/GuardLinkPool.sol) |
+| **Arkiv** | Public case milestones and governance can be queried by case without scanning every transaction. See **Follow the fund**. | [Arkiv implementation](worker/src/adapters/arkiv.ts), [schema and examples](arkiv/schema.md) |
+| **Swarm** | Swarm holds encrypted evidence files. Arkiv stores the ciphertext reference. The Worker checks case access before retrieving and decrypting evidence. | [Swarm implementation](worker/src/adapters/swarm.ts), [upload and retrieval evidence](arkiv/swarm.md) |
+| **Uniswap v3 and CCTP** | Members can start with a supported token while the cooperative settles in USDC. The verified route swaps WETH on Base Sepolia, bridges USDC with CCTP and deposits on Arc to mint policy #3. | [Route receipts](docs/ethglobal/CONVERSION_RUN.md), [route script](scripts/contribution-route.mjs), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
 
 Blockchain makes wallet authority and movements from the shared reserve independently verifiable. Evidence still requires human judgment. The AI workflow organizes the case for reviewers and has no wallet, voting or payout authority. [Analysis workflow](worker/src/workflow.ts)
+
+ETHGlobal lists the **$500 Arkiv + Swarm bonus for existing projects** under Arkiv. The bonus shares the Arkiv partner slot. The submission requests the bonus, and its postage batch attribution is still pending. [Official prize criteria](https://ethglobal.com/events/mumbai/prizes) · [Swarm evidence](arkiv/swarm.md)
 
 The GitHub pool source matches the SHA-256 recorded by the Arc Studio pull manifest. The public source also matches the Solidity file returned by Sourcify, which reports creation and runtime matches for the live Arc Testnet pool. [Arc Studio deployment evidence](https://github.com/AjnasNB/GuardLink/blob/main/docs/ethglobal/ARC_STUDIO_EVIDENCE.md)
 
@@ -86,7 +92,16 @@ curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-90
 
 Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. See [query implementation](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md) and [friction](arkiv/friction.md).
 
-## Run and verify locally
+## Read the code
+
+| Area | Start here |
+| --- | --- |
+| Member frontend | [Claim detail](frontend/components/ClaimDetail.tsx), [coverage and community workspace](frontend/components/Workspace.tsx) |
+| API and evidence storage | [Worker routes](worker/src/index.ts), [encrypted Swarm adapter](worker/src/adapters/swarm.ts), [public Arkiv adapter](worker/src/adapters/arkiv.ts) |
+| Evidence assistant | [Analysis workflow](worker/src/workflow.ts), [model adapter](worker/src/adapters/azure.ts), [claim and checklist rules](packages/domain/src/index.ts) |
+| Reserve and settlement | [Arc contract](onchain/contracts/GuardLinkPool.sol), [architecture](docs/ethglobal/ARCHITECTURE.md) |
+
+## Run locally
 
 Use Node.js 22+ and npm. See the [demo runbook](docs/ethglobal/DEMO_RUNBOOK.md) for wallet roles, Arc Testnet settings and synthetic uploads. Keep credentials in ignored local configuration or Cloudflare secrets.
 
@@ -97,24 +112,26 @@ npm test
 npm run typecheck
 ```
 
-Start the API and web app in separate terminals with `npm run dev:api` and `npm run dev`. The [web app](frontend/) is Next.js on Cloudflare Workers via OpenNext. The [API](worker/) uses Hono, D1 and a retriable analysis Workflow. The [domain package](packages/domain/) handles claim rules, vote matching and public projections. Run `node scripts/verify-contribution.mjs` to independently verify the published swap, bridge, deposit and NFT without sending a transaction. The [contract test guide](onchain/LOCAL_TESTING.md) documents 185 tests.
-
-For deployment, configure the Cloudflare bindings, add Worker secrets, apply D1 migrations and deploy the API before the frontend.
-
-```sh
-npm run db:remote -w worker
-npm run deploy:api
-npm run deploy:web
-```
-
-## Continuity and scope
-
-| Before Mumbai | Added for Mumbai |
-| --- | --- |
-| Cooperative insurance concept, founder research and prior prototype. | New Arc settlement and policy NFTs, cooperative enrollment, a redesigned member workspace, private evidence follow-ups, jury voting and appeals, prospective governance, Arkiv milestones, Swarm retrieval and a verified Uniswap contribution route. |
+Start the API and web app in separate terminals with `npm run dev:api` and `npm run dev`. [Demo runbook](docs/ethglobal/DEMO_RUNBOOK.md) · [Contract tests](onchain/LOCAL_TESTING.md)
 
 [Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md) · [Submission and partner requirements](docs/ethglobal/SPONSOR_CHECKLIST.md) · [Asset sources](docs/ethglobal/assets/README.md)
 
 The demo uses a designated operator for membership and panel assignment. Evidence encryption is server-managed, so the Worker and authorized analysis workflow can access plaintext. Real deployment would require a lawful insurance operating structure, actuarial pricing, reserve management, a consented pilot, and independent security review. Email OTP needs provider configuration and wallet-linking validation. Wallet sign-in is the tested path.
 
 AI assisted code, artwork, test scaffolding and media preparation. The founder supplies the personal story and records the submission narration. Demo wallets are labelled role identities.
+
+## Try the evidence assistant
+
+1. In **My coverage**, confirm the demo wallet owns an active policy. Open **My claims → Start a claim**, choose that policy, and enter the synthetic incident date and requested amount. [Demo runbook](docs/ethglobal/DEMO_RUNBOOK.md)
+2. Add the synthetic **hospital bill** and **discharge summary**. Select **Prepare my evidence**. The completeness score shows **2 of 3** and requests the prescription on the same claim ID. [Generate sample packets](scripts/make-claim-demo-packets.mjs)
+3. Select **Add requested document** and upload the **prescription**. For a supplemental PDF, PNG or JPEG, choose **Other evidence** and enter a private document name. [Synthetic receipt image](fixtures/synthetic/payment-receipt.png)
+4. Run **Prepare my evidence** again. Expand **Review AI findings** to see the case summary, unreadable or inconsistent evidence flagged by the assistant, and links to the relevant uploads. The score measures required document types. The assistant may surface an explicitly supported test USDC amount up to the claim request. The revised source withholds its suggestion when the amounts conflict. [Evidence review UI](frontend/components/EvidenceReview.tsx) · [Analysis code](worker/src/workflow.ts)
+5. Send the case to the assigned human jurors for review. They open the cited evidence, compare it with the policy and record their decision. Arc enforces voting and settlement. Use the public ledger to verify an approved test payout. [Settlement code](onchain/contracts/GuardLinkPool.sol) · [Public ledger](https://guardlink.ajnasnb.com/ledger/)
+
+To rehearse the full evidence flow against a local Worker with model analysis configured, load the private key of a dedicated verified test wallet into `GUARDLINK_DEMO_PRIVATE_KEY` in your shell. Use its policy ID and a covered date. The script checks the missing prescription, named image, access denial, cited findings and withheld amount on conflicting evidence. It stops at evidence review.
+
+```sh
+node scripts/rehearse-evidence.mjs <policy-id> fixtures/synthetic/payment-receipt.png <covered-iso-date>
+```
+
+[Rehearsal script](scripts/rehearse-evidence.mjs) · [Live synthetic case capture](docs/ethglobal/assets/claim-evidence.jpg) · [Asset sources](docs/ethglobal/assets/README.md)

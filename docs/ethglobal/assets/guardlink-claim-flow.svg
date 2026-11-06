@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title description">
+  <title id="title">From contribution to a GuardLink claim decision</title>
+  <desc id="description">Arc receives USDC and mints a policy NFT. The evidence assistant reviews private files. Jurors decide and Arc settles. Arkiv indexes public milestones and Swarm stores encrypted files.</desc>
+  <rect width="1200" height="470" rx="24" fill="#0d1510"/>
+  <g font-family="Arial, sans-serif">
+    <text x="64" y="61" font-size="21" font-weight="700" letter-spacing="3" fill="#c7fa68">GUARDLINK · WORKING TESTNET FLOW</text>
+    <text x="64" y="122" font-size="44" font-weight="700" fill="#f7f8ee">From contribution to claim decision</text>
+    <g fill="#182720" stroke="#3d5c4b"><rect x="64" y="164" width="330" height="145" rx="14"/><rect x="435" y="164" width="330" height="145" rx="14"/><rect x="806" y="164" width="330" height="145" rx="14"/></g>
+    <g font-size="19" font-weight="700" fill="#c7fa68"><text x="87" y="200">01 · COVERAGE</text><text x="458" y="200">02 · EVIDENCE</text><text x="829" y="200">03 · DECISION</text></g>
+    <g font-size="25" font-weight="700" fill="#f7f8ee"><text x="87" y="243">Contribute USDC</text><text x="458" y="243">Prepare one claim</text><text x="829" y="243">Jurors review</text></g>
+    <g font-size="19" fill="#c3cdbf"><text x="87" y="278">Arc mints the policy NFT</text><text x="458" y="278">Assistant cites the evidence</text><text x="829" y="278">Arc settles approved payouts</text></g>
+    <g fill="none" stroke="#c7fa68" stroke-width="2"><path d="M402 237h23m-8-7 8 7-8 7"/><path d="M773 237h23m-8-7 8 7-8 7"/></g>
+    <path d="M64 344h1072" stroke="#395144"/>
+    <text x="64" y="392" font-size="23" font-weight="700" fill="#f7f8ee">Public milestones in Arkiv</text>
+    <text x="1136" y="392" text-anchor="end" font-size="23" font-weight="700" fill="#f7f8ee">Encrypted files in Swarm</text>
+    <text x="64" y="429" font-size="19" fill="#c3cdbf">Optional contribution route · Uniswap v3 swap → CCTP bridge → Arc deposit</text>
+  </g>
+</svg>
