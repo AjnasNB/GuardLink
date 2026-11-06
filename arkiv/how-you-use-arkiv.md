@@ -8,4 +8,6 @@ Read a public case projection without a wallet:
 GET https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81
 ```
 
-The adapter selects `project = guardlink AND caseId = <reference>`, restricts the owner to the disclosed writer, and returns the safe result. Check `docs/ethglobal/arkiv-verification.json` for live values and entity keys. The publisher is batch-limited and receipt-backed updates are idempotent. `node scripts/verify-arkiv.mjs` uses the local test actor to publish pending entries and verify the live reads.
+The adapter selects `project = guardlink AND caseId = <reference>`, restricts the owner to the disclosed writer, and returns the safe result. The case selector separates timelines, the owner filter excludes foreign records, and the expiry bounds public test data retention to 30 days. Receipt-linked paid and governance milestones give people a direct path to Arc. [Schema](schema.md) · [Adapter](../worker/src/adapters/arkiv.ts)
+
+The original verification found 24 published records, including 14 scoped to the example case, a community terms record with a 6 test USDC limit, and a governance execution with nine yes votes. `node scripts/verify-public-records.mjs` rechecks the saved case without publishing. `node scripts/verify-arkiv.mjs` is an operator tool that signs in, publishes pending entries and checks the result. [Original verification](../docs/ethglobal/arkiv-verification.json)

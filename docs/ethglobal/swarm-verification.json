@@ -13,6 +13,7 @@
   "provider": "Swarm Foundation public testing gateway",
   "batchHeader": "0000000000000000000000000000000000000000000000000000000000000000",
   "actualProviderBatchId": "not disclosed by public gateway; sponsor provenance follow-up required",
+  "ciphertextSha256": "7d6900b126688d2969fd5bc53b652b71189b091831d36b71d435c367588f08fb",
   "plaintextSha256": "9587c226cee1617047ce44975d1c15c2bae561d7ce934bc88d595474a023cc10",
   "authorizedPdfHashMatched": true,
   "unauthenticatedDenied": true,
