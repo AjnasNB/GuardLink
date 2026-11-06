@@ -13,6 +13,11 @@ export type ClaimStatus =
   | "paid"
   | "appealed";
 export type Role = "member" | "contact" | "juror" | "appeal_juror";
+export const payoutChallengeReasons = {
+  1: "Possible duplicate evidence",
+  2: "Conflict of interest",
+  3: "Concern about the evidence",
+} as const;
 export type DocumentKind =
   "bill" | "discharge_summary" | "prescription" | "other";
 export const evidenceNameLimit = 80;
@@ -81,6 +86,9 @@ export interface Claim {
   appealed: boolean;
   contactId?: string;
   approvedAmount?: string;
+  payoutReview?: { settleAfter: number; reason: number; disputedAmount: string };
+  votingDeadline?: number;
+  appealDeadline?: number;
   transactionHash?: string;
   chainClaimId?: string;
   revision: number;

@@ -382,7 +382,7 @@ export default function Workspace() {
               ) : inGovernance ? (
                 <Governance config={config} member={member} busy={busy} run={action} route={route} />
               ) : route === "/transparency" ? (
-                <Transparency />
+                <Transparency challengePool={member?.verified ? config?.poolAddress : undefined} />
               ) : (
                 <>
                   <PageHeading

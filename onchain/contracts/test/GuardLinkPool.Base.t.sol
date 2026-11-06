@@ -39,10 +39,14 @@ abstract contract GuardLinkPoolTestBase is Test {
         return new MockERC20();
     }
 
+    function _newPool() internal virtual returns (GuardLinkPool) {
+        return new GuardLinkPool(admin, address(token), CONTRIB, LIMIT, TERM);
+    }
+
     function setUp() public virtual {
         vm.warp(T0);
         token = _newToken();
-        pool = new GuardLinkPool(admin, address(token), CONTRIB, LIMIT, TERM);
+        pool = _newPool();
         address[8] memory vs = [alice, heidi, bob, carol, dave, erin, frank, grace];
         for (uint256 i; i < vs.length; ++i) _onboard(vs[i]);
         vm.prank(mallory);

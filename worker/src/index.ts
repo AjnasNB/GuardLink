@@ -15,7 +15,7 @@ import {
   parseAbiItem,
 } from "viem";
 import { guardlinkAbi } from "@guardlink/domain/abi";
-import { arcClient, syncFromArc } from "./adapters/arc";
+import { arcClient, readChallengeAvailability, syncFromArc } from "./adapters/arc";
 import { publishPending, queryPublicRecords } from "./adapters/arkiv";
 import { ledgerQuery, loadLedger, loadPayoutSummary } from "./adapters/ledger";
 import { jwtVerify, importSPKI } from "jose";
@@ -447,6 +447,17 @@ app.get("/api/v1/claims/:id", async (c) => {
     return c.json({ error: "You do not have access to this case." }, 403);
   return c.json(cl);
 });
+app.get("/api/v1/claims/:id/payout-review", async (c) => {
+  const member = c.get("member");
+  if (!member.verified || !member.wallet || !c.env.ARC_POOL_ADDRESS)
+    return c.json({ review: null });
+  const claim = await loadClaim(c.env.DB, c.req.param("id"));
+  if (claim.communityId !== member.community_id)
+    return c.json({ error: "This case belongs to another community." }, 403);
+  if (!claim.chainClaimId) return c.json({ review: null });
+  const review = await readChallengeAvailability(c.env, claim.chainClaimId as `0x${string}`, member.wallet as `0x${string}`);
+  return c.json({ review });
+});
 app.post("/api/v1/claims", async (c) => {
   const input = z
     .object({
@@ -695,7 +706,9 @@ app.post("/api/v1/claims/:id/sync", async (c) => {
   );
   await saveClaim(c.env.DB, next, claim.storageRevision);
   const milestone =
-    next.status !== claim.status
+    next.payoutReview?.reason && !claim.payoutReview?.reason
+      ? "payment_challenged"
+      : next.status !== claim.status
       ? next.status
       : next.jurors.join() !== claim.jurors.join() ||
           next.appealJurors.join() !== claim.appealJurors.join()
@@ -710,6 +723,8 @@ app.post("/api/v1/claims/:id/sync", async (c) => {
     await event(c.env.DB, claim.id, milestone, {
       claimId: claim.id,
       status: next.status,
+      ...(next.payoutReview?.settleAfter ? { settleAfter: next.payoutReview.settleAfter } : {}),
+      ...(next.payoutReview?.reason ? { challengeReason: next.payoutReview.reason } : {}),
       transactionHash: next.status === "paid" ? next.transactionHash : txHash,
     });
   return c.json(publicClaim(next));

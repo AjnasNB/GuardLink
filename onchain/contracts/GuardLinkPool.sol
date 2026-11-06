@@ -116,6 +116,15 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
         uint8 count;
     }
 
+    enum ChallengeReason { None, DuplicateEvidence, ConflictOfInterest, EvidenceConcern }
+
+    struct PayoutReview {
+        uint64 settleAfter;
+        address challenger;
+        ChallengeReason reason;
+        uint128 disputedAmount;
+    }
+
     struct VerificationCheckpoint {
         uint64 epoch;
         bool verified;
@@ -159,6 +168,7 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
     mapping(bytes32 => Claim) private _claims;
     mapping(bytes32 => Round) private _originalRounds;
     mapping(bytes32 => Round) private _appealRounds;
+    mapping(bytes32 => PayoutReview) public payoutReviews;
     mapping(address => VerificationCheckpoint[]) private _verificationHistory;
     mapping(uint256 => Proposal) private _proposals;
     mapping(uint256 => mapping(address => bool)) public proposalVoted;
@@ -180,6 +190,8 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
     event ClaimUnresolved(bytes32 indexed claimId, uint128 requestedAmount, bool appealRound);
     event ClaimPaid(bytes32 indexed claimId, address indexed claimant, uint128 amount);
     event ClaimAppealed(bytes32 indexed claimId, address indexed claimant, uint128 requestedAmount);
+    event PayoutChallengeWindow(bytes32 indexed claimId, uint64 settleAfter);
+    event ClaimChallenged(bytes32 indexed claimId, address indexed challenger, ChallengeReason reason, uint64 reviewDeadline);
     event ExposureReleased(bytes32 indexed claimId, uint256 indexed policyId, uint128 amount);
     event ProposalCreated(uint256 indexed proposalId, address indexed proposer, ProposalKind kind,
         uint64 snapshotEpoch, uint256 eligibleCount, uint64 deadline, string description);
@@ -315,6 +327,7 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
         for (uint256 i; i < 3; ++i) {
             address juror = jurors[i];
             if (juror == address(0) || juror == c.claimant || juror == c.contact
+                || juror == payoutReviews[claimId].challenger
                 || !verifiedMembers[juror]) revert InvalidJury();
             for (uint256 j; j < i; ++j) {
                 if (jurors[j] == juror) revert InvalidJury();
@@ -347,7 +360,7 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
         Claim storage c = _claim(claimId);
         if (c.status != (appealRound ? Status.AppealVoting : Status.Voting)) revert InvalidState();
         if (block.timestamp >= c.deadline) revert DeadlinePassed();
-        if (approve_ ? (amount == 0 || amount > c.requestedAmount) : amount != 0) revert InvalidInput();
+        if (approve_ ? (amount == 0 || amount > _reservedExposure(claimId, c)) : amount != 0) revert InvalidInput();
         Round storage r = appealRound ? _appealRounds[claimId] : _originalRounds[claimId];
         uint256 index = 3;
         for (uint256 i; i < 3; ++i) {
@@ -381,12 +394,19 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
     {
         c.resolvedAt = uint64(block.timestamp);
         if (approved) {
+            uint128 reserved = _reservedExposure(claimId, c);
             c.status = Status.Approved;
             c.approvedAmount = amount;
-            uint128 difference = c.requestedAmount - amount;
+            uint128 difference = reserved - amount;
             policies[c.policyId].used -= difference;
-            openClaimExposure -= c.requestedAmount;
+            openClaimExposure -= reserved;
             committedPayouts += amount;
+            uint64 window = payoutChallengePeriod();
+            if (window != 0) {
+                uint64 settleAfter = uint64(block.timestamp) + window;
+                payoutReviews[claimId].settleAfter = settleAfter;
+                emit PayoutChallengeWindow(claimId, settleAfter);
+            }
             if (difference != 0) emit ExposureReleased(claimId, c.policyId, difference);
             emit ClaimApproved(claimId, amount, appealRound);
         } else {
@@ -409,6 +429,42 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
         emit ClaimAppealed(claimId, msg.sender, c.requestedAmount);
     }
 
+    /// A verified member outside the case can trigger one independent review.
+    /// A review can uphold, reduce or reject the original provisional amount.
+    function challengeClaim(bytes32 claimId, ChallengeReason reason) external {
+        _requireVerified(msg.sender);
+        Claim storage c = _claim(claimId);
+        PayoutReview storage review = payoutReviews[claimId];
+        if (c.status != Status.Approved || c.appealed || review.settleAfter == 0) revert InvalidState();
+        if (block.timestamp >= review.settleAfter) revert DeadlinePassed();
+        if (reason == ChallengeReason.None) revert InvalidInput();
+        if (msg.sender == c.claimant || msg.sender == c.contact) revert Unauthorized();
+        address[3] storage panel = _originalRounds[claimId].jurors;
+        for (uint256 i; i < panel.length; ++i) {
+            if (msg.sender == panel[i]) revert Unauthorized();
+        }
+
+        review.challenger = msg.sender;
+        review.reason = reason;
+        review.disputedAmount = c.approvedAmount;
+        committedPayouts -= review.disputedAmount;
+        openClaimExposure += review.disputedAmount;
+        c.approvedAmount = 0;
+        c.appealed = true;
+        c.status = Status.Appealed;
+        c.deadline = uint64(block.timestamp + VOTING_PERIOD);
+        emit ClaimChallenged(claimId, msg.sender, reason, c.deadline);
+    }
+
+    function payoutChallengePeriod() public pure virtual returns (uint64) {
+        return 0;
+    }
+
+    function _reservedExposure(bytes32 claimId, Claim storage c) private view returns (uint128) {
+        uint128 disputed = payoutReviews[claimId].disputedAmount;
+        return disputed == 0 ? c.requestedAmount : disputed;
+    }
+
     /// @notice Permissionless final exposure release; never releases Approved or
     /// Paid usage. Original unresolved rounds wait until deadline, even if three
     /// divergent votes arrived early. Rejected appeals may release immediately.
@@ -427,9 +483,10 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
             }
         }
         c.exposureReleased = true;
-        policies[c.policyId].used -= c.requestedAmount;
-        openClaimExposure -= c.requestedAmount;
-        emit ExposureReleased(claimId, c.policyId, c.requestedAmount);
+        uint128 reserved = _reservedExposure(claimId, c);
+        policies[c.policyId].used -= reserved;
+        openClaimExposure -= reserved;
+        emit ExposureReleased(claimId, c.policyId, reserved);
     }
 
     /// @notice Atomic full claimant-only payout, first-come during insolvency.
@@ -442,6 +499,7 @@ contract GuardLinkPool is ERC721, ReentrancyGuard {
     function settle(bytes32 claimId) external nonReentrant {
         Claim storage c = _claim(claimId);
         if (c.status != Status.Approved || c.paid) revert InvalidState();
+        if (block.timestamp < payoutReviews[claimId].settleAfter) revert TooEarly();
         uint128 amount = c.approvedAmount;
         if (token.balanceOf(address(this)) < amount) revert InsufficientFunds();
         c.paid = true;
