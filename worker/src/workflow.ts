@@ -76,6 +76,7 @@ export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
             this.env.AZURE_API_KEY,
             docs,
             revision,
+            claim.requestedAmount,
           )),
         };
       },
