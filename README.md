@@ -4,7 +4,7 @@ GuardLink is a cooperative health coverage prototype inspired by a personal expe
 
 **Before Mumbai.** We spoke with 10 people in person and used the information they shared to shape an early prototype. Their feedback helped us focus on clear coverage, specific requests for missing documents and a visible path from decision to payment.
 
-**Where we are today.** The Arc Testnet demo has issued four policy NFTs and paid three synthetic claims, including one through an independent appeal. The live app supports cooperative enrollment, private evidence review, juror voting and public receipts for movements in and out of the shared pool.
+**Where we are today.** The Arc Testnet demo has issued six policy NFTs and paid three synthetic claims, including one through an independent appeal. The live app supports cooperative enrollment, private evidence review, juror voting and public receipts for movements in and out of the shared pool.
 
 ![GuardLink at ETHGlobal Mumbai. Four policy NFTs and three synthetic payouts, including one after an independent appeal.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
 
@@ -26,15 +26,14 @@ The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.g
 
 The ledger is scoped to the [GuardLinkPool contract](https://explorer.testnet.arc.io/address/0x335D2CE0c397016ac0E1D6930EB98A1Dfe47c895?tab=token_transfers) and reads its public on-chain events. Private claim documents and member profiles stay in the authenticated workspace. [Public ledger API](https://guardlink.ajnasnb.com/api/v1/ledger/?kind=payouts)
 
-## Try it as a member
+## Make a test contribution
 
-For the recording, follow the [wallet and DAO screenshot walkthrough](docs/ethglobal/DAO_WALLET_WALKTHROUGH.md). The [public proposal board](https://guardlink.ajnasnb.com/governance/proposals/) opens without a wallet.
+Anyone can try this with their own wallet on Arc Testnet. Set aside **1 test USDC plus transaction fees**. [Circle testnet faucet](https://faucet.circle.com/)
 
-1. Keep your wallet account selected and sign in with it on Arc Testnet. From a demo session, choose **Use my connected wallet** on **My coverage** or **My community**. Then open **Kerala Care Cooperative**.
-2. Read and accept the eligibility criteria. Request membership and confirm wallet registration. The cooperative operator reviews the request and verifies the wallet on Arc.
-3. Refresh membership status. Fund the wallet with **1 test USDC plus transaction fees** on Arc Testnet. Confirm the approval if prompted, then confirm the contribution. The pool issues a non-transferable policy NFT for **30 days** with a **6 test USDC** limit under current rules. Check it in **My coverage** and find the receipt in the public ledger.
-4. Submit a synthetic claim against that policy. Use the same claim ID to respond to any missing-document request. Authorized jurors review the private evidence and vote. Two matching votes establish a decision and, for approvals, the payout amount.
-5. Open the claim to see its decision and payment link. A rejected claim can be appealed once to a different panel. Use **Follow the fund** to query public milestones.
+1. Select the funded account in MetaMask and choose **Continue with wallet** on [GuardLink sign-in](https://guardlink.ajnasnb.com/login/). If GuardLink is already open under a different address, choose **Continue as** with the selected address and sign the login message.
+2. Open **My community**, read the cooperative's terms, and request membership. The operator verifies the same wallet on Arc.
+3. Once verified, choose **Make a contribution** under **My coverage**. Confirm the test USDC approval if prompted, then confirm the contribution from the same account.
+4. The confirmed contribution issues a policy NFT. Find it under **My coverage** and open its receipt under **Contributions** in the [public ledger](https://guardlink.ajnasnb.com/ledger/).
 
 ![Live My coverage view for the fresh demo wallet, showing active Policy #4.](docs/ethglobal/assets/membership-04-policy.jpg)
 
@@ -54,10 +53,10 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 
 ## Verified demo milestones
 
-- **Enrollment:** Four policy NFTs across the current Arc deployment, including the optional swap-funded policy and the fresh-wallet enrollment.
+- **Enrollment:** Six policy NFTs on the current Arc deployment, including the optional swap-funded policy and the fresh-wallet enrollment. [Confirmed contributions](https://guardlink.ajnasnb.com/ledger/)
 - **Evidence assistant:** On three authenticated, paid synthetic cases, the live API returned completed model recommendations. Case C returned five findings after a missing prescription was supplied under the same claim ID. This audit re-read those completed runs.
 - **Decisions and payments:** Initial claims paid 0.50 and 0.25 test USDC. An independent appeal paid 0.40 test USDC. The audit matched recipients, amounts and claim IDs to chain receipts.
-- **Governance:** Nine demo wallets voted to raise future coverage from 5 to 6 test USDC. The earlier policy retained its original 5 test USDC limit.
+- **Governance:** Nine demo wallets voted to raise future coverage from 5 to 6 test USDC. The earlier policy retained its original 5 test USDC limit. Two later proposals from different demo wallets show split ballots for a coverage change and a treasury transfer. [Public proposals](https://guardlink.ajnasnb.com/governance/proposals/)
 - **Privacy:** Assigned reviewers could retrieve evidence. Cross-member and unassigned-helper reads were denied. Public projections omit medical evidence and member identity.
 
 [Live audit](docs/ethglobal/live-verification.json) · [Claim and governance receipts](docs/ethglobal/demo-run.public.json) · [Contract source verification](docs/ethglobal/source-verification.json)
