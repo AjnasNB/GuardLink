@@ -311,6 +311,76 @@
       "label": "CaseC payout",
       "hash": "0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63",
       "blockNumber": 70918504
+    },
+    {
+      "label": "CaseD register",
+      "hash": "0x13a37fff179214e0007e5c05ea56915d01d096cc96fb1f464e23a331cddea341",
+      "blockNumber": 71104374
+    },
+    {
+      "label": "CaseD assign jury",
+      "hash": "0x67f65d735d2168fce82073f8c68d9c0f665d83b11d3e003eb717762108923d86",
+      "blockNumber": 71104385
+    },
+    {
+      "label": "CaseD approve juror-1",
+      "hash": "0x13c1a10fb981ace3a206f2fc13c5c6d156c570cd7102bcc86c1950aa15d8f772",
+      "blockNumber": 71104394
+    },
+    {
+      "label": "CaseD approve juror-2",
+      "hash": "0xbbaf53b251a7324b6777e6c01eaa6212f52dc5d5c0842d7c7a09987aaa47f7c9",
+      "blockNumber": 71104404
+    },
+    {
+      "label": "CaseD payout",
+      "hash": "0x69662d2f327881675bf2ade8560d356e88c93e59ce95f06f1452c57901fbb3b5",
+      "blockNumber": 71104423
+    },
+    {
+      "label": "CaseE register",
+      "hash": "0x87a6d9b13d1de4809256776e625185a3dabb773fdfea65bc98d0fa6968f3955a",
+      "blockNumber": 71104460
+    },
+    {
+      "label": "CaseE assign jury",
+      "hash": "0x9847ab368bee130e721c2317634f6777a8f3f4f3fe645cbf6f14c76588fb8da5",
+      "blockNumber": 71104469
+    },
+    {
+      "label": "CaseE reject juror-1",
+      "hash": "0x474b695ff1ccd436016338c42c46543a597b2e02ea9639a3f4dd7703ad0ecfc9",
+      "blockNumber": 71104479
+    },
+    {
+      "label": "CaseE reject juror-2",
+      "hash": "0xbc4dc6a97e0ccb33ce35d2f380354170742f1d886b48eb53c7e8aec78515582d",
+      "blockNumber": 71104488
+    },
+    {
+      "label": "CaseE request appeal",
+      "hash": "0x222643c6d5fc099e890c59aeaf2a891dea4eda31ea7b84b364f2bc8e139c6ab3",
+      "blockNumber": 71104505
+    },
+    {
+      "label": "CaseE assign independent appeal jury",
+      "hash": "0x328ca0082d9769577787fdb08d52a8384c98e8433571717f967e6b9279de3256",
+      "blockNumber": 71104515
+    },
+    {
+      "label": "CaseE appeal approval appeal-1",
+      "hash": "0x15fdf768f8996954c1d679352b12d57fa6cf421bd8acea6b02259245a6dd738a",
+      "blockNumber": 71104525
+    },
+    {
+      "label": "CaseE appeal approval appeal-2",
+      "hash": "0x8b7e3174ce97df49aa82de8f583ae8ee387f33d7f32b70f661f5404952213be8",
+      "blockNumber": 71104534
+    },
+    {
+      "label": "CaseE payout",
+      "hash": "0xd7e2bc7ee2d7178489df9b82d0d5588597d903b4e2fb6a7cb2a888ac8b12d8e7",
+      "blockNumber": 71104544
     }
   ],
   "pool": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895",
@@ -382,6 +452,40 @@
         "requestStatus": "answered"
       },
       "analysisFindings": 5
+    },
+    "D": {
+      "id": "667497db-d267-485a-90f1-febea28282e4",
+      "member": "member-a",
+      "requestedAmount": "0.20",
+      "testEvidence": true,
+      "fictionalName": "Anitha Menon",
+      "missingDocumentRequest": {
+        "claimId": "667497db-d267-485a-90f1-febea28282e4",
+        "requestId": "50c5a412-af92-4ced-9f93-c9cac53abbde",
+        "memberId": "member-a"
+      },
+      "analysisSource": "azure",
+      "chainClaimId": "0x856e7b0701ed4e08fdcdf877fd3d41a753e23a666c515115994aeafd9b0bfd48",
+      "status": "paid",
+      "payoutTx": "0x69662d2f327881675bf2ade8560d356e88c93e59ce95f06f1452c57901fbb3b5",
+      "balanceIncreaseAtomic": "200000"
+    },
+    "E": {
+      "id": "908e7617-2163-4cde-a562-f42d775c1501",
+      "member": "member-b",
+      "requestedAmount": "0.35",
+      "testEvidence": true,
+      "fictionalName": "Ravi Thomas",
+      "missingDocumentRequest": {
+        "claimId": "908e7617-2163-4cde-a562-f42d775c1501",
+        "requestId": "4210d402-8bbb-4b74-bc74-7985d227ceac",
+        "memberId": "member-b"
+      },
+      "analysisSource": "azure",
+      "chainClaimId": "0xcea0e92f1d3cf9a7ac54cdbca0397b844aa0243699f870d5360a57451a238456",
+      "status": "paid",
+      "payoutTx": "0xd7e2bc7ee2d7178489df9b82d0d5588597d903b4e2fb6a7cb2a888ac8b12d8e7",
+      "balanceIncreaseAtomic": "350000"
     }
   },
   "governance": {

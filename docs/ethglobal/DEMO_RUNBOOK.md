@@ -1,5 +1,25 @@
 # GuardLink demo runbook
 
+## Four-minute judging walkthrough
+
+Open the [public GuardLink homepage](https://guardlink.ajnasnb.com/#results), the [public claim timeline](https://guardlink.ajnasnb.com/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81), and the [Arc Studio share](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs). Keep the [video backup](https://guardlink.ajnasnb.com/demo-video/) handy. If the wallet or a testnet service is slow, switch to a completed claim and its receipt.
+
+| Time | Show | Say |
+| --- | --- | --- |
+| 0:00–0:30 | Founder story and outreach | “After my father’s surgery, our family borrowed while waiting for reimbursement. We had the paperwork and still couldn’t see what was blocking the claim. That experience led to a year of community outreach and an earlier cooperative prototype. At Mumbai I brought that work to Arc.” |
+| 0:30–1:45 | Coverage, then claim C in the member app | “A contribution creates the coverage record. GuardLink requests the missing prescription under the same case. The evidence assistant cites what it finds, and two human jurors have to agree on the decision and amount.” |
+| 1:45–2:40 | Homepage results, payout receipt and independent appeal | “The figures come from confirmed Arc events. Open a receipt to see the payout. Ravi Thomas is a fictional test case that was initially rejected and then paid 0.35 test USDC after a separate panel reviewed the appeal.” |
+| 2:40–3:35 | Studio preview, Arkiv timeline and Swarm evidence, then the conversion receipts in My coverage | “Arc enforces payment and policy rules. Arkiv indexes public milestones. Swarm holds encrypted evidence. Uniswap v3 converts the contribution asset before USDC is bridged and deposited into the pool.” |
+| 3:35–4:00 | Live results and next milestone | “We have a working testnet claims path. The next pilot milestone is independently verifying member identity, treatment and billing before releasing real funds.” |
+
+**Why blockchain?** The cooperative can check the terms, votes, and USDC settlement against a shared contract and public receipts. Source verification and medical review happen separately. A receipt proves the payment happened.
+
+**What if a doctor, member and jurors collude?** The contract checks policy ownership, amounts and authorized votes. Two colluding jurors can still approve a false claim within those rules. Before a real pilot, independently verify identity and wallet control, obtain the invoice through an authorized hospital records or billing channel, check repeat invoices, and require a reviewer outside the local panel to clear flagged claims. Keep sensitive evidence private and give the member a route to correct errors or appeal.
+
+**What was built during Mumbai?** The research, cooperative insurance idea and prior prototype predate the event. Mumbai added the Arc Testnet settlement and coverage flow, the current evidence workflow and independent appeals, prospective governance, Arkiv and Swarm, and the confirmed Uniswap-to-Arc route. The two extra synthetic claims and automatic homepage totals are follow-up demonstrations. The submitted recording shows the original Mumbai flow. [Continuity baseline](CONTINUITY_BASELINE.md)
+
+**What happens when the reserve is short?** An approved claim can remain awaiting funds. The contract records the amount and settlement status, and a confirmed receipt is the proof of payment. Testnet amounts demonstrate the flow. A real pilot still needs funding rules and an operating partner.
+
 ## A public walkthrough
 
 Open https://guardlink.ajnasnb.com. The API runs on Cloudflare too; normal member use does not require localhost. Choose a separate MetaMask test account, select Arc Testnet and sign in. A sign-in message does not authorize a transfer. If the wallet account changes, sign out and sign in again.
@@ -35,7 +55,7 @@ For a fresh browser case, contribute for coverage, create a synthetic claim, upl
 
 ## Evidence and pending work
 
-The run ledger contains three claimant payouts of 0.50, 0.40 and 0.25 test USDC, confirmed receipt hashes and an executed nine-voter proposal. Contract source verification matches creation and runtime. Contract suite: 185 tests (152 pool, 33 mock token). Domain/privacy suite: seven tests. Live API authentication smoke: nine checks. Live verification covers role access, all three receipts and duplicate settlement protection. It writes local evidence reports and sends no transactions.
+The Mumbai recording covers payouts of 0.50, 0.40 and 0.25 test USDC and an executed nine-voter proposal. The follow-up run added [Anitha’s 0.20 payout](https://testnet.arcscan.app/tx/0x69662d2f327881675bf2ade8560d356e88c93e59ce95f06f1452c57901fbb3b5) and [Ravi’s 0.35 payout after appeal](https://testnet.arcscan.app/tx/0xd7e2bc7ee2d7178489df9b82d0d5588597d903b4e2fb6a7cb2a888ac8b12d8e7). Both are fictional cases processed with synthetic evidence. The script checked the recipient balances and duplicate payout protection. Contract source verification matches creation and runtime. The contract suite has 185 tests, and the domain/privacy suite has seven tests. [Run ledger](demo-run.public.json)
 
 Arkiv and Swarm are live and linked. The public Swarm gateway does not disclose actual postage batch provenance; obtain it before representing the bonus paperwork as complete. The Base Sepolia Uniswap swap, CCTP transfer and separate Arc deposit have successful receipts and policy #3. View the verified example in My coverage. Email OTP still awaits provider setup.
 
@@ -43,7 +63,7 @@ Arkiv and Swarm are live and linked. The public Swarm gateway does not disclose 
 
 The live walkthrough records the public app and a new synthetic test case, `GL-377CFC03`. The checklist opened a prescription request for the existing member and case. The member added the prescription and requested analysis in Chrome. Azure returned five findings, the same request was marked answered, and the case became ready for review. The testnet signers registered the case and assigned the panel. The recording shows the assigned juror's form, the two recorded approvals, and the [confirmed 0.25 test USDC payout](https://testnet.arcscan.app/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63). The exact wallet balance increase and duplicate settlement rejection were checked. See the [receipt ledger](demo-run.public.json) and [live verification](live-verification.json).
 
-The picture edit is silent and comes with timed narration cues. The final submission video needs the founder's spoken track. Play the local picture edit and use a desktop audio recorder to save a separate microphone track. Keep playback muted and send the original take to the editor. Cut waiting time while keeping actions at their original speed. Exclude credential screens, private contacts and real medical records.
+The final 3:44 video includes the founder’s spoken track. Use the [GuardLink video player](https://guardlink.ajnasnb.com/demo-video/) if the public ETHGlobal player is unavailable.
 
 ## Four partner proofs for the live demo
 
