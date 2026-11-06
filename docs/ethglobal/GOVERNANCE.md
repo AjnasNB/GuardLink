@@ -2,6 +2,8 @@
 
 [Open community governance](https://guardlink.ajnasnb.com/app/governance/) with a GuardLink member wallet.
 
+Browse [public proposals](https://guardlink.ajnasnb.com/governance/proposals/) without signing in. The [screenshot walkthrough](DAO_WALLET_WALKTHROUGH.md) covers setup, role switching, jury assignments, votes and receipts.
+
 | Page | What members can do |
 | --- | --- |
 | Overview | See proposal activity and how votes pass. |

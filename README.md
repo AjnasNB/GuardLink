@@ -16,6 +16,8 @@ The Cloudflare backend is available at [api.guardlink.ajnasnb.com](https://api.g
 
 ## Try it as a member
 
+For the recording, follow the [wallet and DAO screenshot walkthrough](docs/ethglobal/DAO_WALLET_WALKTHROUGH.md). The [public proposal board](https://guardlink.ajnasnb.com/governance/proposals/) opens without a wallet.
+
 1. Keep your wallet account selected and sign in with it on Arc Testnet. From a demo session, choose **Use my connected wallet** on **My coverage** or **My community**. Then open **Kerala Care Cooperative**.
 2. Read and accept the eligibility criteria. Request membership and confirm wallet registration. The cooperative operator reviews the request and verifies the wallet on Arc.
 3. Refresh membership status. Fund the wallet with **1 test USDC plus transaction fees** on Arc Testnet. Confirm the approval if prompted, then confirm the contribution. The pool issues a non-transferable policy NFT for **30 days** with a **6 test USDC** limit under current rules. Check it in **My coverage** and find the receipt in the public ledger.
