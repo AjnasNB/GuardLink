@@ -27,6 +27,18 @@ Arc enforces the pool's USDC contributions, coverage, jury authority, prospectiv
 
 Arkiv holds wallet-owned, queryable public case, agreement and governance records with a 30-day expiry. Swarm holds encrypted evidence linked from Arkiv; an authorized read recovered the matching PDF. Uniswap v3 converted 0.001 WETH into 2.243326 USDC on Base Sepolia; CCTP moved 1.1 USDC to the Arc member, who made a confirmed 1 USDC pool deposit and received policy #3. See [the verified conversion](docs/ethglobal/contribution-route.base-sepolia.public.json), [Arkiv proof](docs/ethglobal/arkiv-verification.json), and [Swarm proof](docs/ethglobal/swarm-verification.json).
 
+## Arkiv query for judges
+
+GuardLink's project wallet `0xd8E339b19353afDAF75EfeEdA7fDB88320420553` owns the public records it writes on Rabdi testnet (chain ID 7794095). The app's **Follow the fund** view reads these records. Open **Follow public milestones** from a claim to see its case history.
+
+Anyone can run this [case A query](https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81) without a wallet:
+
+```sh
+curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81'
+```
+
+The API queries `project = guardlink` and the exact case ID, filtered by the writer wallet. Look for a `paid` record with an Arc transaction hash and an archive record with a ciphertext reference. Evidence, identities and private jury reasons stay out of the public records. See [schema](arkiv/schema.md), [integration and query](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md), [friction](arkiv/friction.md) and [Swarm proof](arkiv/swarm.md).
+
 ## Project structure
 
 - `onchain/`: Arc Studio contract, ABI, deployment provenance, independent local tests.
