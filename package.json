@@ -1,0 +1,16 @@
+{
+  "name": "guardlink",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["frontend", "worker", "packages/*"],
+  "scripts": {
+    "dev": "npm run dev -w frontend",
+    "dev:api": "npm run dev -w worker",
+    "build": "npm run build -w frontend",
+    "test": "tsx --test packages/domain/test/*.test.ts worker/test/*.test.ts",
+    "typecheck": "npm run typecheck -w worker && npm run typecheck -w frontend",
+    "deploy:api": "npm run deploy -w worker",
+    "deploy:web": "npm run deploy -w frontend"
+  },
+  "devDependencies": {"tsx":"4.23.15", "typescript":"5.9.3", "@types/node":"^22.0.0"}
+}

@@ -1,0 +1,296 @@
+Compiling 2 files with Solc 0.8.28
+Solc 0.8.28 finished in 1.58s
+Compiler run successful!
+
+Ran 16 tests for contracts/test/GuardLinkPool.Appeal.t.sol:GuardLinkPoolAppealTest
+[PASS] test_AppealJury_AssignmentAndRoleSeparation() (gas: 269412)
+[PASS] test_AppealJury_ExcludesClaimantDuplicatesUnverified() (gas: 106453)
+[PASS] test_AppealJury_ExcludesContact() (gas: 454780)
+[PASS] test_AppealJury_MustBeDisjointFromOriginalPanel() (gas: 95237)
+[PASS] test_AppealVote_DuplicateAndUnauthorized() (gas: 236932)
+[PASS] test_Appeal_Approved_ThenSettles() (gas: 374581)
+[PASS] test_Appeal_ClaimantSucceeds_EmitsAndSetsState() (gas: 54056)
+[PASS] test_Appeal_DivergentVotes_Unresolved() (gas: 371959)
+[PASS] test_Appeal_NoPanelWithin72h_ExpiresAndReleases() (gas: 79524)
+[PASS] test_Appeal_OnlyClaimant() (gas: 56591)
+[PASS] test_Appeal_OnlyOnce() (gas: 302052)
+[PASS] test_Appeal_OnlyWhenRejected() (gas: 498695)
+[PASS] test_Appeal_Rejected_IsFinal_ReleasesImmediately() (gas: 306517)
+[PASS] test_Appeal_WindowBoundary() (gas: 44573)
+[PASS] test_Rejection_ReservationHeldUntilAppealWindowCloses() (gas: 54299)
+[PASS] test_ReleaseExposure_NeverReleasesApprovedOrPaid() (gas: 495370)
+Suite result: ok. 16 passed; 0 failed; 0 skipped; finished in 200.31ms (85.67ms CPU time)
+
+Ran 15 tests for contracts/test/GuardLinkPool.Claims.t.sol:GuardLinkPoolClaimsTest
+[PASS] test_ClaimIdSquatting_AttackerCannotActOnVictimClaim() (gas: 397449)
+[PASS] test_ClaimIdSquatting_OtherMemberCannotBlockVictim() (gas: 400469)
+[PASS] test_Grace_BoundaryWithCoveredIncident() (gas: 221869)
+[PASS] test_PolicyOvercommit_PaidClaimsConsumeLimitPermanently() (gas: 493280)
+[PASS] test_PolicyOvercommit_ParallelClaimsCannotExceedLimit() (gas: 362460)
+[PASS] test_PolicyOvercommit_PartialApprovalFreesDifferenceOnly() (gas: 633872)
+[PASS] test_PolicyOvercommit_RejectedClaimFreedAfterWindow() (gas: 605849)
+[PASS] test_RevertSubmit_ExpiredPolicyIncidentAfterEnd() (gas: 224433)
+[PASS] test_RevertSubmit_FutureIncident() (gas: 221523)
+[PASS] test_RevertSubmit_IncidentBeforeCoverageStart() (gas: 224440)
+[PASS] test_RevertSubmit_NotPolicyOwnerOrMissingPolicy() (gas: 34902)
+[PASS] test_RevertSubmit_SameClaimantReusesClientId() (gas: 207438)
+[PASS] test_RevertSubmit_UnverifiedOrNonMember() (gas: 77444)
+[PASS] test_RevertSubmit_ZeroAmountOrAboveLimit() (gas: 233761)
+[PASS] test_SubmitClaim_ReturnsCanonicalId() (gas: 222686)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 4.91ms (2.43ms CPU time)
+
+Ran 2 tests for contracts/test/GuardLinkPool.Reentrancy.t.sol:GuardLinkPoolReentrancyTest
+[PASS] test_Reentrancy_ContributeCannotBeReenteredViaMintHook() (gas: 694873)
+[PASS] test_Reentrancy_SettleCannotBeReenteredViaToken() (gas: 1010978)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 5.18ms (1.26ms CPU time)
+
+Ran 9 tests for contracts/test/GuardLinkPool.Settle.t.sol:GuardLinkPoolSettleTest
+[PASS] test_Settle_DoubleSettlement_Reverts() (gas: 507688)
+[PASS] test_Settle_FailedTokenTransfer_PreservesApprovedAndIsRetriable() (gas: 503901)
+[PASS] test_Settle_InsufficientReserve_ThenFund_ThenRetry() (gas: 526376)
+[PASS] test_Settle_NoPaidEventOnFailedTransfer() (gas: 505487)
+[PASS] test_Settle_PartialApprovalPaysApprovedNotRequested() (gas: 492781)
+[PASS] test_Settle_PaysOnlyClaimant_AnyCallerCanTrigger() (gas: 506527)
+[PASS] test_Settle_PerClaimSolvency_SecondClaimCanBePaidFirst() (gas: 914807)
+[PASS] test_Settle_PerClaimSolvency_UnfundedSecondDoesNotBlockFundedFirst() (gas: 949927)
+[PASS] test_Settle_RevertsForNonApprovedClaims() (gas: 842845)
+Suite result: ok. 9 passed; 0 failed; 0 skipped; finished in 4.79ms (2.56ms CPU time)
+
+Ran 10 tests for contracts/test/GuardLinkPool.Treasury.t.sol:GuardLinkPoolTreasuryTest
+[PASS] test_FreeTreasury_ExcludesExposureAndCommitted() (gas: 811358)
+[PASS] test_NoAdminWithdrawPath() (gas: 40986)
+[PASS] test_RevertPropose_InvalidArgs() (gas: 39419)
+[PASS] test_Transfer_CannotSpendCommittedPayouts() (gas: 884344)
+[PASS] test_Transfer_CapIs10PercentOfFreeTreasury_AtProposal() (gas: 212929)
+[PASS] test_Transfer_CapRecheckedAtExecution_NewExposureShrinksIt() (gas: 596932)
+[PASS] test_Transfer_CommittedApprovalAfterProposalBlocksExecution() (gas: 846451)
+[PASS] test_Transfer_ExecutesAfterVote_PaysRecipientOnce() (gas: 437687)
+[PASS] test_Transfer_FailsIfNotPassed() (gas: 259588)
+[PASS] test_TreasurySupported() (gas: 5711)
+Suite result: ok. 10 passed; 0 failed; 0 skipped; finished in 4.64ms (2.20ms CPU time)
+
+Ran 33 tests for contracts/test/GuardLinkContributionToken.t.sol:GuardLinkContributionTokenTest
+[PASS] testFuzz_CooldownBoundary(uint256,uint256,uint256) (runs: 256, μ: 94889, ~: 93664)
+[PASS] testFuzz_OverMaxReverts(uint256) (runs: 256, μ: 15453, ~: 15203)
+[PASS] testFuzz_ThirdPartyClaimAlwaysReverts(address,address,uint256) (runs: 256, μ: 16235, ~: 16235)
+[PASS] testFuzz_TransferConservesSupply(uint256,uint256) (runs: 256, μ: 116600, ~: 118230)
+[PASS] testFuzz_ValidClaimMintsExactly(address,uint256) (runs: 256, μ: 86790, ~: 87055)
+[PASS] test_ApproveAndTransferFrom() (gas: 147283)
+[PASS] test_CooldownAllowsAtExactlyCooldown() (gas: 91479)
+[PASS] test_CooldownIsPerAddress() (gas: 192757)
+[PASS] test_CooldownRestartsAfterSecondClaim() (gas: 92784)
+[PASS] test_CooldownRevertsImmediatelyAfterClaim() (gas: 84359)
+[PASS] test_CooldownRevertsOneSecondBefore() (gas: 86449)
+[PASS] test_DifferentRecipientsIndependent() (gas: 151068)
+[PASS] test_FaucetEmitsFaucetClaim() (gas: 84195)
+[PASS] test_FaucetExactlyMaxSucceeds() (gas: 82724)
+[PASS] test_FaucetMintsAndRecordsClaim() (gas: 84932)
+[PASS] test_FaucetOneBaseUnitSucceeds() (gas: 82735)
+[PASS] test_Metadata() (gas: 26730)
+[PASS] test_NoEthAccepted() (gas: 17779)
+[PASS] test_NoOwnerAdminOrMintFunctions() (gas: 16727)
+[PASS] test_RevertWhen_OverMax() (gas: 15034)
+[PASS] test_RevertWhen_OverMaxDoesNotSetCooldown() (gas: 86093)
+[PASS] test_RevertWhen_ThirdPartyClaim() (gas: 19491)
+[PASS] test_RevertWhen_ZeroAmount() (gas: 11324)
+[PASS] test_RevertWhen_ZeroRecipient() (gas: 8715)
+[PASS] test_ThirdPartyCannotClaimForOrResetVictimCooldown() (gas: 27344)
+[PASS] test_ThirdPartyCannotExtendVictimCooldown() (gas: 96449)
+[PASS] test_ThirdPartyClaimCheckedBeforeAmount() (gas: 15487)
+[PASS] test_ThirdPartyRevertDoesNotAffectCallerCooldown() (gas: 88034)
+[PASS] test_Transfer() (gas: 119242)
+[PASS] test_TransferFromRevertsWithoutAllowance() (gas: 90583)
+[PASS] test_TransferRevertsOnInsufficientBalance() (gas: 86562)
+[PASS] test_VictimCanClaimInFullAfterDustGriefAttempt() (gas: 91288)
+[PASS] test_ZeroRecipientCheckedBeforeThirdPartyCheck() (gas: 11231)
+Suite result: ok. 33 passed; 0 failed; 0 skipped; finished in 318.69ms (254.60ms CPU time)
+
+Ran 12 tests for contracts/test/GuardLinkPool.t.sol:GuardLinkPoolTest
+[PASS] test_Contribute_PullsFundsAndMintsPolicy() (gas: 37551)
+[PASS] test_Deploy_EmitsPoolDeployed() (gas: 4230977)
+[PASS] test_Deploy_StoresConfigAndSigner() (gas: 19393)
+[PASS] test_HappyPath_EndToEnd() (gas: 800876)
+[PASS] test_Join_RecordsMemberAndRejectsDuplicate() (gas: 19740)
+[PASS] test_MissingRecords_Revert() (gas: 32024)
+[PASS] test_RevertContribute_NoAllowance() (gas: 72154)
+[PASS] test_RevertContribute_TokenTransferFails() (gas: 120641)
+[PASS] test_RevertContribute_UnverifiedOrNonMember() (gas: 146090)
+[PASS] test_RevertDeploy_InvalidArgs() (gas: 913095)
+[PASS] test_RevertVerifyMember_NoopAndNonMember() (gas: 32412)
+[PASS] test_VerifyMember_TogglesAndCounts() (gas: 109839)
+Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 5.92ms (3.19ms CPU time)
+
+Ran 26 tests for contracts/test/GuardLinkPool.Jury.t.sol:GuardLinkPoolJuryTest
+[PASS] test_Assign_MissingClaimAndWrongState() (gas: 36005)
+[PASS] test_Assign_ReplacementAllowedBeforeFirstBallot_KeepsDeadline() (gas: 262916)
+[PASS] test_EmptyQuorum_NoVotesAfter72h_StaysUnresolved() (gas: 180393)
+[PASS] test_JuryEligibilityFrozenAtSelection() (gas: 356269)
+[PASS] test_MixedDivergentBallots_StayUnresolved() (gas: 332781)
+[PASS] test_NoSelfVerification() (gas: 46638)
+[PASS] test_PartialDifferingAmounts_StayUnresolved() (gas: 355903)
+[PASS] test_RevertAdminCalls_FromNonAdmin() (gas: 58552)
+[PASS] test_RevertAssign_AfterDeadline() (gas: 302541)
+[PASS] test_RevertAssign_ClaimantExcluded() (gas: 46168)
+[PASS] test_RevertAssign_ContactExcluded_AndContactCannotVote() (gas: 152003)
+[PASS] test_RevertAssign_DuplicateJurors() (gas: 64960)
+[PASS] test_RevertAssign_NoReplacementAfterFirstBallot() (gas: 225094)
+[PASS] test_RevertAssign_UnverifiedOrNonMemberOrZeroJuror() (gas: 65288)
+[PASS] test_RevertVote_AfterResolution() (gas: 307052)
+[PASS] test_RevertVote_BeforeJuryAssigned() (gas: 17965)
+[PASS] test_RevertVote_DuplicateVote() (gas: 232857)
+[PASS] test_RevertVote_InvalidAmounts() (gas: 221458)
+[PASS] test_RevertVote_UnauthorizedVoters() (gas: 159078)
+[PASS] test_SetClaimContact_OnlyClaimantAndOnlyBeforeAssignment() (gas: 121582)
+[PASS] test_SingleVoteIsNoQuorum_UnresolvedAfterDeadline() (gas: 235759)
+[PASS] test_UnassignedClaimExpiresUnresolved_ReleasesExposure() (gas: 62103)
+[PASS] test_Unresolved_ExposureReleasedOnlyAtDeadline() (gas: 358811)
+[PASS] test_Vote_DeadlineBoundary() (gas: 228709)
+[PASS] test_Vote_ThirdJurorMatchesFirstResolves() (gas: 365364)
+[PASS] test_Vote_TwoRejectsReject() (gas: 287193)
+Suite result: ok. 26 passed; 0 failed; 0 skipped; finished in 9.18ms (5.68ms CPU time)
+
+Ran 7 tests for contracts/test/GuardLinkPool.NFT.t.sol:GuardLinkPoolNFTTest
+[PASS] test_Nontransferable_ApproveAndSetApprovalForAllRevert() (gas: 27981)
+[PASS] test_Nontransferable_SafeTransferFrom_BothOverloads() (gas: 25213)
+[PASS] test_Nontransferable_TransferFrom() (gas: 25769)
+[PASS] test_Policy_OwnedByMember() (gas: 23104)
+[PASS] test_TokenURI_NoMemberMedicalOrIdentityDetails() (gas: 913485)
+[PASS] test_TokenURI_NonexistentReverts() (gas: 13013)
+[PASS] test_TokenURI_OnlyPolicyIdPoolAndDates() (gas: 50644)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 6.51ms (3.96ms CPU time)
+
+Ran 31 tests for contracts/test/GuardLinkPool.EarlyExec.t.sol:GuardLinkPoolEarlyExecTest
+[PASS] testFuzz_AllVoted_EarlyExecMatchesThresholds(uint256,uint256) (runs: 256, μ: 517423, ~: 515436)
+[PASS] testFuzz_MissingVotes_TooEarlyThenDeadlineRules(uint256,uint256,uint256) (runs: 256, μ: 403546, ~: 427973)
+[PASS] testFuzz_RevokedAfterSnapshot_CompletingVoteUnlocksEarlyExec(uint256,uint256) (runs: 256, μ: 533314, ~: 532952)
+[PASS] testFuzz_VoteAtOrAfterDeadline_Reverts(uint256,uint256) (runs: 256, μ: 281708, ~: 281818)
+[PASS] test_AfterDeadline_PartialVotes_BelowQuorumOrSupport_StillNotPassed() (gas: 604674)
+[PASS] test_AfterDeadline_PartialVotes_StillExecutes() (gas: 335108)
+[PASS] test_AllVoted_2YesOf4_NotPassed_NoStateChange() (gas: 538966)
+[PASS] test_AllVoted_3YesOf5_NotPassed_NoStateChange() (gas: 536514)
+[PASS] test_AllVoted_AllNo_NotPassed() (gas: 496641)
+[PASS] test_AllVoted_TreasuryTransfer_NotPassed_NoTransfer() (gas: 546041)
+[PASS] test_DoubleExecution_AfterEarlyExec_Reverts() (gas: 480351)
+[PASS] test_DoubleExecution_Treasury_PaysOnce() (gas: 532939)
+[PASS] test_EarlyExec_Rules_MixedVotesMeetingSupport() (gas: 491146)
+[PASS] test_EarlyExec_Rules_OneSecondBeforeDeadline() (gas: 475731)
+[PASS] test_EarlyExec_Rules_Unanimous_EmitsAndProspectiveOnly() (gas: 931642)
+[PASS] test_EarlyExec_TreasuryTransfer_StillCapCheckedAtExecution() (gas: 699582)
+[PASS] test_EarlyExec_TreasuryTransfer_Unanimous() (gas: 556103)
+[PASS] test_MissingAnySingleVote_TooEarly_EvenWhenQuorumAndSupportPass() (gas: 432914)
+[PASS] test_MissingOneToSevenVotes_TooEarly() (gas: 2007848)
+[PASS] test_MissingRecord_Reverts() (gas: 15919)
+[PASS] test_MissingVote_MixedYesNo_TooEarly() (gas: 433982)
+[PASS] test_MissingVote_TooEarlyUpToLastSecond_ThenCompletingVoteUnlocks() (gas: 483028)
+[PASS] test_MissingVote_TreasuryTransfer_TooEarly() (gas: 464387)
+[PASS] test_NoVotesAtAll_TooEarlyBeforeDeadline() (gas: 154569)
+[PASS] test_Snapshot_RevokedAfterSnapshot_CanCastCompletingVote_EarlyExecWorks() (gas: 531459)
+[PASS] test_Snapshot_RevokedBeforeProposal_ReducesElectorate_EarlyExecAfterRemainingVote() (gas: 492626)
+[PASS] test_Snapshot_RevokedMemberWhoHasNotVoted_StillCountsAsMissing_UntilDeadline() (gas: 511081)
+[PASS] test_Snapshot_SwapRevokeAndVerify_DoesNotFillGap() (gas: 540767)
+[PASS] test_Snapshot_VerifiedAfterSnapshot_CannotVote_CannotSubstituteForMissingVote() (gas: 570165)
+[PASS] test_VoteAfterDeadline_StillReverts_EvenWithOneMissing() (gas: 445598)
+[PASS] test_VoteAfterEarlyExecution_ButBeforeDeadline_Reverts_NoDoubleCount() (gas: 498575)
+Suite result: ok. 31 passed; 0 failed; 0 skipped; finished in 507.15ms (392.92ms CPU time)
+
+Ran 6 tests for contracts/test/GuardLinkPool.Fuzz.t.sol:GuardLinkPoolFuzzTest
+[PASS] testFuzz_GovernanceThresholds(uint256,uint256) (runs: 256, μ: 394659, ~: 419251)
+[PASS] testFuzz_GraceWindow(uint256) (runs: 256, μ: 136286, ~: 210307)
+[PASS] testFuzz_Limits_ReleaseRestoresExactly(uint128,uint128) (runs: 256, μ: 626737, ~: 626818)
+[PASS] testFuzz_Limits_SecondClaimSucceedsIffWithinRemaining(uint128,uint128) (runs: 256, μ: 325307, ~: 354616)
+[PASS] testFuzz_Settle_PaysExactApprovedWhenFunded(uint128,uint128,uint256) (runs: 256, μ: 512802, ~: 512832)
+[PASS] testFuzz_TreasuryCapIsTenPercentOfFree(uint256,uint256,uint256) (runs: 256, μ: 295642, ~: 241490)
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 359.16ms (357.24ms CPU time)
+
+Ran 15 tests for contracts/test/GuardLinkPool.Gov.t.sol:GuardLinkPoolGovTest
+[PASS] test_Execute_NoVotes_NotPassed_AndDoubleExecute() (gas: 599867)
+[PASS] test_Execute_OnlyAfterDeadline() (gas: 470789)
+[PASS] test_ProposeRules_SnapshotAndEvents() (gas: 164768)
+[PASS] test_Quorum_EvenElectorateExactHalf() (gas: 563209)
+[PASS] test_Quorum_RoundedUp_OddElectorate() (gas: 616267)
+[PASS] test_RevertPropose_UnverifiedOrInvalid() (gas: 51437)
+[PASS] test_Rules_ProspectiveOnly_ExistingPoliciesUnchanged() (gas: 901549)
+[PASS] test_Snapshot_FlipFlopSameBlockAfterProposalDoesNotChangeEligibility() (gas: 381542)
+[PASS] test_Snapshot_UnverifiedBeforeProposal_CannotVote() (gas: 204128)
+[PASS] test_Snapshot_UnverifyAfterProposal_CanStillVote() (gas: 255957)
+[PASS] test_Snapshot_VerifiedAtHistory() (gas: 79395)
+[PASS] test_Snapshot_VerifyAfterProposal_CannotVote_UntilNextProposal() (gas: 424825)
+[PASS] test_Support_TwoThirdsRoundedUpOfVotesCast() (gas: 2765333)
+[PASS] test_VoteProposal_DeadlineBoundary() (gas: 215270)
+[PASS] test_VoteProposal_OnceOnly_AndEvent() (gas: 227291)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 6.08ms (3.80ms CPU time)
+
+Ran 3 tests for contracts/test/GuardLinkPool.Invariant.t.sol:GuardLinkPoolInvariantTest
+[PASS] invariant_CommittedEqualsApprovedMinusPaid() (runs: 256, calls: 128000, reverts: 0)
+
+╭-------------+-----------------+-------+---------+----------╮
+| Contract    | Selector        | Calls | Reverts | Discards |
++============================================================+
+| PoolHandler | claimAndApprove | 31895 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | fund            | 32028 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | openThenExpire  | 31828 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | settleOne       | 32249 | 0       | 0        |
+╰-------------+-----------------+-------+---------+----------╯
+
+[PASS] invariant_PolicyUsageMatchesApprovals() (runs: 256, calls: 128000, reverts: 0)
+
+╭-------------+-----------------+-------+---------+----------╮
+| Contract    | Selector        | Calls | Reverts | Discards |
++============================================================+
+| PoolHandler | claimAndApprove | 31895 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | fund            | 32028 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | openThenExpire  | 31828 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | settleOne       | 32249 | 0       | 0        |
+╰-------------+-----------------+-------+---------+----------╯
+
+[PASS] invariant_TokenConservation() (runs: 256, calls: 128000, reverts: 0)
+
+╭-------------+-----------------+-------+---------+----------╮
+| Contract    | Selector        | Calls | Reverts | Discards |
++============================================================+
+| PoolHandler | claimAndApprove | 31895 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | fund            | 32028 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | openThenExpire  | 31828 | 0       | 0        |
+|-------------+-----------------+-------+---------+----------|
+| PoolHandler | settleOne       | 32249 | 0       | 0        |
+╰-------------+-----------------+-------+---------+----------╯
+
+Suite result: ok. 3 passed; 0 failed; 0 skipped; finished in 20.78s (59.77s CPU time)
+
+╭--------------------------------+--------+--------+---------╮
+| Test Suite                     | Passed | Failed | Skipped |
++============================================================+
+| GuardLinkContributionTokenTest | 33     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolAppealTest        | 16     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolClaimsTest        | 15     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolEarlyExecTest     | 31     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolFuzzTest          | 6      | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolGovTest           | 15     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolInvariantTest     | 3      | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolJuryTest          | 26     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolNFTTest           | 7      | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolReentrancyTest    | 2      | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolSettleTest        | 9      | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolTreasuryTest      | 10     | 0      | 0       |
+|--------------------------------+--------+--------+---------|
+| GuardLinkPoolTest              | 12     | 0      | 0       |
+╰--------------------------------+--------+--------+---------╯

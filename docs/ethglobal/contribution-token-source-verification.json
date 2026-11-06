@@ -1,0 +1,20 @@
+{
+  "chainId": 11155111,
+  "address": "0x686e37bb7b30c9a81a1dc765914357b19ff78c30",
+  "creationTransactionHash": "0x5e3bb6a76996894b40ecd18349df38443078ec279dab612909be926835f3d71d",
+  "checkedAt": "2026-11-05T20:08:44.582Z",
+  "result": {
+    "verificationId": "87fea091-4684-4f2d-9ed4-f273464dfefb",
+    "isJobCompleted": true,
+    "contract": {
+      "match": "match",
+      "creationMatch": "match",
+      "runtimeMatch": "match",
+      "chainId": "11155111",
+      "address": "0x686E37Bb7b30c9a81a1dC765914357B19fF78c30",
+      "verifiedAt": "2026-11-05T20:08:42Z",
+      "matchId": "58541567"
+    },
+    "error": null
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-11-06T05:48:40.081Z",
+  "base": "https://guardlink.ajnasnb.com",
+  "chainId": 5042002,
+  "pool": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895",
+  "checks": [
+    "Five distinct role signatures; structured public-origin challenge",
+    "Cross-member and unassigned-helper evidence denied; assigned reviewer retrieval works",
+    "Ordinary member cannot open operator controls; designated operator gets roster and safe assignment queue",
+    "Case A: private API, actual AI recommendation, exact payout event, independent chain state, duplicate settlement rejected",
+    "Case B: private API, actual AI recommendation, exact payout event, independent chain state, duplicate settlement rejected",
+    "Case C: private API, actual AI recommendation, exact payout event, independent chain state, duplicate settlement rejected",
+    "Executed nine-voter prospective governance; current API terms match chain and prior policy preserved",
+    "Public case projections omit evidence and member identity"
+  ],
+  "status": "passed",
+  "transactionsSent": 0,
+  "poolBalance": "3.85"
+}

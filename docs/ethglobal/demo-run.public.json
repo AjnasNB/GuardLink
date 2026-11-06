@@ -1,0 +1,397 @@
+{
+  "testnet": true,
+  "rolesAreDemoIdentities": true,
+  "transactions": [
+    {
+      "label": "Fund member-a",
+      "hash": "0x96417b4a3bd09802f81d0b0a1c373310ccee55213e6ad8a6cc273ec5797c18d9",
+      "blockNumber": 70902474
+    },
+    {
+      "label": "Join member-a",
+      "hash": "0x628da0fe36e3a66b5132b8d8f66ec8491431da4bab7eff41ee1f208cfbed12a3",
+      "blockNumber": 70902483
+    },
+    {
+      "label": "Verify member-a",
+      "hash": "0x9cc428ca5ab9feb1a498296d030aa8134a84fe5bd419887c8cd10874892757ef",
+      "blockNumber": 70902490
+    },
+    {
+      "label": "Fund member-b",
+      "hash": "0x8f3123298840e3387438cd9a6d4fc0bad782712356ec6e3223a451f7feb1da81",
+      "blockNumber": 70902496
+    },
+    {
+      "label": "Join member-b",
+      "hash": "0x966df1b6ab6758b187d3d351024b09d25aef76bbcfb597b43a35c92dc23e5faf",
+      "blockNumber": 70902506
+    },
+    {
+      "label": "Verify member-b",
+      "hash": "0xd682815c1645a6fe58c358c1f3faaa9f7066031185dc45cb6cd066c4d4585b29",
+      "blockNumber": 70902515
+    },
+    {
+      "label": "Fund contact",
+      "hash": "0x770681340b1a86ec304b6e659a8a5c360fef39a779c9ac32273df95024aaffc6",
+      "blockNumber": 70902522
+    },
+    {
+      "label": "Join contact",
+      "hash": "0x83b9e7949ee8e8b6b1caa800ba30a1cef2a5733795508ce44b5c4ed06d14859c",
+      "blockNumber": 70902531
+    },
+    {
+      "label": "Verify contact",
+      "hash": "0x95961dca7e6c53d5101e7fe8f8df04a63cfaac48c3d83d06e3fc1bb5f7eff80b",
+      "blockNumber": 70902539
+    },
+    {
+      "label": "Fund juror-1",
+      "hash": "0xf7785fdf54e3849a94281e8a82ccbf6eae17b7275cfe377c323b6f263956dffd",
+      "blockNumber": 70902546
+    },
+    {
+      "label": "Join juror-1",
+      "hash": "0x040f4a389a36e3cf5d17d5d45fc0651f6a953e3f35af7dfb6b02d365037d6471",
+      "blockNumber": 70902559
+    },
+    {
+      "label": "Verify juror-1",
+      "hash": "0x970cb9ea13ab8cc9e33a5619c55145a888ccf37f06c88d773304ba69145a19d1",
+      "blockNumber": 70902567
+    },
+    {
+      "label": "Fund juror-2",
+      "hash": "0x935f40a1fc02544aa5525fa6b42152c5c2d166ad2377f49628d0c732108520a2",
+      "blockNumber": 70902573
+    },
+    {
+      "label": "Join juror-2",
+      "hash": "0x995e61811efb74c61efe91a10ae5e83e31a49a4394581bfefdf588ffe946bccc",
+      "blockNumber": 70902582
+    },
+    {
+      "label": "Verify juror-2",
+      "hash": "0x5e5744549ca2ee6167ab3fa6c3bc9cfba38e564f310ec68e72f08021013030a1",
+      "blockNumber": 70902588
+    },
+    {
+      "label": "Fund juror-3",
+      "hash": "0x2d53dddcd2367d4acb8dc430a11877a2e5e8bcf3030ae19a315df645a5b838c5",
+      "blockNumber": 70902594
+    },
+    {
+      "label": "Join juror-3",
+      "hash": "0xda9fdc1df75d48dfa56c6d30c27fed9f88c4823bec331224a1449db892f0012d",
+      "blockNumber": 70902609
+    },
+    {
+      "label": "Verify juror-3",
+      "hash": "0x673758c52c51415955c8cb885fafcd24aeff57f3ea7b4ed5c5bb72e13c94d200",
+      "blockNumber": 70902616
+    },
+    {
+      "label": "Fund appeal-1",
+      "hash": "0x8164c7117bf28b774a62ce1fe82494e5bf43cdfb4240d1f5a725daf8d230b681",
+      "blockNumber": 70902624
+    },
+    {
+      "label": "Join appeal-1",
+      "hash": "0xb9f8b63b9bb80a7af40b03fe3c4e9643c487f76813584a149c433d2dbe61d2e7",
+      "blockNumber": 70902634
+    },
+    {
+      "label": "Verify appeal-1",
+      "hash": "0x26b5dc7e8ac541a346116e31483bc941f631a2da18fd5fd5c81126db74e76613",
+      "blockNumber": 70902642
+    },
+    {
+      "label": "Fund appeal-2",
+      "hash": "0xca13627e48d5ffd21b911a6bf4fcf470afd358de1bfd030b75e7715da08dae70",
+      "blockNumber": 70902653
+    },
+    {
+      "label": "Join appeal-2",
+      "hash": "0x829f61f76c17e676fd7330d184d1fbb2ec68c4fa2f5cb0ef6bde55d454e7be3a",
+      "blockNumber": 70902666
+    },
+    {
+      "label": "Verify appeal-2",
+      "hash": "0x08c13f53903eeb8b3f1819bffde187a6ee02727fc3268b8485749eab66734abc",
+      "blockNumber": 70902675
+    },
+    {
+      "label": "Fund appeal-3",
+      "hash": "0x5363ddfd857479c5c0817ae84b0a2970564b6678eaec4b3ed176757b00ee9cad",
+      "blockNumber": 70902683
+    },
+    {
+      "label": "Join appeal-3",
+      "hash": "0x5849bcd94192ff72bc2fa646bffde93126fc27764bc615d38c262fdb8b310f7c",
+      "blockNumber": 70902698
+    },
+    {
+      "label": "Verify appeal-3",
+      "hash": "0x012f83ab60a03280b5f8dd0339471b7068929811d0759d1355ee295836fcc80c",
+      "blockNumber": 70902705
+    },
+    {
+      "label": "Seed test reserve",
+      "hash": "0x10cafb99642bab4414cfc46b947b9b66dd5095e6ca32918d908352cd263f115a",
+      "blockNumber": 70902714
+    },
+    {
+      "label": "Approve contribution member-a",
+      "hash": "0x2bf28bf6998cee75bc4f0faa66d56737c9c33653fed4e1b7855dc5d6c5fe0b09",
+      "blockNumber": 70902724
+    },
+    {
+      "label": "Contribute member-a",
+      "hash": "0x04f29f3a6d45bfabc93686827ba1a77bbde557f2cb75da76e38b7d6e5121d1f3",
+      "blockNumber": 70902732
+    },
+    {
+      "label": "Approve contribution member-b",
+      "hash": "0x966d34ecaa14e799081f2afa1234d52204db2621e675e0158329e4b3bfeacac7",
+      "blockNumber": 70902747
+    },
+    {
+      "label": "Contribute member-b",
+      "hash": "0xa3208eda20a84d486c369134e436d9977675e54e0bb4816b77df5e570d955edb",
+      "blockNumber": 70902754
+    },
+    {
+      "label": "CaseA register",
+      "hash": "0x57cdac80f264aa3b8f25266d5ddc26964d0900ac46d45c99926e72d31c33c52e",
+      "blockNumber": 70903064
+    },
+    {
+      "label": "CaseA assign jury",
+      "hash": "0xccee9c55af2b8f579d1556887655dca2cb2facdf3b376ee02313acc17d01344a",
+      "blockNumber": 70903077
+    },
+    {
+      "label": "CaseA approve juror-1",
+      "hash": "0x6a40a3d9bdf8067fb45d62f00dcaec500539b04f6cab2bfe319924c7a7e1b5e4",
+      "blockNumber": 70903090
+    },
+    {
+      "label": "CaseA approve juror-2",
+      "hash": "0x00f0b9fc4e47cac98ae21934841dd32710948026315b408d64aa1a5b9b2da315",
+      "blockNumber": 70903100
+    },
+    {
+      "label": "CaseA payout",
+      "hash": "0x99b9ff5721caaf32b2263f9b13d0dbaf37ce9415a3ff2d01d12d35dd4ef8fb4f",
+      "blockNumber": 70903111
+    },
+    {
+      "label": "CaseB register",
+      "hash": "0x3081c1f7ac76a156f72aa0c0d2d5e50e23a308f9f9e801abba6b85b3538ab708",
+      "blockNumber": 70903160
+    },
+    {
+      "label": "CaseB assign jury",
+      "hash": "0x1b75097e0187562d2f5c54d6dc7ab9833efc208d89c64651de8077b056b6c355",
+      "blockNumber": 70903171
+    },
+    {
+      "label": "CaseB reject juror-1",
+      "hash": "0x57502d23a02f8f264940e8131c2c067f3faa86904b0d5a877d0a6b4b4bc1cfc4",
+      "blockNumber": 70903182
+    },
+    {
+      "label": "CaseB reject juror-2",
+      "hash": "0xc176433d4dd6ee347af7660fbd2e61f04fe5d5f1ff73f881c0053f757734a4aa",
+      "blockNumber": 70903194
+    },
+    {
+      "label": "CaseB request appeal",
+      "hash": "0x432f99905b6c4e5c032e2c86ab61111e0ae23352b114acd0182afa2491ed5909",
+      "blockNumber": 70903205
+    },
+    {
+      "label": "CaseB assign independent appeal jury",
+      "hash": "0x4ae99cad5fd729f600055c25f3aa82877c2d3a794c7e9bd27ff92cb99ec3254d",
+      "blockNumber": 70903217
+    },
+    {
+      "label": "CaseB appeal approval appeal-1",
+      "hash": "0x09fe476e80e122f8287853827dc5d64882d17e4d6404d895d2ef6eb179f929b2",
+      "blockNumber": 70903227
+    },
+    {
+      "label": "CaseB appeal approval appeal-2",
+      "hash": "0x43de6b53b2b454fa1e0a40decc6e07d4b67768a196f4a5fab94f5109c6374173",
+      "blockNumber": 70903237
+    },
+    {
+      "label": "CaseB payout",
+      "hash": "0x9740c683d839971953d61afad540597c17ffee9a144864bc85e3ea1f271c7a99",
+      "blockNumber": 70903247
+    },
+    {
+      "label": "Propose prospective demo coverage",
+      "hash": "0x86cdd42725f2df64a1093dacdacde752b7bfc6ec9a03416f206471eb2d419827",
+      "blockNumber": 70903591
+    },
+    {
+      "label": "Governance vote member-a",
+      "hash": "0xc67ae55b4493f9d3e9aae3c84a5a319693905bd6c9a5daf7b4de5b1579b677b1",
+      "blockNumber": 70903599
+    },
+    {
+      "label": "Governance vote member-b",
+      "hash": "0xc815a172b4f43bf57e57c7013ce7b37e89fa392790317704ec39b53321fd5b7b",
+      "blockNumber": 70903606
+    },
+    {
+      "label": "Governance vote contact",
+      "hash": "0x5584d449d9586788bec36a2a577c311cf48f9282a6ad95f09ea08dafe3530ca5",
+      "blockNumber": 70903612
+    },
+    {
+      "label": "Governance vote juror-1",
+      "hash": "0x549aa58a823ffd131071289de5a3533faceee037a8eac652da9e32f7421796c5",
+      "blockNumber": 70903619
+    },
+    {
+      "label": "Governance vote juror-2",
+      "hash": "0x99f55cfce762ddbba9524b1d81949bd03ef245ced92559915cc1beb77b11433d",
+      "blockNumber": 70903625
+    },
+    {
+      "label": "Governance vote juror-3",
+      "hash": "0x5613fdc5140303a0050f3d721f61af6da269fc0a459813ef6fe9e097cd8b706d",
+      "blockNumber": 70903631
+    },
+    {
+      "label": "Governance vote appeal-1",
+      "hash": "0xa89a1f3517ffe127cf777d57afe599976529c91e544c8a88248a7ca9045db055",
+      "blockNumber": 70903637
+    },
+    {
+      "label": "Governance vote appeal-2",
+      "hash": "0x80ac83549f14d159ebb84c2a2e527c8de1e24750adbcc5c7f09b185df07e576e",
+      "blockNumber": 70903643
+    },
+    {
+      "label": "Governance vote appeal-3",
+      "hash": "0x0e4643e2ae5d90dd06ef0509f4859e907e3d4ed41650d53e974ea32b9db2041c",
+      "blockNumber": 70903650
+    },
+    {
+      "label": "Execute fully participated rule change",
+      "hash": "0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646",
+      "blockNumber": 70903656
+    },
+    {
+      "label": "CaseC register",
+      "hash": "0x272c3116db23304bfa68dc840f941a32e0677925d509d1760b09f82c528b1d7b",
+      "blockNumber": 70918337
+    },
+    {
+      "label": "CaseC assign jury",
+      "hash": "0x2f962237ccc95224af6438da71c22e141c26b09c4eff5b4ce8dd6bb29599a57f",
+      "blockNumber": 70918347
+    },
+    {
+      "label": "CaseC approve juror-1",
+      "hash": "0x9d09e6c0ad4a03406c41bb28e912de5313537d639e3593b2fbac01c3398cd0e2",
+      "blockNumber": 70918484
+    },
+    {
+      "label": "CaseC approve juror-2",
+      "hash": "0xf2d1a2d8fc9c7683bb5facd27be91c7f1bc0785f68a352cf133cfa779cd09470",
+      "blockNumber": 70918494
+    },
+    {
+      "label": "CaseC payout",
+      "hash": "0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63",
+      "blockNumber": 70918504
+    }
+  ],
+  "pool": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895",
+  "chainId": 5042002,
+  "policies": {
+    "member-a": {
+      "id": "1",
+      "start": 1793904050,
+      "end": 1796496050,
+      "limit": "5.0"
+    },
+    "member-b": {
+      "id": "2",
+      "start": 1793904061,
+      "end": 1796496061,
+      "limit": "5.0"
+    }
+  },
+  "poolBalance": "3.85",
+  "verifiedMembers": "9",
+  "cases": {
+    "A": {
+      "id": "dfd3e4f9-9008-4e60-b420-f10ae15c5f81",
+      "member": "member-a",
+      "requestedAmount": "0.50",
+      "testEvidence": true,
+      "missingDocumentRequest": {
+        "claimId": "dfd3e4f9-9008-4e60-b420-f10ae15c5f81",
+        "requestId": "fd67e15b-0244-46ea-915a-15b8a4ed9764",
+        "memberId": "member-a"
+      },
+      "analysisSource": "azure",
+      "chainClaimId": "0x3cecf0d9e44603cdd156e45dddfb206fcd698938c066aa2589f7d336677ca144",
+      "status": "paid",
+      "payoutTx": "0x99b9ff5721caaf32b2263f9b13d0dbaf37ce9415a3ff2d01d12d35dd4ef8fb4f",
+      "balanceIncreaseAtomic": "500000"
+    },
+    "B": {
+      "id": "beca3842-52a4-4744-bde2-7033087bed3d",
+      "member": "member-b",
+      "requestedAmount": "0.40",
+      "testEvidence": true,
+      "missingDocumentRequest": {
+        "claimId": "beca3842-52a4-4744-bde2-7033087bed3d",
+        "requestId": "3805a7ed-a066-480b-9454-ebfcd0291814",
+        "memberId": "member-b"
+      },
+      "analysisSource": "azure",
+      "chainClaimId": "0x7dba393d3ac356356078f157834db41d72047d527867463ea8b8903edf87ff4c",
+      "status": "paid",
+      "payoutTx": "0x9740c683d839971953d61afad540597c17ffee9a144864bc85e3ea1f271c7a99",
+      "balanceIncreaseAtomic": "400000"
+    },
+    "C": {
+      "id": "377cfc03-c98d-4e89-bb99-178fd6811a2e",
+      "member": "member-a",
+      "requestedAmount": "0.25",
+      "testEvidence": true,
+      "analysisSource": "azure",
+      "chainClaimId": "0x91ec1efe6ddf1fccc7035b2cee73a0e6d2c3e33a0afddeb66abed094e791c950",
+      "status": "paid",
+      "payoutTx": "0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63",
+      "balanceIncreaseAtomic": "250000",
+      "policyId": "3",
+      "missingDocumentRequest": {
+        "claimId": "377cfc03-c98d-4e89-bb99-178fd6811a2e",
+        "requestId": "918df296-2b0b-4769-9e1c-736c18915bd9",
+        "memberId": "member-a",
+        "requestStatus": "answered"
+      },
+      "analysisFindings": 5
+    }
+  },
+  "governance": {
+    "id": "1",
+    "eligible": "9",
+    "executed": true,
+    "executionTx": "0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646",
+    "oldPolicyLimit": "5000000",
+    "futureCoverageLimit": "6000000",
+    "allSnapshotVotersParticipated": true
+  },
+  "lastVerifiedAt": "2026-11-06T05:48:40.081Z"
+}

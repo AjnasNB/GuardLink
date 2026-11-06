@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-11-05T19:54:01.249Z",
+  "claimId": "dfd3e4f9-9008-4e60-b420-f10ae15c5f81",
+  "evidenceId": "72f48f50-a315-4fe3-9367-a8757b730ce0",
+  "archive": {
+    "archived": 0,
+    "encrypted": true,
+    "roundTripVerified": true
+  },
+  "swarmReference": "57f4288a00a9685e070158acb1c9ca4bd8d7f41e761bd8f194404b45f2441693",
+  "arkivEntityKey": "0xe8368dc91e7150767bc7d73c91ab0d8107ea4e0761e189118f7199e32cc0fa09",
+  "ciphertextGateway": "https://api.gateway.ethswarm.org/bytes/57f4288a00a9685e070158acb1c9ca4bd8d7f41e761bd8f194404b45f2441693",
+  "provider": "Swarm Foundation public testing gateway",
+  "batchHeader": "0000000000000000000000000000000000000000000000000000000000000000",
+  "actualProviderBatchId": "not disclosed by public gateway; sponsor provenance follow-up required",
+  "plaintextSha256": "9587c226cee1617047ce44975d1c15c2bae561d7ce934bc88d595474a023cc10",
+  "authorizedPdfHashMatched": true,
+  "unauthenticatedDenied": true,
+  "publicBytesAreCiphertext": true,
+  "status": "passed",
+  "bonusDocumentationComplete": false
+}

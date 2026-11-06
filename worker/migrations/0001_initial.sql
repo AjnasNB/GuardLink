@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS members(id TEXT PRIMARY KEY, wallet TEXT UNIQUE, auth_subject TEXT UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'member', community_id TEXT NOT NULL DEFAULT 'kerala-demo', verified INTEGER NOT NULL DEFAULT 0, demo INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS auth_challenges(id TEXT PRIMARY KEY,wallet TEXT NOT NULL,message TEXT NOT NULL,expires_at INTEGER NOT NULL,used INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY,member_id TEXT NOT NULL,expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS communities(id TEXT PRIMARY KEY,name TEXT NOT NULL,location TEXT NOT NULL,description TEXT NOT NULL,terms TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS claims(id TEXT PRIMARY KEY,member_id TEXT NOT NULL,community_id TEXT NOT NULL,data TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0,updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,claim_id TEXT NOT NULL,member_id TEXT NOT NULL,kind TEXT NOT NULL,name TEXT NOT NULL,sha256 TEXT NOT NULL,ciphertext BLOB,iv TEXT NOT NULL,swarm_reference TEXT,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY,claim_id TEXT,kind TEXT NOT NULL,public_data TEXT NOT NULL,created_at TEXT NOT NULL,arkiv_key TEXT);
+CREATE TABLE IF NOT EXISTS transfers(tx_hash TEXT PRIMARY KEY,member_id TEXT NOT NULL,kind TEXT NOT NULL,amount TEXT NOT NULL,confirmed INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS claim_owner ON claims(member_id);
+CREATE INDEX IF NOT EXISTS evidence_claim ON evidence(claim_id);
+CREATE INDEX IF NOT EXISTS event_case ON events(claim_id,created_at);
+INSERT OR IGNORE INTO communities VALUES('kerala-demo','Kerala Care Cooperative','Kerala, India','A clearly labelled test community for members to contribute and review claims together.','{"contribution":"1","coverageLimit":"5","termDays":30,"jurySize":3,"requiredVotes":2,"testnet":true}');

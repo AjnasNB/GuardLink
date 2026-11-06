@@ -1,0 +1,95 @@
+{
+  "testnet": true,
+  "sourceChainId": 84532,
+  "destinationChainId": 5042002,
+  "source": "0xeb010023C8c20FA1E1A849373E36bf9B1f82DE11",
+  "recipient": "0x6E70a2D98A7aEf32ab3450a67fF593BB4cE6ebF6",
+  "steps": [
+    {
+      "label": "wrap-test-eth",
+      "chainId": 84532,
+      "hash": "0xaade013d14b40ef679a268851a0d81fbbfcf1b7395419c529e696a16e9bdeb0e",
+      "block": "54940013"
+    },
+    {
+      "label": "approve-exact-demo-swap",
+      "chainId": 84532,
+      "hash": "0x6261071bbb20337ef5a18b45999ec8c4e8a2aa2983b87c37010c5e0d39712475",
+      "block": "54940028"
+    },
+    {
+      "label": "swap-demo-token-for-canonical-usdc",
+      "chainId": 84532,
+      "hash": "0xb063d608febe4f5dc30df6bca66f691b4a984ed7d47a53bf2ab4c474142bc90d",
+      "block": "54940046"
+    },
+    {
+      "label": "approve-bridged-contribution",
+      "chainId": 5042002,
+      "hash": "0x5c2ef7fd92c7c27e5074a1f2524097109ff45e239ecf052f4356b5b7cd835db7",
+      "block": "70914719"
+    },
+    {
+      "label": "deposit-canonical-usdc-and-issue-policy",
+      "chainId": 5042002,
+      "hash": "0x2cc5c370e1a440be29da3be1901a5306937d583b9b47374c6184b911590d5c19",
+      "block": "70914725"
+    }
+  ],
+  "pool": "0x57183717A087d2fe3Ad890873877244c3B96156c",
+  "swap": {
+    "txHash": "0xb063d608febe4f5dc30df6bca66f691b4a984ed7d47a53bf2ab4c474142bc90d",
+    "amountIn": "0.001",
+    "tokenIn": "WETH",
+    "received": "2.243326",
+    "minimum": "2.232109",
+    "priceImpactBps": 3
+  },
+  "arcBeforeAtomic": "2484569",
+  "preflight": {
+    "attemptedAt": "2026-11-05T20:19:14.422Z",
+    "outcome": "BridgeKit rejected explicit source address for user-controlled adapter before any transaction; balance and pending nonce unchanged"
+  },
+  "bridgeStartedAt": "2026-11-05T20:20:44.233Z",
+  "bridge": {
+    "state": "success",
+    "amount": "1.1",
+    "steps": [
+      {
+        "name": "approve",
+        "state": "success",
+        "txHash": "0xbeb223ea063dcf22244be384948c9dc166bfbe30071aba58d11ec84f7bd29b3f"
+      },
+      {
+        "name": "burn",
+        "state": "success",
+        "txHash": "0x7e715ae48ec0e5959d53e77567ed2b0bb826a19accd1a46d0000403aefe9f3d3"
+      },
+      {
+        "name": "fetchAttestation",
+        "state": "success"
+      },
+      {
+        "name": "mint",
+        "state": "success",
+        "txHash": "0xb4db4066d78454807ae3528ff100ee276cf074745da3e21256bff69b1bc45ec0"
+      }
+    ],
+    "arcReceivedAtomic": "1096341"
+  },
+  "contribution": {
+    "txHash": "0x2cc5c370e1a440be29da3be1901a5306937d583b9b47374c6184b911590d5c19",
+    "policyId": "3",
+    "amount": "1"
+  },
+  "verification": {
+    "checkedAt": "2026-11-05T20:23:07.953Z",
+    "sourceSwapReceipt": true,
+    "canonicalUsdcBurnReceipt": true,
+    "destinationBalanceAtMintBlock": true,
+    "depositReceipt": true,
+    "policyOwnerConfirmed": true,
+    "policyLimitAtomic": "6000000",
+    "transactionsSent": 0
+  }
+}

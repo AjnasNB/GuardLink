@@ -1,0 +1,40 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 529 >>
+stream
+BT /F1 12 Tf 50 780 Td (DEMO BILL) Tj
+0 -24 Td (SYNTHETIC TEST EVIDENCE - NOT A REAL MEDICAL RECORD) Tj
+0 -24 Td (Case reference: synthetic-example) Tj
+0 -24 Td (Fictional participant: Demo member A) Tj
+0 -24 Td (Treatment timestamp: 2026-11-05T18:35:02.951Z) Tj
+0 -24 Td (Scenario: Eye procedure reimbursement in a test cooperative.) Tj
+0 -24 Td (Test reimbursement requested: 0.50 USDC.) Tj
+0 -24 Td (Amounts are test units, not a real hospital price.) Tj
+0 -24 Td (Test charge paid in full. No outstanding test charges.) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000821 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+891
+%%EOF

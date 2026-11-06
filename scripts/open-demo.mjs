@@ -1,0 +1,8 @@
+import {createServer} from 'node:http';
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {secretDir,loadWallet} from './wallet-store.mjs';
+const actorId=process.argv[2]??'member-a';const base=process.argv[3]??'https://guardlink.ajnasnb.com';const actors=JSON.parse(readFileSync(join(secretDir,'actors.local.json'),'utf8'));const actor=actors.find(a=>a.id===actorId);if(!actor)throw new Error('Choose an actor from docs/ethglobal/demo-actors.public.json.');const wallet=await loadWallet(actor);const headers={'Content-Type':'application/json'};
+async function api(path,body,cookie){const response=await fetch(`${base}/api/v1${path}`,{method:'POST',headers:{...headers,...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.error??'Demo sign-in failed.');return{data,cookie:response.headers.get('set-cookie')?.split(';')[0]};}
+const challenge=await api('/auth/challenge',{wallet:actor.address});const signature=await wallet.signMessage(challenge.data.message);const login=await api('/auth/verify',{id:challenge.data.id,signature});const handoff=await api('/auth/handoff',{},login.cookie);
+const server=createServer((request,response)=>{if(request.url!=='/'||request.headers.origin){response.writeHead(403);response.end();return;}response.writeHead(302,{'Location':new URL(handoff.data.path,base).href,'Cache-Control':'no-store'});response.end();setTimeout(()=>server.close(),500);});server.listen(8899,'127.0.0.1',()=>console.log(`Ready: open http://localhost:8899 in Chrome within60seconds to sign in as ${actor.name}. No private key enters the browser.`));setTimeout(()=>server.close(),60000);

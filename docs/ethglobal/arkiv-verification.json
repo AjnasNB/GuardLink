@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-11-05T20:09:48.238Z",
+  "chainId": 7794095,
+  "writer": "0xd8E339b19353afDAF75EfeEdA7fDB88320420553",
+  "publish": {
+    "published": 3
+  },
+  "queriedRecords": 21,
+  "caseQuery": {
+    "claimId": "dfd3e4f9-9008-4e60-b420-f10ae15c5f81",
+    "matched": 14
+  },
+  "sample": {
+    "id": "f866835f-0580-427e-935b-9778d6ef47f0",
+    "kind": "paid",
+    "public_data": "{\"claimId\":\"dfd3e4f9-9008-4e60-b420-f10ae15c5f81\",\"status\":\"paid\",\"transactionHash\":\"0x99b9ff5721caaf32b2263f9b13d0dbaf37ce9415a3ff2d01d12d35dd4ef8fb4f\"}",
+    "created_at": "2026-11-05T19:40:02.053Z",
+    "arkiv_key": "0xbe816317a0e4cdc19500756e5cd23e0825f1ef2b43fd0ca4db844e23e307e55a",
+    "owner": "0xd8E339b19353afDAF75EfeEdA7fDB88320420553",
+    "swarmReference": null
+  },
+  "agreement": {
+    "id": "0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646:39",
+    "kind": "community_terms",
+    "public_data": "{\"claimId\":null,\"status\":\"current_at_execution\",\"transactionHash\":\"0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646\",\"poolAddress\":\"0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895\",\"contribution\":\"1\",\"coverageLimit\":\"6\",\"termDays\":30,\"proposalId\":\"1\"}",
+    "created_at": "2026-11-05T20:08:52.367Z",
+    "arkiv_key": "0x823e6aae9a83c363dfa405ed842130439d210de15c912d9a715c4fc67409878b",
+    "owner": "0xd8E339b19353afDAF75EfeEdA7fDB88320420553",
+    "swarmReference": null
+  },
+  "governance": {
+    "id": "0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646:40",
+    "kind": "governance_executed",
+    "public_data": "{\"claimId\":null,\"status\":\"executed\",\"transactionHash\":\"0xab39a350cc31af20d2fd7954e3b6c117236eb88889f5f25ada9e3c5491479646\",\"proposalId\":\"1\",\"yesVotes\":\"9\",\"noVotes\":\"0\",\"eligible\":\"9\"}",
+    "created_at": "2026-11-05T20:08:52.555Z",
+    "arkiv_key": "0xa7485b0a5908c62f69328e6c53de05b9ca921b0cbdde80d47511d9a067a18293",
+    "owner": "0xd8E339b19353afDAF75EfeEdA7fDB88320420553",
+    "swarmReference": null
+  },
+  "status": "passed",
+  "medicalEvidencePublic": false
+}

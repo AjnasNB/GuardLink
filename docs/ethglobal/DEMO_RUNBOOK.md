@@ -1,0 +1,62 @@
+# GuardLink demo runbook
+
+## A public walkthrough
+
+Open https://guardlink.ajnasnb.com. The API runs on Cloudflare too; normal member use does not require localhost. Choose a separate MetaMask test account, select Arc Testnet and sign in. A sign-in message does not authorize a transfer. If the wallet account changes, sign out and sign in again.
+
+Network settings: chain ID **5042002**, RPC `https://rpc.drpc.testnet.arc.io`, native currency **USDC**, 18 native decimals. The canonical ERC-20 USDC interface at `0x3600000000000000000000000000000000000000` uses 6 decimals and represents the same underlying balance. Test assets from a different network do not become Arc funds automatically.
+
+For your own new account, use the official Circle faucet's Arc Testnet option within its limits. Alternatively run `node scripts/fund-test-wallet.mjs YOUR_PUBLIC_TEST_ADDRESS` locally: it tops the chosen address up to 2 test USDC, only on chain 5042002, using the encrypted deployment wallet. It never prints a private key. After requesting membership, the designated operator verifies this explicitly labelled test identity.
+
+Do not import the deployment account into MetaMask. To demonstrate existing test identities without moving private keys into Chrome, run:
+
+```powershell
+node scripts/open-demo.mjs member-a
+```
+
+Open the printed local loopback link within 60 seconds. It redirects to the public HTTPS app with a one-use handoff. This helper signs locally; it does not install a browser wallet or authorize browser transactions. Use the CLI for existing-actor transactions, or a separately funded MetaMask account for an interactive signing demonstration.
+
+Repeat with `member-b`, `contact`, `juror-1`, `juror-2`, `juror-3`, `appeal-1`, `appeal-2`, or `appeal-3`. Public addresses and synthetic role names are in `demo-actors.public.json`. Account cookies are shared within one Chrome profile: switching identity changes that profile's session. Use separate Chrome profiles for simultaneous role windows. Do not label the wallets independent human users.
+
+## What to show
+
+1. Member A: My coverage shows policy #1, contribution and remaining limit. My claims opens paid case A with three synthetic documents and an AI-assisted evidence recommendation.
+2. Member B: case B shows the appealed, paid case and its receipt. Explain the distinct initial and appeal panels from the chain ledger.
+3. Assigned juror: Review cases lists only assigned cases. A live pending case provides the decision form; a resolved case cannot receive another vote.
+4. Contact: receives no medical access by role alone. Before jury assignment, a claimant can explicitly authorize a helper for that case. The chosen helper is excluded from its jury.
+5. Cooperative setup: only the designated on-chain operator wallet can verify members or assign panels. Operator access does not grant medical evidence access.
+6. Community votes: inspect the executed proposal, nine supporting votes and preserved old policy terms. Future coverage is now 6 test USDC. Do not pretend the executed proposal is still accepting votes.
+7. My community: current contribution, limit and duration come from chain reads.
+8. Follow the fund: public status records contain no medical evidence. The live view reads Arkiv. Open a claim’s “Follow public milestones” link for its case-scoped query. The all-record view also includes the verified coverage agreement and DAO outcome.
+
+Use `node scripts/live-claims.mjs` only to resume the existing cases; it preserves paid-case receipts. `node scripts/live-governance.mjs` preserves the executed proposal. These scripts send actual testnet transactions when a step is incomplete. `node scripts/verify-live.mjs` verifies receipts, private access, operator gating and current terms without sending chain transactions. `node scripts/arc-demo.mjs` can top up labelled actors and enrol them; it does not reset governance.
+
+For a fresh browser case, contribute for coverage, create a synthetic claim, upload `fixtures/synthetic/bill.pdf` and `discharge_summary.pdf`, request preparation, then upload the prescription under that same case. PDFs clearly identify themselves as synthetic. Never upload real family medical records into this hackathon environment.
+
+## Evidence and pending work
+
+The run ledger contains three claimant payouts of 0.50, 0.40 and 0.25 test USDC, confirmed receipt hashes and an executed nine-voter proposal. Contract source verification matches creation and runtime. Contract suite: 185 tests (152 pool, 33 mock token). Domain/privacy suite: seven tests. Live API authentication smoke: nine checks. Live verification covers role access, all three receipts and duplicate settlement protection. It writes local evidence reports and sends no transactions.
+
+Arkiv and Swarm are live and linked. The public Swarm gateway does not disclose actual postage batch provenance; obtain it before representing the bonus paperwork as complete. The Base Sepolia Uniswap swap, CCTP transfer and separate Arc deposit have successful receipts and policy #3. View the verified example in My coverage. Email OTP still awaits provider setup.
+
+## Recording
+
+The live walkthrough records the public app and a new synthetic test case, `GL-377CFC03`. The checklist opened a prescription request for the existing member and case. The member added the prescription and requested analysis in Chrome. Azure returned five findings, the same request was marked answered, and the case became ready for review. The testnet signers registered the case and assigned the panel. The recording shows the assigned juror's form, the two recorded approvals, and the [confirmed 0.25 test USDC payout](https://testnet.arcscan.app/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63). The exact wallet balance increase and duplicate settlement rejection were checked. See the [receipt ledger](demo-run.public.json) and [live verification](live-verification.json).
+
+The picture edit is silent and comes with timed narration cues. The final submission video needs the founder's spoken track. Play the local picture edit and use a desktop audio recorder to save a separate microphone track. Keep playback muted and send the original take to the editor. Cut waiting time while keeping actions at their original speed. Exclude credential screens, private contacts and real medical records.
+
+## Four partner proofs for the live demo
+
+Before presenting, run `node scripts/open-demo.mjs member-a` from the repository root and open the one-use local link. Preload the following tabs. The walkthrough uses completed testnet examples and does not require a new swap, payout or wallet approval.
+
+| Time | Show | Say |
+| --- | --- | --- |
+| 0:00–0:45 | [My coverage](https://guardlink.ajnasnb.com/app/coverage/). Expand **Follow the test contribution and its receipts**. | “On Base Sepolia, Uniswap v3 swapped 0.001 WETH into 2.243326 test USDC. CCTP delivered 1.096341 USDC to Arc. A separate one-USDC deposit issued policy #3.” |
+| 0:45–1:45 | [Paid claim C](https://guardlink.ajnasnb.com/app/claims/377cfc03-c98d-4e89-bb99-178fd6811a2e/), then [Arc payout receipt](https://testnet.arcscan.app/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63). | “The missing prescription went back into the same claim. Two jurors approved it. GuardLinkPool paid 0.25 test USDC, and we checked the recipient balance.” |
+| 1:45–2:10 | [Arc Studio](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d) → **Contracts** → **GuardLinkPool.sol** → Arc Testnet deployment **0x335d…c895**. | “This is the Studio workspace where I built and deployed the settlement contract. The deployment address is the same as the contract in the payout receipt.” |
+| 2:10–2:45 | [Claim A's public timeline](https://guardlink.ajnasnb.com/app/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81). Point to the paid record and evidence archived entries. | “This is a live Arkiv query scoped to one case. It returns public milestones and the payment receipt. The document itself stays private.” |
+| 2:45–3:30 | [Claim A](https://guardlink.ajnasnb.com/app/claims/dfd3e4f9-9008-4e60-b420-f10ae15c5f81/) → **Private documents** → **bill · Encrypted archive**. If the browser downloads the PDF, open that download. | “The signed-in member can open the synthetic bill. We checked that the PDF matches the original SHA-256, the public Swarm gateway returns ciphertext, and the same file URL rejects an anonymous request.” |
+
+Use the confirmed Base Sepolia receipts in GuardLink for Uniswap. The Studio workspace also contains an older Ethereum Sepolia mock preview. In Studio, open the Contracts panel and use the deployment identified above. Its owner session was verified. Confirm judge access separately before submission.
+
+The local 3:44 partner picture cut shows Uniswap proof at **0:57**, Arc settlement and the Studio workspace at **2:21–2:49**, the live Arkiv timeline at **3:14**, and the linked archive and retrieved Swarm bill at **3:22.5–3:34.5**. The cut awaits founder narration. The Swarm integration works against the sponsor gateway and the actual postage batch ID and buyer/provider attribution are still required for the bonus.

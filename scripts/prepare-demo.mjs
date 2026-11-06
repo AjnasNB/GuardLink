@@ -1,0 +1,10 @@
+import {writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {createStoredWallet,secretDir} from './wallet-store.mjs';
+const roles=[['member-a','Demo member A','member'],['member-b','Demo member B','member'],['contact','Demo support contact','contact'],['juror-1','Demo juror 1','juror'],['juror-2','Demo juror 2','juror'],['juror-3','Demo juror 3','juror'],['appeal-1','Demo appeal reviewer 1','appeal_juror'],['appeal-2','Demo appeal reviewer 2','appeal_juror'],['appeal-3','Demo appeal reviewer 3','appeal_juror']];
+const actors=[];for(const[id,name,role]of roles)actors.push({...await createStoredWallet(id),name,role,demo:true});
+writeFileSync(join(secretDir,'actors.local.json'),JSON.stringify(actors,null,2));
+writeFileSync('docs/ethglobal/demo-actors.public.json',JSON.stringify(actors.map(({id,address,name,role,demo})=>({id,address,name,role,demo})),null,2)+'\n');
+const esc=s=>`'${s.replaceAll("'","''")}'`;
+writeFileSync('worker/migrations/0002_demo_members.sql',actors.map(a=>`INSERT OR IGNORE INTO members(id,wallet,name,role,community_id,verified,demo,created_at) VALUES(${[a.id,a.address.toLowerCase(),a.name,a.role,'kerala-demo'].map(esc).join(',')},1,1,'2026-11-05T00:00:00.000Z');`).join('\n')+'\n');
+console.log(JSON.stringify({actors:actors.map(a=>({id:a.id,address:a.address,role:a.role})),privateKeys:'Encrypted with local Windows-protected passwords; never committed.'},null,2));

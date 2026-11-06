@@ -1,0 +1,18 @@
+{
+  "chainId": 421614,
+  "network": "arbitrumSepolia",
+  "contracts": {
+    "stablecoin": "0x7438af9FC68fE976e33029E570720d19A975baC7",
+    "governanceToken": "0x9B3A8167eb01246688705FC1C11F81Efa7350fc5",
+    "policyNFT": "0x7596B7c1Ad9490275eC143a6bc1bbd495e338A8C",
+    "claimsEngine": "0x54A4c8006272fDeA157950421ceBeb510387af83",
+    "surplusDistributor": "0x41A34F8150226c57E613A07B9750EB5dA0076317",
+    "governance": "0xe3ca0A9B4D66b8dCf7B44c914Bd2c97b2a379D78",
+    "juryOracle": "0xA5ed6d4057D73B4D3F6fb0A6ec71334FD932eFE1",
+    "voteTally": "0xAAe39523b50aC68AF0710Fa84ff28934F09e61C5",
+    "appealSystem": "0x2Ad335BB9Ee03d71c1b6183ddd0BB92642118503",
+    "parametricTriggers": "0x037E960c64a5d37614a204fB6a27620Bc8076A4b"
+  },
+  "rpcUrl": "https://sepolia-rollup.arbitrum.io/rpc",
+  "blockExplorer": "https://sepolia.arbiscan.io"
+}

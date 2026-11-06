@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {secretDir,loadWallet} from './wallet-store.mjs';
+const base=process.argv[2]??'http://localhost:8787';const actors=JSON.parse(readFileSync(join(secretDir,'actors.local.json'),'utf8'));const actor=actors.find(a=>a.id==='member-a');const wallet=await loadWallet(actor);const headers={'Content-Type':'application/json'};
+assert.equal((await fetch(`${base}/health`)).status,200);
+assert.equal((await fetch(`${base}/api/v1/me`)).status,401);
+assert.equal((await fetch(`${base}/api/v1/evidence/unknown`)).status,401);
+assert.equal((await fetch(`${base}/api/v1/auth/challenge`,{method:'POST',headers:{...headers,Origin:'https://untrusted.invalid'},body:JSON.stringify({wallet:wallet.address})})).status,403);
+const challenge=await (await fetch(`${base}/api/v1/auth/challenge`,{method:'POST',headers,body:JSON.stringify({wallet:wallet.address})})).json();const signature=await wallet.signMessage(challenge.message);const body=JSON.stringify({id:challenge.id,signature});const login=await fetch(`${base}/api/v1/auth/verify`,{method:'POST',headers,body});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie').split(';')[0];const me=await (await fetch(`${base}/api/v1/me`,{headers:{Cookie:cookie}})).json();assert.equal(me.id,'member-a');assert.equal(me.demo,1);assert.equal((await fetch(`${base}/api/v1/auth/verify`,{method:'POST',headers,body})).status,401);assert.equal((await fetch(`${base}/api/v1/claims`,{headers:{Cookie:cookie}})).status,200);assert.equal((await fetch(`${base}/api/v1/auth/logout`,{method:'POST',headers:{...headers,Cookie:cookie}})).status,200);assert.equal((await fetch(`${base}/api/v1/me`,{headers:{Cookie:cookie}})).status,401);console.log(JSON.stringify({base,checks:9,status:'passed',actor:actor.id,chainTransactions:0}));

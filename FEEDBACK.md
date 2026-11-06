@@ -1,0 +1,9 @@
+# GuardLink Uniswap integration feedback
+
+We use Uniswap v3 as an optional way to turn a supported contribution token into canonical USDC before an Arc cooperative deposit. The route is separated into quote, swap, bridge and deposit, and only the last confirmed Arc contribution issues coverage.
+
+The Ethereum Sepolia deployment table and `factory()` reads provided a clear way to confirm official factory, position manager, quoter and Router02 addresses. Router02's `exactInputSingle` omits a deadline, so the route wraps it in `multicall(deadline,data)`. We use exact allowances, a 0.5% slippage limit, a 5% price-impact refusal, and verify receipt success and actual USDC output. The valueless GLCT pool uses a deliberately synthetic price.
+
+The Arc Studio implementation executed seeding and swapping against the official protocol on a Sepolia fork. It is explicitly a rehearsal. The GLCT token has a real Sepolia deployment and matching verified source. The final live route uses existing official Base Sepolia v3 WETH/USDC liquidity because the dedicated wallet was funded on Base Sepolia. A 0.001 WETH swap produced 2.243326 canonical test USDC with a 2.232109 minimum; CCTP transferred 1.1 USDC, the member wallet increased by 1.096341 USDC, and a separate 1 USDC Arc deposit issued policy #3. The route and independent verification are recorded in `docs/ethglobal/contribution-route.base-sepolia.public.json`. The earlier Circle hosted-key and faucet-permission friction was resolved for the demo by using encrypted local test signers.
+
+What would help: a canonical small test liquidity market with token, pool, quote and swap receipts, plus an example that tracks a swap through a destination deposit without treating a source receipt as destination credit. Our route implementation is in `onchain/conversion/` and `scripts/contribution-route.mjs`. `onchain/conversion/fork-rehearsal.json` contains only fork evidence.

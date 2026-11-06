@@ -1,0 +1,65 @@
+[
+  {
+    "id": "member-a",
+    "address": "0x6E70a2D98A7aEf32ab3450a67fF593BB4cE6ebF6",
+    "name": "Demo member A",
+    "role": "member",
+    "demo": true
+  },
+  {
+    "id": "member-b",
+    "address": "0x0eC0Eb4B4dBF54bCb48364279EEbDC1b259ad06D",
+    "name": "Demo member B",
+    "role": "member",
+    "demo": true
+  },
+  {
+    "id": "contact",
+    "address": "0x2086cE6C780391f2f481c51b369BBE1D0B387CB2",
+    "name": "Demo support contact",
+    "role": "contact",
+    "demo": true
+  },
+  {
+    "id": "juror-1",
+    "address": "0x1106c949Aec6a5E770F31b28B0C572218763Ff8B",
+    "name": "Demo juror 1",
+    "role": "juror",
+    "demo": true
+  },
+  {
+    "id": "juror-2",
+    "address": "0x8e29d3d1E0F14cc84a659D0d46705eC59dbc1479",
+    "name": "Demo juror 2",
+    "role": "juror",
+    "demo": true
+  },
+  {
+    "id": "juror-3",
+    "address": "0xCe68D295Ac999136AAac9083be39C625b674005F",
+    "name": "Demo juror 3",
+    "role": "juror",
+    "demo": true
+  },
+  {
+    "id": "appeal-1",
+    "address": "0xB1e938AE701977d450a85441B29470F4e3C3201f",
+    "name": "Demo appeal reviewer 1",
+    "role": "appeal_juror",
+    "demo": true
+  },
+  {
+    "id": "appeal-2",
+    "address": "0x8733A90af460AA9692165C0C99b69050d31eD96D",
+    "name": "Demo appeal reviewer 2",
+    "role": "appeal_juror",
+    "demo": true
+  },
+  {
+    "id": "appeal-3",
+    "address": "0x2a6e76C61542f0E154708e025F291cF1b9Ba9438",
+    "name": "Demo appeal reviewer 3",
+    "role": "appeal_juror",
+    "demo": true
+  }
+]
