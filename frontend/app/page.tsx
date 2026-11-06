@@ -117,8 +117,8 @@ export default function Home() {
         </div>
         <div className="story-progress" id="progress">
           <h3>A year of work. Here’s where we are.</h3>
-          <div className="story-outreach">
-            <p className="section-note">Community outreach reported by the founder</p>
+          <section className="story-outreach" id="community-outreach" aria-labelledby="community-outreach-title">
+            <h4 id="community-outreach-title">Community outreach done</h4>
             <dl>
               <div>
                 <dt>Direct interactions</dt>
@@ -129,7 +129,7 @@ export default function Home() {
                 <dd>2 lakh+</dd>
               </div>
             </dl>
-          </div>
+          </section>
           <ol className="story-milestones">
             <li>
               <h4>Listening in Kerala</h4>

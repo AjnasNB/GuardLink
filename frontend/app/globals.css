@@ -340,6 +340,12 @@ small {
 }
 .story-outreach {
   margin-top: clamp(24px, 4vw, 48px);
+  scroll-margin-top: 6rem;
+}
+.story-outreach h4 {
+  margin: 0 0 20px;
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1.12;
 }
 .story-outreach dl {
   display: flex;
