@@ -54,6 +54,7 @@ export default function Transparency({
       <PageHeading
         title="A fund you can follow."
         description="Public process records. Private medical evidence. A distinction that matters."
+        action={<Link className="button button-outline" href="/ledger">View public transaction ledger <ExternalLink size={16} /></Link>}
       />
       {caseId && (
         <div className="inline-note">

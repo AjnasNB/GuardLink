@@ -12,8 +12,8 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
-import { api, type Config, type Member } from "../lib/api";
-import { wallet, switchArc } from "../lib/wallet";
+import { api, type Config } from "../lib/api";
+import { signInWithWallet } from "../lib/wallet";
 function EmailButton() {
   const { login, authenticated, getAccessToken } = usePrivy();
   const [error, setError] = useState("");
@@ -58,20 +58,7 @@ export default function AuthPanel({ signup = false }: { signup?: boolean }) {
     setBusy(true);
     setError("");
     try {
-      await switchArc();
-      const { client, account } = await wallet();
-      const challenge = await api<{ id: string; message: string }>(
-        "/auth/challenge",
-        { method: "POST", body: JSON.stringify({ wallet: account }) },
-      );
-      const signature = await client.signMessage({
-        account,
-        message: challenge.message,
-      });
-      const result = await api<{ member: Member }>("/auth/verify", {
-        method: "POST",
-        body: JSON.stringify({ id: challenge.id, signature }),
-      });
+      const result = await signInWithWallet();
       location.assign(
         result.member.name === "New member" ? "/app/onboarding" : "/app",
       );

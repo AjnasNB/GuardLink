@@ -17,6 +17,7 @@ import {
 import { guardlinkAbi } from "@guardlink/domain/abi";
 import { arcClient, syncFromArc } from "./adapters/arc";
 import { publishPending, queryPublicRecords } from "./adapters/arkiv";
+import { ledgerQuery, loadLedger } from "./adapters/ledger";
 import { jwtVerify, importSPKI } from "jose";
 import { z } from "zod";
 import {
@@ -300,6 +301,15 @@ app.get("/api/v1/auth/consume", async (c) => {
 app.get("/api/v1/communities", async (c) =>
   c.json((await c.env.DB.prepare("SELECT * FROM communities").all()).results),
 );
+app.get("/api/v1/ledger", async (c) => {
+  const query = ledgerQuery.safeParse(c.req.query());
+  if (!query.success) return c.json({ error: "Choose a valid ledger view or page." }, 400);
+  try {
+    return c.json(await loadLedger(c.env.ARC_POOL_ADDRESS, query.data));
+  } catch {
+    return c.json({ error: "The Arc ledger is temporarily unavailable. Try again shortly." }, 503);
+  }
+});
 app.get("/api/v1/transparency", async (c) => {
   if (c.env.ARKIV_RPC) {
     try {

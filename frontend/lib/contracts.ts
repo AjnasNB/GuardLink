@@ -39,18 +39,22 @@ export const poolAbi = parseAbi([
 const erc20 = parseAbi([
   "function approve(address,uint256) returns(bool)",
   "function balanceOf(address) view returns(uint256)",
+  "function allowance(address,address) view returns(uint256)",
 ]);
+export class WalletSessionMismatchError extends Error {
+  constructor() {
+    super("Your selected wallet differs from this GuardLink session. Sign in with the wallet already selected to continue.");
+  }
+}
 async function authorizedWallet() {
-  await switchArc();
   const current = await wallet();
   const member = await api<Member>("/me");
   if (
     !member.wallet ||
     member.wallet.toLowerCase() !== current.account.toLowerCase()
   )
-    throw new Error(
-      "Your wallet account changed. Sign out and sign in with this account before continuing.",
-    );
+    throw new WalletSessionMismatchError();
+  await switchArc(current.client);
   return current;
 }
 export async function poolWrite(
@@ -74,27 +78,38 @@ export async function poolWrite(
 export async function contribute(address: string, expectedContribution?: string) {
   if (!address) throw new Error("Community settlement is not connected yet.");
   const { client, account } = await authorizedWallet();
-  const amount = await publicClient.readContract({
-    address: address as Address,
-    abi: poolAbi,
-    functionName: "contributionAmount",
-  });
+  const pool = address as Address;
+  const [verified, amount, balance, allowance] = await Promise.all([
+    publicClient.readContract({ address: pool, abi: poolAbi, functionName: "verifiedMembers", args: [account] }),
+    publicClient.readContract({ address: pool, abi: poolAbi, functionName: "contributionAmount" }),
+    publicClient.readContract({ address: usdcAddress, abi: erc20, functionName: "balanceOf", args: [account] }),
+    publicClient.readContract({ address: usdcAddress, abi: erc20, functionName: "allowance", args: [account, pool] }),
+  ]);
+  if (!verified) throw new Error("Ask the cooperative to verify this wallet before contributing.");
   if (expectedContribution !== undefined && amount !== parseUnits(expectedContribution, 6)) {
     throw new Error("The contribution amount changed. Refresh the community terms before continuing.");
   }
-  const approval = await client.writeContract({
-    address: usdcAddress,
-    abi: erc20,
-    functionName: "approve",
-    args: [address as Address, amount],
-    account,
-  });
-  const receipt = await publicClient.waitForTransactionReceipt({
-    hash: approval,
-  });
-  if (receipt.status !== "success")
-    throw new Error("Contribution approval failed.");
-  return poolWrite(address, "contribute");
+  if (balance <= amount) throw new Error("Fund this wallet with enough Arc Testnet USDC for the contribution and transaction fees.");
+  const confirmAccount = async () => {
+    const [selected] = await client.getAddresses();
+    if (selected?.toLowerCase() !== account.toLowerCase()) throw new WalletSessionMismatchError();
+  };
+  if (allowance !== amount) {
+    await confirmAccount();
+    const approval = await client.writeContract({
+      address: usdcAddress, abi: erc20, functionName: "approve", args: [pool, amount], account,
+    });
+    const receipt = await publicClient.waitForTransactionReceipt({ hash: approval });
+    if (receipt.status !== "success") throw new Error("Contribution approval failed.");
+  }
+  const currentAmount = await publicClient.readContract({ address: pool, abi: poolAbi, functionName: "contributionAmount" });
+  if (currentAmount !== amount) throw new Error("The contribution amount changed. Refresh the community terms before continuing.");
+  const { request } = await publicClient.simulateContract({ address: pool, abi: poolAbi, functionName: "contribute", account });
+  await confirmAccount();
+  const hash = await client.writeContract(request);
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  if (receipt.status !== "success") throw new Error("The contribution failed on Arc. No coverage was issued.");
+  return hash;
 }
 export async function ownedPolicies(address: string, walletAddress: string) {
   if (!address) return [];

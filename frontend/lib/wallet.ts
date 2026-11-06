@@ -6,6 +6,7 @@ import {
   type Address,
   type EIP1193Provider,
 } from "viem";
+import { api, type Member } from "./api";
 export const arc = defineChain({
   id: 5042002,
   name: "Arc Testnet",
@@ -33,8 +34,9 @@ export async function wallet() {
   if (!account) throw new Error("Choose a wallet account to continue.");
   return { client, account };
 }
-export async function switchArc() {
-  const { client } = await wallet();
+export async function switchArc(client?: Awaited<ReturnType<typeof wallet>>["client"]) {
+  client ??= (await wallet()).client;
+  if (await client.getChainId() === arc.id) return;
   try {
     await client.switchChain({ id: arc.id });
   } catch (error) {
@@ -43,6 +45,19 @@ export async function switchArc() {
       await client.switchChain({ id: arc.id });
     } else throw error;
   }
+}
+export async function signInWithWallet() {
+  const { client, account } = await wallet();
+  await switchArc(client);
+  const challenge = await api<{ id: string; message: string }>("/auth/challenge", {
+    method: "POST",
+    body: JSON.stringify({ wallet: account }),
+  });
+  const signature = await client.signMessage({ account, message: challenge.message });
+  return api<{ member: Member }>("/auth/verify", {
+    method: "POST",
+    body: JSON.stringify({ id: challenge.id, signature }),
+  });
 }
 export const usdcAddress =
   "0x3600000000000000000000000000000000000000" as Address;

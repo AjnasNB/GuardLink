@@ -38,10 +38,12 @@ import {
 import { keccak256, toBytes, parseUnits, formatUnits } from "viem";
 import { type Claim, type DocumentKind } from "@guardlink/domain";
 import { api, money, short, type Config, type Member } from "../lib/api";
+import { signInWithWallet } from "../lib/wallet";
 import {
   contribute,
   ownedPolicies,
   poolWrite,
+  WalletSessionMismatchError,
 } from "../lib/contracts";
 const navigation = [
   { path: "/app", label: "Overview", icon: LayoutDashboard },
@@ -65,6 +67,7 @@ export default function Workspace() {
     [balance, setBalance] = useState<string | null>(null),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
+    [walletMismatch, setWalletMismatch] = useState(false),
     [busy, setBusy] = useState(false),
     [loading, setLoading] = useState(true),
     [navOpen, setNavOpen] = useState(false);
@@ -105,11 +108,13 @@ export default function Workspace() {
     setBusy(true);
     setError("");
     setNotice("");
+    setWalletMismatch(false);
     try {
       await fn();
       setNotice(message);
       await refresh();
     } catch (e) {
+      setWalletMismatch(e instanceof WalletSessionMismatchError);
       setError(
         e instanceof Error ? e.message : "Could not complete this action.",
       );
@@ -120,6 +125,12 @@ export default function Workspace() {
   const route = path.replace("/app", "") || "/";
   const inCommunity = route === "/communities" || route.startsWith("/communities/");
   const inGovernance = route === "/governance" || route.startsWith("/governance/");
+  function useConnectedWallet() {
+    void action(async () => {
+      const { member: signedIn } = await signInWithWallet();
+      if (!signedIn.verified) router.push("/app/communities");
+    }, "Signed in with your selected wallet.");
+  }
   function fundCoverage(expectedContribution?: string) {
     return action(async () => {
       if (!config?.poolAddress) {
@@ -219,6 +230,9 @@ export default function Workspace() {
             <div className="alert error" role="alert">
               <AlertCircle size={18} />
               <span>{error}</span>
+              {walletMismatch && (
+                <button className="text-link" disabled={busy} onClick={useConnectedWallet}>Use my connected wallet</button>
+              )}
               <button onClick={() => setError("")} aria-label="Dismiss error">
                 <X size={16} />
               </button>
@@ -228,6 +242,13 @@ export default function Workspace() {
             <div className="alert success" role="status">
               <CheckCircle2 size={18} />
               {notice}
+            </div>
+          )}
+          {!!member?.demo && (route === "/coverage" || inCommunity) && (
+            <div className="inline-note">
+              <Wallet size={18} />
+              <span>You are viewing a demo account. If your wallet shows a different address, sign in with the account already selected there.</span>
+              <button className="button button-outline" disabled={busy} onClick={useConnectedWallet}>Use my connected wallet</button>
             </div>
           )}
           {loading ? (
@@ -597,6 +618,7 @@ function Coverage({
         </div>
       )}
       <ContributionRouteProof />
+      <Link href="/ledger" className="text-link">View the public transaction ledger <ArrowUpRight size={16} /></Link>
     </>
   );
 }
