@@ -2,11 +2,11 @@
 
 ![GuardLink cover with illustrative community artwork and founder-reported outreach figures.](docs/ethglobal/assets/guardlink-mumbai-cover.jpg)
 
-**Built at ETHGlobal Mumbai.** A working Arc Testnet prototype for cooperative enrollment, USDC contributions, policy NFTs, private claim evidence, juror decisions, independent appeals and public payment receipts. The demo also shows an optional Uniswap v3 contribution route and searchable public claim milestones. [Open GuardLink](https://guardlink.ajnasnb.com/) · [Explore the ledger](https://guardlink.ajnasnb.com/ledger/) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
+**ETHGlobal Mumbai Continuity Track.** GuardLink brings an existing cooperative health coverage prototype to Arc Testnet. The new deployment demonstrates cooperative enrollment, USDC contributions, policy NFTs, private claim evidence, juror decisions, independent appeals and public payment receipts. It also demonstrates an optional Uniswap v3 contribution route and searchable public claim milestones. [Open GuardLink](https://guardlink.ajnasnb.com/) · [Open the public Arc Studio preview](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs) · [Explore the ledger](https://guardlink.ajnasnb.com/ledger/) · [Judge handoff](docs/ethglobal/SUBMISSION_HANDOFF.md)
 
-**Community outreach.** The founder reports reaching **10,000 people directly** and collecting contact details for **around 200,000 prospective contacts**. Those conversations shaped the prototype's focus on understandable coverage, specific document requests and verifiable claim payments.
+After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. When the payment arrived, it felt like a favour. That experience shaped GuardLink's focus on clear coverage, specific requests for missing documents and a visible path from decision to payment.
 
-After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. The cooperative insurance concept, community outreach, founder research and earlier prototype form the Continuity baseline. [Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md)
+**Community outreach.** Over the past year, the founder reports reaching **10,000 people directly** and collecting **around 200,000 prospective contacts** through outreach. Conversations with women and families in Kerala's self-help communities helped shape the early prototype. That research, the cooperative coverage concept and the original prototype form the Continuity baseline. [Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md)
 
 ![GuardLink walkthrough with actual testnet screenshots of coverage, evidence review and a confirmed payout.](docs/ethglobal/assets/guardlink-app-walkthrough.jpg)
 

@@ -13,7 +13,7 @@ These are three partner applications: Arc, Arkiv and Uniswap. Select Swarm's bon
 
 ## Judge evidence and remaining requirements
 
-**Arc Studio Continuity.** The evidence page includes the workspace, frontend and backend, architecture diagram, presentation, test log, public source, deployment and payout. The workspace redirects to sign-in for signed-out visitors. Confirm reviewer access with the sponsor. [Arc evidence](ARC_STUDIO_EVIDENCE.md)
+**Arc Studio Continuity.** The public Studio preview opens the deployed sandbox and reflects the active Arc pool. The source workspace still requires sign-in, and reviewer access needs confirmation. The evidence page links the frontend, backend, architecture, presentation, test log, source and settlement receipts. [Public Studio preview](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs) · [Arc evidence](ARC_STUDIO_EVIDENCE.md)
 
 **Build on Arkiv (existing projects).** The README and linked files cover prior and event work, writer, query, ownership, expiry, privacy, AI use and MIT licensing. The Node Tooling criteria have separate companion notes. [Arkiv judging files](../../arkiv/README.md)
 
