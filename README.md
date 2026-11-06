@@ -74,3 +74,5 @@ AI assisted code, artwork, test scaffolding and presentation/video preparation. 
 ## Public source export
 
 This repository contains a reviewed snapshot of GuardLink event source at private project commit `cf28f9cd908377c24f44b88898db67891e6e2941`. It excludes historical services, personal or local deployment files, databases, private wallet files and logs. The [event commit manifest](EVENT_HISTORY.md) records the original chronology. The MIT license applies to GuardLink source in this export. Dependencies retain their own licenses.
+
+The [Arc Studio deployment evidence](docs/ethglobal/ARC_STUDIO_EVIDENCE.md) is publicly reviewable.
