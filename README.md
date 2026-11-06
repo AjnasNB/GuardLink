@@ -78,7 +78,7 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 | **Arc and Arc Studio** | Arc keeps the USDC reserve, policy issuance, voting authority and settlement independently verifiable in one contract. Arc Studio was the starting point for the contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [pool source](onchain/contracts/GuardLinkPool.sol) |
 | **Arkiv** | Public case milestones and governance can be queried by case without scanning every transaction. See **Follow the fund**. | [Arkiv implementation](worker/src/adapters/arkiv.ts), [schema and examples](arkiv/schema.md) |
 | **Swarm** | Swarm holds encrypted evidence files. Arkiv stores the ciphertext reference. The Worker checks case access before retrieving and decrypting evidence. | [Swarm implementation](worker/src/adapters/swarm.ts), [upload and retrieval evidence](arkiv/swarm.md) |
-| **Uniswap v3 and CCTP** | Members can start with a supported token while the cooperative settles in USDC. The verified route swaps WETH on Base Sepolia, bridges USDC with CCTP and deposits on Arc to mint policy #3. | [Route receipts](docs/ethglobal/CONVERSION_RUN.md), [route script](scripts/contribution-route.mjs), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
+| **Uniswap v3 and CCTP** | Members can start with a supported token while the cooperative settles in USDC. The verified route swaps WETH on Base Sepolia, bridges USDC with CCTP and deposits on Arc to mint policy #3. | [Route receipts and feedback confirmation](docs/ethglobal/CONVERSION_RUN.md), [Uniswap router call](scripts/contribution-route.mjs#L335), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
 
 Blockchain makes wallet authority and movements from the shared reserve independently verifiable. Evidence still requires human judgment. The AI workflow organizes the case for reviewers and has no wallet, voting or payout authority. [Analysis workflow](worker/src/workflow.ts)
 
@@ -94,7 +94,7 @@ The writer wallet is `0xd8E339b19353afDAF75EfeEdA7fDB88320420553` on Rabdi testn
 curl -fsS 'https://guardlink.ajnasnb.com/api/v1/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81'
 ```
 
-Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. See [query implementation](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [why Arkiv](arkiv/why-arkiv.md) and [friction](arkiv/friction.md).
+Look for a paid milestone with the Arc receipt and an archive record with a ciphertext reference. `node scripts/verify-public-records.mjs` checks both public systems and the anonymous access boundary using Node.js 22 or later. [Arkiv judging files](arkiv/README.md) · [Swarm verification](arkiv/swarm.md) · [Arc Studio Continuity evidence](docs/ethglobal/ARC_STUDIO_EVIDENCE.md)
 
 ## Read the code
 

@@ -1,6 +1,6 @@
 # GuardLink sponsor submission checklist
 
-Checked against the published Mumbai prize page on 5 November 2026. Prizes are competitive, not guaranteed or additive entitlements. Confirm Continuity selection in the Hacker Dashboard; attendance registration alone does not establish that selection.
+Checked against the published Mumbai prize page on November 7, 2026. The project draft has Continuity selected. [Official prize requirements](https://ethglobal.com/events/mumbai/prizes)
 
 | Partner | Intended application | Published award | Required demonstration |
 | --- | --- | --- | --- |
@@ -11,15 +11,15 @@ Checked against the published Mumbai prize page on 5 November 2026. Prizes are c
 
 These are three partner applications: Arc, Arkiv and Uniswap. Select Swarm's bonus with Arkiv. It does not consume another partner pick under the published rules.
 
-## Submission evidence to collect during implementation
+## Judge evidence and remaining requirements
 
-Arc: Studio URL, new code paths, test output, contract addresses, network IDs, transaction links, architecture diagram and the demo moment showing Studio. Installation of the CLI alone is not qualification.
+**Arc Studio Continuity.** The evidence page includes the workspace, frontend and backend, architecture diagram, presentation, test log, public source, deployment and payout. The workspace redirects to sign-in for signed-out visitors. Confirm reviewer access with the sponsor. [Arc evidence](ARC_STUDIO_EVIDENCE.md)
 
-Arkiv: README with prior/new work, writer wallet addresses, reproducible query and visible read feature. Complete `/arkiv/schema.md`, `/arkiv/friction.md`, `/arkiv/reach.md`, `/arkiv/why-arkiv.md` and `/arkiv/how-you-use-arkiv.md`. Explain owner permissions and expiry. Include an open-source license and AI-use disclosure. Do not invent usage counts or friction reports.
+**Build on Arkiv (existing projects).** The README and linked files cover prior and event work, writer, query, ownership, expiry, privacy, AI use and MIT licensing. The Node Tooling criteria have separate companion notes. [Arkiv judging files](../../arkiv/README.md)
 
-Swarm: complete `/arkiv/swarm.md` with what is stored on each system, a public-safe example entity and ciphertext reference, postage batch ID, its source/purchasing wallet, Bee node/service, upload/read code paths, reproduction steps, demo timestamp and actual friction. Never publish a key-bearing encrypted reference as an unprotected Arkiv field.
+**Arkiv + Swarm (existing projects).** The linked evidence covers the public entity and ciphertext address, Bee gateway, upload and read, access checks and demo timestamp. The gateway operator still needs to confirm the actual postage batch and buyer or provider. [Swarm verification](../../arkiv/swarm.md)
 
-Uniswap: public open-source code, `FEEDBACK.md`, completed [developer feedback form](https://developers.uniswap.org/hackathon-feedback), README pointers to integration files, supported router version and testnet/protocol route, and an actual swap receipt. The link between swap output and the cooperative's settled contribution must be visible.
+**Build with Uniswap (Continuity).** Public MIT code, `FEEDBACK.md`, the form confirmation and line-level integration pointers are linked to the successful swap, bridge and Arc deposit. [Uniswap evidence](CONVERSION_RUN.md)
 
 ## Video and deck
 

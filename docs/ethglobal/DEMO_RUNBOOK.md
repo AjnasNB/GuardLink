@@ -59,4 +59,4 @@ Before presenting, run `node scripts/open-demo.mjs member-a` from the repository
 
 Use the confirmed Base Sepolia receipts in GuardLink for Uniswap. The Studio workspace also contains an older Ethereum Sepolia mock preview. In Studio, open the Contracts panel and use the deployment identified above. Its owner session was verified. Confirm judge access separately before submission.
 
-The local 3:44 partner picture cut shows Uniswap proof at **0:57**, Arc settlement and the Studio workspace at **2:21–2:49**, the live Arkiv timeline at **3:14**, and the linked archive and retrieved Swarm bill at **3:22.5–3:34.5**. The cut awaits founder narration. The Swarm integration works against the sponsor gateway and the actual postage batch ID and buyer/provider attribution are still required for the bonus.
+In the uploaded 3:44 demo with founder narration, the Uniswap receipts are visible at **1:03**, the Studio workspace at **2:41**, the Arkiv timeline at **3:10**, and the linked Swarm archive at **3:20**. The [partner handoff](SUBMISSION_HANDOFF.md) links the reproducible evidence and identifies the remaining access and postage requirements.
