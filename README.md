@@ -8,6 +8,10 @@
 
 After his father's eye surgery, the founder's family borrowed while waiting for reimbursement. The cooperative insurance concept, community outreach, founder research and earlier prototype form the Continuity baseline. [Continuity baseline and provenance](docs/ethglobal/CONTINUITY_BASELINE.md)
 
+![GuardLink walkthrough with actual testnet screenshots of coverage, evidence review and a confirmed payout.](docs/ethglobal/assets/guardlink-app-walkthrough.jpg)
+
+[Full coverage screenshot](docs/ethglobal/assets/membership-04-policy.jpg) · [Full claim and payout screenshot](docs/ethglobal/assets/claim-evidence.jpg) · [Full Uniswap contribution screenshot](docs/ethglobal/assets/coverage-uniswap.jpg)
+
 ![Coverage begins with an Arc deposit and policy NFT. Evidence stays private for human review. Arkiv records milestones and Swarm stores encrypted files.](docs/ethglobal/assets/guardlink-claim-flow.svg)
 
 ## The pool and policy NFT

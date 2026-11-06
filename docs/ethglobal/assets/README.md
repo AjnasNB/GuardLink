@@ -3,6 +3,7 @@
 | Asset | Source |
 | --- | --- |
 | [Cover](guardlink-mumbai-cover.jpg) | Original generated illustration of a fictional Kerala community discussion. The two figures come from the founder's outreach report. [Project context](../../../README.md#guardlink--cooperative-health-coverage) |
+| [App walkthrough](guardlink-app-walkthrough.jpg) | Annotated crops of the [policy NFT screen](membership-04-policy.jpg) and the [synthetic claim and payout screen](claim-evidence.jpg). The original captures appear separately in the project gallery. |
 | [Pool allocation chart](guardlink-pool-model.svg) | Original SVG based on the founder's proposed 90/10 contribution model. The present behavior follows the [`contribute` implementation](../../../onchain/contracts/GuardLinkPool.sol#L232). |
 | [Claim flow diagram](guardlink-claim-flow.svg) | Original SVG based on the [GuardLink architecture](../ARCHITECTURE.md) and [claim workflow](../../../worker/src/workflow.ts). |
 | [Membership request](membership-01-apply.jpg), [pending](membership-02-requested.jpg), [verified](membership-03-verified.jpg), [policy NFT](membership-04-policy.jpg) | GuardLink Testnet browser captures using a synthetic demo profile. [Live community](https://guardlink.ajnasnb.com/app/communities/) · [Enrollment receipts](../membership-live.public.json) |
