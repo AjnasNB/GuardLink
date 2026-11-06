@@ -28,20 +28,20 @@ governance.get("/treasury", async (c) => {
   ]);
   return c.json({ available: formatUnits(available, 6), committed: formatUnits(committed, 6), exposure: formatUnits(exposure, 6) });
 });
-governance.get("/", async (c) => {
-  if (!c.env.ARC_POOL_ADDRESS) return c.json([]);
-  const client = arcClient(c.env.ARC_RPC),
-    address = c.env.ARC_POOL_ADDRESS as `0x${string}`;
+export async function listProposals(env: Cloudflare.Env, memberWallet: string | null = null) {
+  if (!env.ARC_POOL_ADDRESS) return [];
+  const client = arcClient(env.ARC_RPC),
+    address = env.ARC_POOL_ADDRESS as `0x${string}`;
   const next = await client.readContract({
     address,
     abi: guardlinkAbi,
     functionName: "nextProposalId",
   });
-  const stored = await c.env.DB.prepare(
-    "SELECT id,description FROM governance_proposals",
-  ).all<{ id: string; description: string }>();
+  const stored = await env.DB.prepare(
+    "SELECT id,description,creation_tx FROM governance_proposals",
+  ).all<{ id: string; description: string; creation_tx: string }>();
   const count = Number(next > 101n ? 100n : next - 1n),
-    wallet = c.get("member").wallet as `0x${string}` | null;
+    wallet = memberWallet as `0x${string}` | null;
   const proposals = await Promise.all(
     Array.from({ length: count }, (_, i) => next - 1n - BigInt(i)).map(
       async (id) => {
@@ -73,11 +73,12 @@ governance.get("/", async (c) => {
               args: [wallet, p.snapshotEpoch],
             })
           : false;
+        const record = stored.results.find((row) => row.id === id.toString());
         return {
           id: id.toString(),
           description:
-            stored.results.find((row) => row.id === id.toString())
-              ?.description ?? `Community proposal #${id}`,
+            record?.description ?? `Community proposal #${id}`,
+          creationHash: record?.creation_tx ?? null,
           status: p.executed
             ? "Executed"
             : votingOpen
@@ -92,7 +93,7 @@ governance.get("/", async (c) => {
           hasVoted,
           canVote,
           canExecute:
-            !p.executed &&
+            wallet !== null && !p.executed &&
             passed &&
             (Number(p.deadline) * 1000 <= Date.now() ||
               cast === p.eligibleCount),
@@ -111,8 +112,9 @@ governance.get("/", async (c) => {
       },
     ),
   );
-  return c.json(proposals);
-});
+  return proposals;
+}
+governance.get("/", async (c) => c.json(await listProposals(c.env, c.get("member").wallet)));
 governance.post("/sync", async (c) => {
   const { txHash } = z
     .object({ txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/) })

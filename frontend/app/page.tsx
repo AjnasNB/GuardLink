@@ -368,6 +368,7 @@ export default function Home() {
         </Link>
         <span>Built for people. Built for dignity.</span>
         <div>
+          <Link href="/governance/proposals">Public proposals</Link>
           <Link href="/ledger">Public transaction ledger</Link>
           <Link href="/transparency">Public case milestones</Link>
           <Link href="/privacy">Privacy</Link>

@@ -57,6 +57,7 @@ organizer.get("/", async (c) => {
       chainClaimId: cl.chainClaimId,
       status: cl.status,
       claimantId: cl.memberId,
+      contactId: cl.contactId ?? null,
       jurors: cl.jurors,
       appealJurors: cl.appealJurors,
     }));

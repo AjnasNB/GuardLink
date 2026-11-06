@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { organizer } from "./routes/organizer";
 import { community } from "./routes/community";
-import { governance } from "./routes/governance";
+import { governance, listProposals } from "./routes/governance";
 import { swarm } from "./routes/swarm";
 import { bodyLimit } from "hono/body-limit";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
@@ -308,6 +308,13 @@ app.get("/api/v1/ledger", async (c) => {
     return c.json(await loadLedger(c.env.ARC_POOL_ADDRESS, query.data));
   } catch {
     return c.json({ error: "The Arc ledger is temporarily unavailable. Try again shortly." }, 503);
+  }
+});
+app.get("/api/v1/governance/public", async (c) => {
+  try {
+    return c.json(await listProposals(c.env));
+  } catch {
+    return c.json({ error: "Public proposals are temporarily unavailable." }, 503);
   }
 });
 app.get("/api/v1/transparency", async (c) => {

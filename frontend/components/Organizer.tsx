@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { api, type Config } from "../lib/api";
+import { api, short, type Config } from "../lib/api";
 import { poolAbi, poolWrite, publicClient } from "../lib/contracts";
 type RosterMember = {
   id: string;
@@ -16,6 +16,7 @@ type Case = {
   chainClaimId: string;
   status: string;
   claimantId: string;
+  contactId: string | null;
   jurors: string[];
   appealJurors: string[];
 };
@@ -26,6 +27,49 @@ type Data = {
   notice: string;
 };
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
+
+function JurySelection({ candidates, busy, assign }: {
+  candidates: RosterMember[];
+  busy: boolean;
+  assign: (wallets: [string, string, string]) => void;
+}) {
+  const [selected, setSelected] = useState<[string, string, string]>(["", "", ""]);
+  const eligible = new Set(candidates.map((member) => member.wallet.toLowerCase()));
+  const ready = selected.every((wallet) => eligible.has(wallet.toLowerCase())) && new Set(selected.map((wallet) => wallet.toLowerCase())).size === 3;
+  return (
+    <form className="form-stack" onSubmit={(event) => {
+      event.preventDefault();
+      if (ready && !busy) assign(selected);
+    }}>
+      <p>{candidates.length} eligible {candidates.length === 1 ? "member" : "members"} for this case. Select three to continue.</p>
+      {candidates.length < 3 ? <p role="status">This case needs at least three eligible members before review can begin.</p> : (
+        <>
+          <div className="form-columns">
+            {selected.map((wallet, index) => (
+              <label key={index}>
+                Juror {index + 1}
+                <select required value={eligible.has(wallet.toLowerCase()) ? wallet : ""} onChange={(event) => {
+                  const next: [string, string, string] = [...selected];
+                  next[index] = event.target.value;
+                  setSelected(next);
+                }}>
+                  <option value="">Select an eligible member</option>
+                  {candidates.map((member) => (
+                    <option key={member.id} value={member.wallet} disabled={selected.some((choice, slot) => slot !== index && choice.toLowerCase() === member.wallet.toLowerCase())}>
+                      {member.name} · {short(member.wallet)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+          <button className="button button-lime" disabled={busy || !ready}>Sign jury assignment</button>
+        </>
+      )}
+    </form>
+  );
+}
+
 export default function Organizer({
   config,
   busy,
@@ -62,7 +106,7 @@ export default function Organizer({
         <div>
           <span className="section-note">Cooperative operations</span>
           <h1>Set up a fair review.</h1>
-          <p>Verify membership and appoint eligible, conflict-free panels.</p>
+          <p>Verify members and appoint three jurors for each case.</p>
         </div>
       </div>
       {error && (
@@ -120,8 +164,9 @@ export default function Organizer({
             ))}
           </section>
           <section className="panel form-stack">
-            <h2>Cases awaiting a panel</h2>
-            {!data.cases.length && <p>No cases awaiting assignment.</p>}
+            <h2>Jury assignments</h2>
+            <p>The operator selects the panel. Two matching votes decide the case. Appeals use three different jurors.</p>
+            {!data.cases.length && <p>No cases are awaiting a panel. A case appears here after registration on Arc, or when an appeal is filed.</p>}
             {data.cases.map((cl) => {
               const appeal = cl.status === "appealed",
                 alreadyAssigned = appeal
@@ -131,25 +176,19 @@ export default function Organizer({
                 (m) =>
                   m.verified &&
                   m.id !== cl.claimantId &&
+                  m.id !== cl.contactId &&
                   m.role !== "contact" &&
                   (!appeal || !cl.jurors.includes(m.id)),
               );
               return (
-                <form
-                  className="form-stack"
-                  key={cl.id}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const f = new FormData(e.currentTarget);
-                    const jurors = ["first", "second", "third"].map((k) =>
-                      String(f.get(k)),
-                    );
-                    if (new Set(jurors).size !== 3) {
-                      void run(async () => {
-                        throw new Error("Choose three different jurors.");
-                      });
-                      return;
-                    }
+                <article className="form-stack" key={cl.id + (appeal ? "-appeal" : "-initial")}>
+                  <h3>
+                    GL-{cl.id.slice(0, 8).toUpperCase()} ·{" "}
+                    {appeal ? "Independent appeal" : "Initial review"}
+                  </h3>
+                  {alreadyAssigned ? (
+                    <p>This panel has already been assigned.</p>
+                  ) : <JurySelection candidates={candidates} busy={busy || !config?.poolAddress} assign={(jurors) => {
                     void act(async () => {
                       const tx = await poolWrite(
                         config?.poolAddress ?? "",
@@ -161,39 +200,8 @@ export default function Organizer({
                         body: JSON.stringify({ txHash: tx }),
                       });
                     }, "The jury assignment is confirmed.");
-                  }}
-                >
-                  <h3>
-                    GL-{cl.id.slice(0, 8).toUpperCase()} ·{" "}
-                    {appeal ? "Independent appeal" : "Initial review"}
-                  </h3>
-                  {alreadyAssigned ? (
-                    <p>This panel has already been assigned.</p>
-                  ) : (
-                    <>
-                      <div className="form-columns">
-                        {["first", "second", "third"].map((key, i) => (
-                          <label key={key}>
-                            Juror {i + 1}
-                            <select name={key} required defaultValue="">
-                              <option value="">
-                                Select an eligible member
-                              </option>
-                              {candidates.map((m) => (
-                                <option key={m.id} value={m.wallet}>
-                                  {m.name}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        ))}
-                      </div>
-                      <button className="button button-lime" disabled={busy}>
-                        Sign jury assignment
-                      </button>
-                    </>
-                  )}
-                </form>
+                  }} />}
+                </article>
               );
             })}
           </section>
