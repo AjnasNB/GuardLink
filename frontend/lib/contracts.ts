@@ -35,6 +35,7 @@ export const poolAbi = parseAbi([
   "function voteProposal(uint256,bool)",
   "function executeProposal(uint256)",
   "function proposeRules(uint128,uint128,uint32,string) returns(uint256)",
+  "function proposeTreasuryTransfer(address,uint128,string) returns(uint256)",
 ]);
 const erc20 = parseAbi([
   "function approve(address,uint256) returns(bool)",
@@ -42,8 +43,8 @@ const erc20 = parseAbi([
   "function allowance(address,address) view returns(uint256)",
 ]);
 export class WalletSessionMismatchError extends Error {
-  constructor() {
-    super("Your selected wallet differs from this GuardLink session. Sign in with the wallet already selected to continue.");
+  constructor(readonly selectedWallet?: string) {
+    super("Use your selected wallet to continue.");
   }
 }
 async function authorizedWallet() {
@@ -53,7 +54,7 @@ async function authorizedWallet() {
     !member.wallet ||
     member.wallet.toLowerCase() !== current.account.toLowerCase()
   )
-    throw new WalletSessionMismatchError();
+    throw new WalletSessionMismatchError(current.account);
   await switchArc(current.client);
   return current;
 }
@@ -92,7 +93,7 @@ export async function contribute(address: string, expectedContribution?: string)
   if (balance <= amount) throw new Error("Fund this wallet with enough Arc Testnet USDC for the contribution and transaction fees.");
   const confirmAccount = async () => {
     const [selected] = await client.getAddresses();
-    if (selected?.toLowerCase() !== account.toLowerCase()) throw new WalletSessionMismatchError();
+    if (selected?.toLowerCase() !== account.toLowerCase()) throw new WalletSessionMismatchError(selected);
   };
   if (allowance !== amount) {
     await confirmAccount();

@@ -1,59 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import BrandMark from "./BrandMark";
 import {
   ArrowLeft,
   ArrowUpRight,
-  Mail,
   Wallet,
-  Plus,
   ShieldCheck,
   LoaderCircle,
 } from "lucide-react";
-import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
-import { api, type Config } from "../lib/api";
 import { signInWithWallet } from "../lib/wallet";
-function EmailButton() {
-  const { login, authenticated, getAccessToken } = usePrivy();
-  const [error, setError] = useState("");
-  useEffect(() => {
-    if (authenticated)
-      void getAccessToken()
-        .then((token) =>
-          api("/auth/privy", {
-            method: "POST",
-            body: JSON.stringify({ token }),
-          }),
-        )
-        .then(() => location.assign("/app"))
-        .catch((e) => setError(e.message));
-  }, [authenticated, getAccessToken]);
-  return (
-    <>
-      <button
-        className="button button-light full-width"
-        onClick={() => login({ loginMethods: ["email"] })}
-      >
-        <Mail size={18} /> Continue with email <ArrowUpRight size={17} />
-      </button>
-      {error && (
-        <p role="alert" className="error-text">
-          {error}
-        </p>
-      )}
-    </>
-  );
-}
 export default function AuthPanel({ signup = false }: { signup?: boolean }) {
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [config, setConfig] = useState<Config | null>(null);
-  useEffect(() => {
-    api<Config>("/config")
-      .then(setConfig)
-      .catch(() => {});
-  }, []);
+    [error, setError] = useState("");
   async function connect() {
     setBusy(true);
     setError("");
@@ -111,27 +70,8 @@ export default function AuthPanel({ signup = false }: { signup?: boolean }) {
               : "Sign in to follow your coverage, claims and community."}
           </p>
           <div className="auth-options">
-            {config?.privyAppId ? (
-              <PrivyProvider
-                appId={config.privyAppId}
-                config={{
-                  loginMethods: ["email", "wallet"],
-                  appearance: { theme: "dark", accentColor: "#c6ef74" },
-                }}
-              >
-                <EmailButton />
-              </PrivyProvider>
-            ) : (
-              <div className="inline-note">
-                <Mail size={18} />
-                <span>
-                  Email access is being connected. You can sign in with a wallet
-                  now.
-                </span>
-              </div>
-            )}
             <button
-              className="button button-outline full-width"
+              className="button button-lime full-width"
               disabled={busy}
               onClick={connect}
             >
@@ -140,7 +80,7 @@ export default function AuthPanel({ signup = false }: { signup?: boolean }) {
               ) : (
                 <Wallet size={18} />
               )}{" "}
-              {busy ? "Waiting for your signature…" : "Continue with a wallet"}
+              {busy ? "Waiting for your signature…" : "Continue with wallet"}
               <ArrowUpRight size={17} />
             </button>
           </div>
@@ -165,6 +105,7 @@ export default function AuthPanel({ signup = false }: { signup?: boolean }) {
         </div>
         <div className="auth-bottom">
           <Link href="/privacy">Privacy and your documents</Link>
+          <Link href="/ledger">Public ledger</Link>
           <span>Testnet only</span>
         </div>
       </section>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, isAddress, parseUnits, zeroAddress, type Address } from "viem";
 import { api, type Config, type Member } from "../lib/api";
 import { poolWrite } from "../lib/contracts";
 import { PageHeading } from "./WorkspaceParts";
@@ -34,6 +34,8 @@ type Proposal = {
 };
 type Treasury = { available: string; committed: string; exposure: string };
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
+type Draft = { kind: "rules"; args: [bigint, bigint, number, string] }
+  | { kind: "transfer"; args: [Address, bigint, string] };
 
 function proposalTitle(proposal: Proposal) {
   return proposal.description.startsWith("Title: ")
@@ -77,50 +79,79 @@ function TreasuryView() {
           <div><dt>Open claim exposure</dt><dd>{data.exposure} USDC</dd></div>
         </dl>
       )}
-      <Link className="text-link" href="/app/transparency">Follow the fund <ArrowRight size={16} /></Link>
+      <Link className="text-link" href="/ledger?kind=treasury">View public treasury transactions <ArrowRight size={16} /></Link>
     </section>
   );
 }
 
-function ProposalForm({ canPropose, busy, publish }: {
+function ProposalForm({ canPropose, busy, poolAddress, publish }: {
   canPropose: boolean;
   busy: boolean;
-  publish: (terms: [bigint, bigint, number, string]) => Promise<void>;
+  poolAddress?: string;
+  publish?: (draft: Draft) => Promise<void>;
 }) {
-  const [draft, setDraft] = useState<[bigint, bigint, number, string] | null>(null);
+  const [kind, setKind] = useState<Draft["kind"]>("rules");
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [error, setError] = useState("");
   function preview(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError("");
     const form = new FormData(e.currentTarget);
     const sections = [["Title", "title"], ["Summary", "summary"], ["Why this matters", "rationale"], ["Timing and impact", "impact"], ["Conflicts of interest", "conflicts"]];
     const description = sections.map(([label, name]) => label + ": " + String(form.get(name)).trim()).join("\n\n");
-    setDraft([parseUnits(String(form.get("contribution")), 6), parseUnits(String(form.get("limit")), 6), Number(form.get("days")), description]);
+    if (kind === "transfer") {
+      const recipient = String(form.get("recipient")).trim();
+      if (!isAddress(recipient) || recipient === zeroAddress || recipient.toLowerCase() === poolAddress?.toLowerCase()) {
+        setError("Enter a valid Arc wallet address outside the pool.");
+        return;
+      }
+      setDraft({ kind, args: [recipient, parseUnits(String(form.get("amount")), 6), description] });
+    } else {
+      setDraft({ kind, args: [parseUnits(String(form.get("contribution")), 6), parseUnits(String(form.get("limit")), 6), Number(form.get("days")), description] });
+    }
   }
   if (!canPropose) return <p className="panel">Connect a verified member wallet to propose a change.</p>;
   return (
     <section className="panel form-stack governance-copy">
-      <h2>Propose future coverage terms</h2>
+      <h2>Make a community proposal</h2>
       <p>Explain the change members will vote on. Proposal text is public. Keep personal and medical information out of it.</p>
+      {!publish && <p>Preview either proposal form here. Verified members publish from the member workspace.</p>}
       <form className="form-stack" onSubmit={preview} hidden={Boolean(draft)}>
+        <label>Proposal type<select value={kind} onChange={(e) => { setKind(e.target.value === "transfer" ? "transfer" : "rules"); setError(""); }}>
+          <option value="rules">Future coverage terms</option>
+          <option value="transfer">One-time treasury transfer</option>
+        </select></label>
         <label>Proposal title<input name="title" required minLength={4} maxLength={80} /></label>
         <label>Summary<textarea name="summary" required rows={2} maxLength={240} /></label>
         <label>Why this matters<textarea name="rationale" required rows={3} maxLength={300} /></label>
         <label>Timing and impact<textarea name="impact" required rows={2} maxLength={240} placeholder="Who benefits, and when should the new terms take effect?" /></label>
         <label>Conflicts of interest<input name="conflicts" required maxLength={110} placeholder="Enter None if there are no conflicts" /></label>
-        <div className="form-columns">
+        {kind === "rules" ? <div className="form-columns">
           <label>Contribution (USDC)<input name="contribution" type="number" min="0.000001" step="0.000001" required /></label>
           <label>Coverage limit (USDC)<input name="limit" type="number" min="0.000001" step="0.000001" required /></label>
           <label>Term (days)<input name="days" type="number" min="1" max="365" required /></label>
-        </div>
+        </div> : <>
+          <p>A transfer can use up to 10% of the free treasury. Members must approve it before any funds move.</p>
+          <div className="form-columns">
+            <label>Recipient wallet<input name="recipient" required maxLength={42} autoComplete="off" spellCheck={false} /></label>
+            <label>Transfer amount (USDC)<input name="amount" type="number" min="0.000001" step="0.000001" required /></label>
+          </div>
+        </>}
+        {error && <p className="error-text" role="alert">{error}</p>}
         <button className="button button-lime">Review proposal <ArrowRight size={17} /></button>
       </form>
       {draft && (
         <div className="form-stack">
-          <h3>Review before signing</h3>
-          <p className="governance-description">{draft[3]}</p>
-          <Terms terms={{ contribution: formatUnits(draft[0], 6), limit: formatUnits(draft[1], 6), days: draft[2] }} />
+          <h3>{publish ? "Review before signing" : "Proposal preview"}</h3>
+          <p className="governance-description">{draft.args.at(-1)}</p>
+          {draft.kind === "rules"
+            ? <Terms terms={{ contribution: formatUnits(draft.args[0], 6), limit: formatUnits(draft.args[1], 6), days: draft.args[2] }} />
+            : <p className="governance-address">Transfer {formatUnits(draft.args[1], 6)} USDC to {draft.args[0]}.</p>}
           <div className="governance-actions">
             <button className="button button-outline" disabled={busy} onClick={() => setDraft(null)}>Edit draft</button>
-            <button className="button button-lime" disabled={busy} onClick={() => void publish(draft)}>Sign and publish</button>
+            {publish
+              ? <button className="button button-lime" disabled={busy} onClick={() => void publish(draft)}>Sign and publish</button>
+              : <Link className="button button-lime" href="/app/governance/new">Open member proposal form</Link>}
           </div>
         </div>
       )}
@@ -210,6 +241,8 @@ export default function Governance({ config, member, busy = false, run, route: m
       <nav aria-label="Governance pages" className="governance-nav">
         {pages.filter(([label]) => !publicView || label !== "Treasury").map(([label, suffix]) => <Link key={suffix} href={base + suffix} aria-current={route === "/governance" + suffix || (label === "Proposals" && isDetail) ? "page" : undefined}>{label}</Link>)}
         {!publicView && <Link href="/governance/proposals">Public proposals <ExternalLink size={14} /></Link>}
+        {publicView && <Link href={base + "/new"} aria-current={route === "/governance/new" ? "page" : undefined}>Proposal forms</Link>}
+        <Link href="/ledger">Public ledger <ExternalLink size={14} /></Link>
       </nav>
       {error && needsProposals && <p className="error-text" role="alert">{error}</p>}
       {route === "/governance" && (
@@ -224,7 +257,9 @@ export default function Governance({ config, member, busy = false, run, route: m
       )}
       {route === "/governance/rules" && <VotingRules />}
       {route === "/governance/treasury" && !publicView && <TreasuryView />}
-      {route === "/governance/new" && !publicView && <ProposalForm busy={busy} canPropose={canPropose} publish={(draft) => write("proposeRules", draft, "Your proposal transaction is confirmed.", true)} />}
+      {route === "/governance/new" && !publicView && <ProposalForm busy={busy} canPropose={canPropose} poolAddress={config?.poolAddress}
+        publish={(draft) => write(draft.kind === "rules" ? "proposeRules" : "proposeTreasuryTransfer", draft.args, "Your proposal transaction is confirmed.", true)} />}
+      {route === "/governance/new" && publicView && <ProposalForm busy={false} canPropose />}
       {route === "/governance/proposals" && (
         <section className="panel governance-copy">
           <div className="governance-list-heading">

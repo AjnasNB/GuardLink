@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, Box, CheckCircle2, ExternalLink, Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { api, short } from "../lib/api";
 
 const views = [
@@ -25,7 +26,13 @@ function explorerPath(input: string) {
 }
 
 export default function PublicLedger() {
-  const [view, setView] = useState<{ kind: Kind; cursors: string[] }>({ kind: "contributions", cursors: [] });
+  const requested = useSearchParams().get("kind");
+  const kind = views.find((view) => view.value === requested)?.value ?? "contributions";
+  return <LedgerView key={kind} initialKind={kind} />;
+}
+
+function LedgerView({ initialKind }: { initialKind: Kind }) {
+  const [view, setView] = useState<{ kind: Kind; cursors: string[] }>({ kind: initialKind, cursors: [] });
   const [retry, setRetry] = useState(0);
   const [searchError, setSearchError] = useState(false);
   const [result, setResult] = useState<{ view: typeof view; retry: number; page?: LedgerPage; error?: string }>();

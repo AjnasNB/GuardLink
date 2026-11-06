@@ -34,6 +34,7 @@ import {
   Globe,
   RefreshCw,
   CheckCircle2,
+  List,
 } from "lucide-react";
 import { keccak256, toBytes, parseUnits, formatUnits } from "viem";
 import { type Claim, type DocumentKind } from "@guardlink/domain";
@@ -53,6 +54,7 @@ const navigation = [
   { path: "/app/review", label: "Review cases", icon: Scale },
   { path: "/app/governance", label: "Community votes", icon: Vote },
   { path: "/app/transparency", label: "Follow the fund", icon: Globe },
+  { path: "/ledger", label: "Public ledger", icon: List },
   { path: "/app/organizer", label: "Cooperative setup", icon: ShieldCheck },
 ];
 
@@ -67,7 +69,7 @@ export default function Workspace() {
     [balance, setBalance] = useState<string | null>(null),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [walletMismatch, setWalletMismatch] = useState(false),
+    [selectedWallet, setSelectedWallet] = useState<string>(),
     [busy, setBusy] = useState(false),
     [loading, setLoading] = useState(true),
     [navOpen, setNavOpen] = useState(false);
@@ -104,17 +106,35 @@ export default function Workspace() {
   useEffect(() => {
     setNavOpen(false);
   }, [path]);
+  useEffect(() => {
+    const provider = window.ethereum;
+    if (!provider) return;
+    let active = true;
+    let changed = false;
+    const update = (accounts: readonly string[]) => {
+      changed = true;
+      setSelectedWallet(accounts[0]);
+    };
+    provider.on("accountsChanged", update);
+    void provider.request({ method: "eth_accounts" }).then((accounts) => {
+      if (active && !changed) setSelectedWallet(accounts[0]);
+    }).catch(() => {});
+    return () => {
+      active = false;
+      provider.removeListener("accountsChanged", update);
+    };
+  }, []);
+  const walletMismatch = Boolean(selectedWallet && selectedWallet.toLowerCase() !== member?.wallet?.toLowerCase());
   async function action(fn: () => Promise<unknown>, message = "Saved.") {
     setBusy(true);
     setError("");
     setNotice("");
-    setWalletMismatch(false);
     try {
       await fn();
       setNotice(message);
       await refresh();
     } catch (e) {
-      setWalletMismatch(e instanceof WalletSessionMismatchError);
+      if (e instanceof WalletSessionMismatchError) setSelectedWallet(e.selectedWallet);
       setError(
         e instanceof Error ? e.message : "Could not complete this action.",
       );
@@ -125,11 +145,19 @@ export default function Workspace() {
   const route = path.replace("/app", "") || "/";
   const inCommunity = route === "/communities" || route.startsWith("/communities/");
   const inGovernance = route === "/governance" || route.startsWith("/governance/");
-  function useConnectedWallet() {
-    void action(async () => {
+  async function useConnectedWallet() {
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
       const { member: signedIn } = await signInWithWallet();
-      if (!signedIn.verified) router.push("/app/communities");
-    }, "Signed in with your selected wallet.");
+      const destination = !signedIn.verified ? "/app/communities"
+        : route === "/coverage" || inCommunity || inGovernance ? path : "/app";
+      window.location.assign(destination);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not sign in with your wallet.");
+      setBusy(false);
+    }
   }
   function fundCoverage(expectedContribution?: string) {
     return action(async () => {
@@ -230,9 +258,6 @@ export default function Workspace() {
             <div className="alert error" role="alert">
               <AlertCircle size={18} />
               <span>{error}</span>
-              {walletMismatch && (
-                <button className="text-link" disabled={busy} onClick={useConnectedWallet}>Use my connected wallet</button>
-              )}
               <button onClick={() => setError("")} aria-label="Dismiss error">
                 <X size={16} />
               </button>
@@ -244,11 +269,15 @@ export default function Workspace() {
               {notice}
             </div>
           )}
-          {!!member?.demo && (route === "/coverage" || inCommunity) && (
+          {member && (walletMismatch || member.demo) && (
             <div className="inline-note">
               <Wallet size={18} />
-              <span>You are viewing a demo account. If your wallet shows a different address, sign in with the account already selected there.</span>
-              <button className="button button-outline" disabled={busy} onClick={useConnectedWallet}>Use my connected wallet</button>
+              <span>{walletMismatch
+                ? `GuardLink is open as ${short(member.wallet)}. Your browser wallet has selected ${short(selectedWallet)}.`
+                : "Viewing a demo account. Connect your own wallet to join or contribute."}</span>
+              <button className="button button-outline" disabled={busy} onClick={useConnectedWallet}>
+                {walletMismatch ? `Continue as ${short(selectedWallet)}` : "Use my wallet"}
+              </button>
             </div>
           )}
           {loading ? (
@@ -475,6 +504,7 @@ export default function Workspace() {
           )}
         </main>
         <footer className="workspace-footer">
+          <Link href="/ledger">Public transaction ledger <ArrowUpRight size={14} /></Link>
           <span>People protect people.</span>
           <Link href="/privacy">
             Privacy & demo information <ArrowUpRight size={13} />

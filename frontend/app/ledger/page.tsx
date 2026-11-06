@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import PublicLedger from "../../components/PublicLedger";
 
 export const metadata = { title: "Public transaction ledger" };
@@ -15,7 +16,9 @@ export default function LedgerPage() {
         <h1>Public transaction ledger</h1>
         <p>Follow confirmed USDC movements in and out of the GuardLink pool. Open any transaction to check its receipt on the Arc explorer.</p>
       </header>
-      <PublicLedger />
+      <Suspense fallback={<p role="status">Loading confirmed Arc transactions…</p>}>
+        <PublicLedger />
+      </Suspense>
     </main>
   );
 }
