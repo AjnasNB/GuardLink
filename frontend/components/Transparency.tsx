@@ -6,11 +6,14 @@ import { useSearchParams } from "next/navigation";
 import { ExternalLink, Globe, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { PageHeading } from "./WorkspaceParts";
+import PayoutChallenge from "./PayoutChallenge";
 
 export default function Transparency({
   allRecordsHref = "/app/transparency",
+  challengePool,
 }: {
   allRecordsHref?: string;
+  challengePool?: string;
 }) {
   const caseId = useSearchParams().get("caseId");
   const [records, setRecords] = useState<
@@ -64,6 +67,7 @@ export default function Transparency({
           <Link href={allRecordsHref}>Show all records</Link>
         </div>
       )}
+      {caseId && challengePool && <PayoutChallenge key={caseId} caseId={caseId} pool={challengePool} />}
       <div className="search-field">
         <Search size={18} />
         <input
@@ -103,7 +107,9 @@ export default function Transparency({
                       ? `${data.contribution} USDC contribution · ${data.coverageLimit} USDC limit · ${data.termDays} days`
                       : data.proposalId
                         ? `Proposal #${data.proposalId} · ${data.yesVotes}/${data.eligible} in support`
-                        : (data.claimId ?? "Community record")}
+                        : data.claimId && !caseId
+                          ? <Link href={`${allRecordsHref}?caseId=${encodeURIComponent(data.claimId)}`}>{data.claimId}</Link>
+                          : (data.claimId ?? "Community record")}
                   </small>
                 </div>
                 <time>{new Date(r.created_at).toLocaleString()}</time>

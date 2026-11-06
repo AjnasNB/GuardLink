@@ -30,6 +30,7 @@ export const poolAbi = parseAbi([
   "function submitClaim(bytes32,uint256,uint128,uint64,bytes32)",
   "function vote(bytes32,bool,uint128,bytes32)",
   "function appeal(bytes32)",
+  "function challengeClaim(bytes32,uint8)",
   "function appealVote(bytes32,bool,uint128,bytes32)",
   "function settle(bytes32)",
   "function voteProposal(uint256,bool)",

@@ -18,6 +18,7 @@ import {
 import { keccak256, toBytes, parseUnits } from "viem";
 import {
   evidenceNameLimit,
+  payoutChallengeReasons,
   requiredDocuments,
   type Claim,
   type DocumentKind,
@@ -76,6 +77,13 @@ export default function ClaimDetail({
   const reviewer =
     currentPanel.includes(member?.id ?? "") &&
     !currentVotes.some((ballot) => ballot.jurorId === member?.id);
+  const payoutReview = claim.payoutReview;
+  const holdActive = !!payoutReview && Date.now() < payoutReview.settleAfter * 1000;
+  const appealClosed = !!claim.appealDeadline && Date.now() >= claim.appealDeadline * 1000;
+  const reviewAmount = claim.status === "appealed" && payoutReview?.reason
+    ? payoutReview.disputedAmount : claim.requestedAmount;
+  const challengeReason = payoutReview?.reason
+    ? payoutChallengeReasons[payoutReview.reason as keyof typeof payoutChallengeReasons] : undefined;
   const clientId = keccak256(toBytes(claim.id));
   const digest = claim.chainClaimId as `0x${string}`;
   return (
@@ -311,6 +319,7 @@ export default function ClaimDetail({
               }}
             >
               <h2>Your review</h2>
+              {claim.votingDeadline && <p>Voting closes {new Date(claim.votingDeadline * 1000).toLocaleString()}.</p>}
               <label>
                 Decision
                 <select name="decision">
@@ -323,10 +332,10 @@ export default function ClaimDetail({
                 <input
                   name="amount"
                   type="number"
-                  defaultValue={claim.requestedAmount}
+                  defaultValue={reviewAmount}
+                  max={reviewAmount}
                   min="0.000001"
                   step="0.000001"
-                  max={claim.requestedAmount}
                 />
               </label>
               <label>
@@ -478,7 +487,10 @@ export default function ClaimDetail({
                 Send for review <ArrowRight size={16} />
               </button>
             )}
-            {owner && claim.status === "rejected" && !claim.appealed && (
+            {owner && claim.status === "rejected" && !claim.appealed && claim.appealDeadline && (
+              <p role="status">{appealClosed ? "The appeal window closed" : "Appeals close"} {new Date(claim.appealDeadline * 1000).toLocaleString()}.</p>
+            )}
+            {owner && claim.status === "rejected" && !claim.appealed && !appealClosed && (
               <button
                 className="button button-outline full-width"
                 disabled={busy}
@@ -499,7 +511,13 @@ export default function ClaimDetail({
                 Request an appeal <Scale size={17} />
               </button>
             )}
-            {["approved", "awaiting_funds"].includes(claim.status) && (
+            {claim.status === "appealed" && challengeReason && (
+              <p role="status">Flagged for independent review: {challengeReason}. Payment is on hold.</p>
+            )}
+            {["approved", "awaiting_funds"].includes(claim.status) && payoutReview && (
+              <p role="status">Earliest payout: {new Date(payoutReview.settleAfter * 1000).toLocaleString()}.</p>
+            )}
+            {["approved", "awaiting_funds"].includes(claim.status) && !holdActive && (
               <button
                 className="button button-lime full-width"
                 disabled={busy}
