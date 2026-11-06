@@ -2454,6 +2454,12 @@ input:read-only {
 .governance-address {
   overflow-wrap: anywhere;
 }
+.evidence-readiness { display: grid; gap: .5rem; margin-block: 1rem; }
+.evidence-readiness progress { width: min(100%, 24rem); accent-color: var(--lime); }
+.evidence-readiness p { margin: 0; }
+.evidence-findings { margin-top: 1rem; border-top: 1px solid var(--line); }
+.evidence-findings summary { cursor: pointer; padding-block: .85rem; font-weight: 600; }
+.evidence-reference { display: inline-flex; margin: .5rem .9rem .25rem 0; }
 .vote-results {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));

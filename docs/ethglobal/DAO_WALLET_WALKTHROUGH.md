@@ -47,7 +47,7 @@ This screenshot shows the permission check with a regular member session. Switch
 
 ## 4. Review, vote and show the payment
 
-1. In an assigned juror's window, open **Review cases**. Match the case ID before opening it. Evidence remains restricted to authorized participants.
+1. In an assigned juror's window, open **Review cases** and match the case ID. In **Evidence preparation**, check which required documents are present, then expand **Review AI findings** and open the cited files to verify the findings. The readiness score counts required document types. Only authorized participants can open the files.
 2. On an open case, review the evidence and enter a reason for the decision. For approval, enter the amount. Choose **Sign and record my vote**. A juror can vote once in that round.
 3. Use the other juror window to show the second decision. Two matching approvals for the same amount authorize settlement. Two rejection votes reject the case. The member can see recorded decisions in **How reviewers decided**. Follow the [payment receipt](https://testnet.arcscan.app/tx/0xd49c157356415074b0351ca974740dfb4878fca95575eb28dc79fbfa8a157f63) or the [public ledger](https://guardlink.ajnasnb.com/ledger/).
 4. For the recording, use the saved vote-form clip and the completed case. The live test case already paid. Use Member B's separate case to show what an independent appeal looks like.

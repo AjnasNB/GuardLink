@@ -20,6 +20,7 @@ import type { Claim } from "@guardlink/domain";
 import { api, money, type Config, type Member } from "../lib/api";
 import { poolWrite } from "../lib/contracts";
 import { PageHeading, Status } from "./WorkspaceParts";
+import EvidenceReview from "./EvidenceReview";
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
 export default function ClaimDetail({
   id,
@@ -204,29 +205,7 @@ export default function ClaimDetail({
                 </form>
               )}
           </section>
-          {claim.recommendation && (
-            <section className="panel">
-              <div className="section-row">
-                <h2>Evidence preparation</h2>
-                <span className="status-pill">
-                  {claim.recommendation.source === "azure"
-                    ? "AI assisted"
-                    : "Document checklist"}
-                </span>
-              </div>
-              <p>{claim.recommendation.summary}</p>
-              {claim.recommendation.findings.map((f, i) => (
-                <div className="finding" key={i}>
-                  <strong>{f.code}</strong>
-                  <p>{f.message}</p>
-                  <small>{f.evidenceIds.length} evidence reference(s)</small>
-                </div>
-              ))}
-              <p className="subtle">
-                This is preparation for human reviewers, not a claim decision.
-              </p>
-            </section>
-          )}
+          <EvidenceReview documents={claim.documents} recommendation={claim.recommendation} revision={claim.revision} />
           {!!claim.votes.length && (
             <section className="panel">
               <h2>How reviewers decided</h2>
