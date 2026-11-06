@@ -22,9 +22,11 @@ import { jwtVerify, importSPKI } from "jose";
 import { z } from "zod";
 import {
   addEvidence,
+  evidenceNameLimit,
   microUsdc,
   publicClaim,
   type Claim,
+  type Evidence,
   type Role,
 } from "@guardlink/domain";
 import {
@@ -36,6 +38,7 @@ import {
   json,
   loadClaim,
   now,
+  prepareClaimUpdate,
   saveClaim,
 } from "./lib";
 import { downloadCiphertext, uploadCiphertext } from "./adapters/swarm";
@@ -505,43 +508,61 @@ app.post("/api/v1/claims/:id/evidence", async (c) => {
   const member = c.get("member");
   if (claim.memberId !== member.id)
     return c.json({ error: "Only the claimant can upload documents." }, 403);
+  if (!["submitted", "needs_documents", "analyzing"].includes(claim.status))
+    return c.json({ error: "This case is closed to document uploads." }, 409);
   const form = await c.req.formData();
   const file = form.get("file");
   const kind = z
     .enum(["bill", "discharge_summary", "prescription", "other"])
     .parse(form.get("kind"));
+  const label = form.get("displayName");
+  const displayName = typeof label === "string" ? label.trim() : "";
+  if (
+    label !== null &&
+    (kind !== "other" ||
+      !displayName ||
+      displayName.length > evidenceNameLimit ||
+      /[\u0000-\u001f\u007f]/.test(displayName))
+  )
+    return c.json(
+      { error: `Use a document name of up to ${evidenceNameLimit} characters for other evidence.` },
+      400,
+    );
   if (!(file instanceof File) || file.size > 1024 * 1024 || file.size === 0)
     throw new Error("Choose a PDF, JPEG or PNG smaller than 1 MB.");
   const bytes = await file.arrayBuffer();
   const prefix = new Uint8Array(bytes).slice(0, 8);
   const pdf = String.fromCharCode(...prefix.slice(0, 5)) === "%PDF-";
-  const png =
-    prefix[0] === 137 &&
-    prefix[1] === 80 &&
-    prefix[2] === 78 &&
-    prefix[3] === 71;
+  const png = [137, 80, 78, 71, 13, 10, 26, 10].every(
+    (byte, i) => prefix[i] === byte,
+  );
   const jpeg = prefix[0] === 255 && prefix[1] === 216 && prefix[2] === 255;
   if (!pdf && !png && !jpeg)
     throw new Error("This file is not a supported document.");
   const id = crypto.randomUUID(),
     digest = await hash(bytes);
+  const safeName = `${kind}-${id}.${pdf ? "pdf" : png ? "png" : "jpg"}`;
+  const createdAt = now();
+  const evidence: Evidence = {
+    id,
+    kind,
+    name: safeName,
+    ...(displayName ? { displayName } : {}),
+    sha256: digest,
+    createdAt,
+  };
+  const next = addEvidence(claim, member.id, evidence);
   const encrypted = await encrypt(bytes, c.env.EVIDENCE_KEY);
   const reference = await uploadCiphertext(
     c.env.SWARM_BEE_URL,
     c.env.SWARM_BATCH_ID,
     encrypted.ciphertext,
   );
-  const safeName = `${kind}-${id}.${pdf ? "pdf" : png ? "png" : "jpg"}`;
-  const evidence = {
-    id,
-    kind,
-    name: safeName,
-    sha256: digest,
-    swarmReference: reference ?? undefined,
-    createdAt: now(),
-  };
-  const next = addEvidence(claim, member.id, evidence);
-  await c.env.DB.prepare("INSERT INTO evidence VALUES(?,?,?,?,?,?,?,?,?,?)")
+  if (reference) evidence.swarmReference = reference;
+  const insertEvidence = c.env.DB.prepare(
+    `INSERT INTO evidence (id,claim_id,member_id,kind,name,sha256,ciphertext,iv,swarm_reference,created_at)
+     SELECT ?,?,?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM claims WHERE id=? AND revision=?)`,
+  )
     .bind(
       id,
       claim.id,
@@ -552,10 +573,16 @@ app.post("/api/v1/claims/:id/evidence", async (c) => {
       encrypted.ciphertext,
       encrypted.iv,
       reference,
-      now(),
-    )
-    .run();
-  await saveClaim(c.env.DB, next, claim.storageRevision);
+      createdAt,
+      claim.id,
+      claim.storageRevision,
+    );
+  const [, updated] = await c.env.DB.batch([
+    insertEvidence,
+    prepareClaimUpdate(c.env.DB, next, claim.storageRevision),
+  ]);
+  if (updated.meta.changes !== 1)
+    return c.json({ error: "This case changed. Refresh before continuing." }, 409);
   await event(c.env.DB, claim.id, "evidence_updated", {
     claimId: claim.id,
     status: next.status,

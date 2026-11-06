@@ -3,7 +3,7 @@ import {
   WorkflowEvent,
   WorkflowStep,
 } from "cloudflare:workers";
-import { applyRecommendation, checklist } from "@guardlink/domain";
+import { applyRecommendation, checklist, requiredDocuments } from "@guardlink/domain";
 import { analyzeDocuments } from "./adapters/azure";
 import { base64, decrypt, event, loadClaim, now, saveClaim } from "./lib";
 export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
@@ -34,8 +34,17 @@ export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
           !this.env.AZURE_DEPLOYMENT
         )
           return base;
+        const newestFirst = [...claim.documents].reverse();
+        const required = requiredDocuments.flatMap((kind) => {
+          const document = newestFirst.find((evidence) => evidence.kind === kind);
+          return document ? [document] : [];
+        });
+        const selected = [
+          ...required,
+          ...newestFirst.filter((document) => !required.includes(document)),
+        ].slice(0, 6);
         const docs = await Promise.all(
-          claim.documents.slice(0, 6).map(async (evidence) => {
+          selected.map(async (evidence) => {
             const row = await this.env.DB.prepare(
               "SELECT ciphertext,iv FROM evidence WHERE id=?",
             )
@@ -60,6 +69,7 @@ export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
         );
         return {
           ...base,
+          evidenceIds: selected.map((document) => document.id),
           ...(await analyzeDocuments(
             this.env.AZURE_ENDPOINT,
             this.env.AZURE_DEPLOYMENT,

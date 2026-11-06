@@ -1,12 +1,16 @@
 import { FileText, ExternalLink } from "lucide-react";
-import { requiredDocuments, type Claim, type DocumentKind } from "@guardlink/domain";
+import { requiredDocuments, type Claim, type DocumentKind, type Evidence } from "@guardlink/domain";
 
-const labels: Record<DocumentKind, string> = {
+export const documentLabels: Record<DocumentKind, string> = {
   bill: "Hospital bill",
   discharge_summary: "Discharge summary",
   prescription: "Prescription",
   other: "Other evidence",
 };
+
+export function evidenceLabel(document: Evidence) {
+  return document.displayName || documentLabels[document.kind];
+}
 
 export default function EvidenceReview({ documents, recommendation, revision }: Pick<Claim, "documents" | "recommendation" | "revision">) {
   const present = new Set(documents.map((document) => document.kind));
@@ -24,7 +28,7 @@ export default function EvidenceReview({ documents, recommendation, revision }: 
       <div className="evidence-readiness">
         <div><strong>{ready} of {requiredDocuments.length}</strong> required document types uploaded</div>
         <progress aria-label="Required document types uploaded" value={ready} max={requiredDocuments.length} />
-        <p>{missing.length ? `Still needed: ${missing.map((kind) => labels[kind]).join(", ")}.` : "All required document types are present."}</p>
+        <p>{missing.length ? `Still needed: ${missing.map((kind) => documentLabels[kind]).join(", ")}.` : "All required document types are present."}</p>
       </div>
       <p className="subtle">This score measures document completeness. Jurors check the evidence and make the decision.</p>
       <details className="evidence-findings">
@@ -41,7 +45,7 @@ export default function EvidenceReview({ documents, recommendation, revision }: 
                   <p>{finding.message}</p>
                   {references.map((document) => (
                     <a className="text-link evidence-reference" key={document.id} href={`/api/v1/evidence/${document.id}/`} target="_blank" rel="noreferrer">
-                      <FileText size={15} /> {labels[document.kind]} <ExternalLink size={13} />
+                      <FileText size={15} /> {evidenceLabel(document)} <ExternalLink size={13} />
                     </a>
                   ))}
                 </div>

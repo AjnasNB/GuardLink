@@ -16,11 +16,19 @@ import {
   Vote,
 } from "lucide-react";
 import { keccak256, toBytes, parseUnits } from "viem";
-import type { Claim } from "@guardlink/domain";
+import {
+  evidenceNameLimit,
+  requiredDocuments,
+  type Claim,
+  type DocumentKind,
+} from "@guardlink/domain";
 import { api, money, type Config, type Member } from "../lib/api";
 import { poolWrite } from "../lib/contracts";
 import { PageHeading, Status } from "./WorkspaceParts";
-import EvidenceReview from "./EvidenceReview";
+import EvidenceReview, {
+  documentLabels,
+  evidenceLabel,
+} from "./EvidenceReview";
 type Run = (fn: () => Promise<unknown>, message?: string) => Promise<void>;
 export default function ClaimDetail({
   id,
@@ -37,6 +45,7 @@ export default function ClaimDetail({
 }) {
   const [claim, setClaim] = useState<Claim | null>(null),
     [error, setError] = useState("");
+  const [uploadKind, setUploadKind] = useState<DocumentKind | "">("");
   const load = useCallback(
     () =>
       api<Claim>(`/claims/${id}`)
@@ -56,6 +65,10 @@ export default function ClaimDetail({
   if (error) return <div className="alert error">{error}</div>;
   if (!claim) return <div className="loading-state">Loading your case…</div>;
   const owner = member?.id === claim.memberId;
+  const missing = requiredDocuments.filter((kind) =>
+    !claim.documents.some((document) => document.kind === kind),
+  );
+  const selectedKind = uploadKind || missing[0] || "other";
   const currentPanel =
     claim.status === "appealed" ? claim.appealJurors : claim.jurors;
   const currentVotes =
@@ -90,6 +103,11 @@ export default function ClaimDetail({
           </section>
           {claim.requests
             .filter((r) => r.status === "open")
+            .map((r) => ({
+              ...r,
+              kinds: r.kinds.filter((kind) => missing.includes(kind)),
+            }))
+            .filter((r) => r.kinds.length > 0)
             .map((r) => (
               <section className="panel request-panel" key={r.id}>
                 <div className="section-row">
@@ -99,12 +117,21 @@ export default function ClaimDetail({
                 </div>
                 <p>
                   Please add:{" "}
-                  {r.kinds.map((k) => k.replaceAll("_", " ")).join(", ")}.
+                  {r.kinds.map((kind) => documentLabels[kind]).join(", ")}.
                 </p>
                 <small>
                   This request belongs to this same case. You do not need to
                   start again.
                 </small>
+                {owner && (
+                  <a
+                    className="text-link"
+                    href="#claim-evidence-upload"
+                    onClick={() => setUploadKind(r.kinds[0])}
+                  >
+                    Add requested document <ArrowRight size={15} />
+                  </a>
+                )}
               </section>
             ))}
           {claim.requests.some((request) => request.status === "answered") && (
@@ -119,7 +146,7 @@ export default function ClaimDetail({
                   <div className="finding" key={request.id}>
                     <strong>
                       {request.kinds
-                        .map((kind) => kind.replaceAll("_", " "))
+                        .map((kind) => documentLabels[kind])
                         .join(", ")}
                     </strong>
                     <p>
@@ -145,7 +172,7 @@ export default function ClaimDetail({
               >
                 <FileText size={19} />
                 <span>
-                  {d.kind.replaceAll("_", " ")}
+                  {evidenceLabel(d)}
                   <small>
                     Added {new Date(d.createdAt).toLocaleDateString()}
                     {d.swarmReference ? " · Encrypted archive" : ""}
@@ -164,31 +191,49 @@ export default function ClaimDetail({
                 claim.status,
               ) && (
                 <form
+                  id="claim-evidence-upload"
                   className="upload-form"
                   onSubmit={(e) => {
                     e.preventDefault();
                     const form = e.currentTarget;
                     void execute(
-                      () =>
-                        api(`/claims/${id}/evidence`, {
+                      async () => {
+                        await api(`/claims/${id}/evidence`, {
                           method: "POST",
                           body: new FormData(form),
-                        }),
+                        });
+                        form.reset();
+                        setUploadKind("");
+                      },
                       "Document added to the same case.",
                     );
                   }}
                 >
                   <label>
                     Document type
-                    <select name="kind">
-                      <option value="bill">Hospital bill</option>
-                      <option value="discharge_summary">
-                        Discharge summary
-                      </option>
-                      <option value="prescription">Prescription</option>
-                      <option value="other">Other evidence</option>
+                    <select
+                      name="kind"
+                      value={selectedKind}
+                      onChange={(event) => setUploadKind(event.target.value as DocumentKind)}
+                    >
+                      {([...requiredDocuments, "other"] as const).map((kind) => (
+                        <option key={kind} value={kind}>
+                          {documentLabels[kind]}
+                        </option>
+                      ))}
                     </select>
                   </label>
+                  {selectedKind === "other" && (
+                    <label>
+                      Document name
+                      <input
+                        name="displayName"
+                        maxLength={evidenceNameLimit}
+                        placeholder="For example, itemized receipt"
+                        required
+                      />
+                    </label>
+                  )}
                   <label className="file-picker">
                     <Upload size={20} />
                     <span>Choose PDF, JPEG or PNG · up to 1 MB</span>

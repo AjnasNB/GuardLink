@@ -54,19 +54,25 @@ export async function loadClaim(db: D1Database, id: string) {
   if (!row) throw new Error("Claim not found.");
   return { ...json<Claim>(row.data), storageRevision: row.revision };
 }
-export async function saveClaim(
+export function prepareClaimUpdate(
   db: D1Database,
   claim: Claim,
   previousRevision: number,
 ) {
   const persisted = { ...claim } as Claim & { storageRevision?: number };
   delete persisted.storageRevision;
-  const result = await db
+  return db
     .prepare(
       "UPDATE claims SET data=?,revision=revision+1,updated_at=? WHERE id=? AND revision=?",
     )
-    .bind(JSON.stringify(persisted), now(), claim.id, previousRevision)
-    .run();
+    .bind(JSON.stringify(persisted), now(), claim.id, previousRevision);
+}
+export async function saveClaim(
+  db: D1Database,
+  claim: Claim,
+  previousRevision: number,
+) {
+  const result = await prepareClaimUpdate(db, claim, previousRevision).run();
   if (result.meta.changes !== 1)
     throw new Error("This case changed. Refresh before continuing.");
 }

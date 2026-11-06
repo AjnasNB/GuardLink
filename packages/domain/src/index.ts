@@ -15,10 +15,12 @@ export type ClaimStatus =
 export type Role = "member" | "contact" | "juror" | "appeal_juror";
 export type DocumentKind =
   "bill" | "discharge_summary" | "prescription" | "other";
+export const evidenceNameLimit = 80;
 export interface Evidence {
   id: string;
   kind: DocumentKind;
   name: string;
+  displayName?: string;
   sha256: string;
   swarmReference?: string;
   createdAt: string;
