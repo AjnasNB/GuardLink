@@ -2,12 +2,17 @@ import { guardlinkAbi } from "@guardlink/domain/abi";
 import { decodeEventLog, formatUnits, isAddress, parseUnits, toEventSelector } from "viem";
 import { z } from "zod";
 
-export const ledgerKind = z.enum(["contributions", "payouts", "treasury"]);
+export const ledgerKind = z.enum(["contributions", "payouts", "treasury", "proposal-votes", "jury-votes", "approvals", "rejections", "unresolved", "executions"]);
 const events = {
   contributions: "Contribution(address,uint256,uint128)",
   payouts: "ClaimPaid(bytes32,address,uint128)",
   approvals: "ClaimApproved(bytes32,uint128,bool)",
   treasury: "TreasuryTransferred(uint256,address,uint128)",
+  "proposal-votes": "ProposalVote(uint256,address,bool)",
+  "jury-votes": "BallotCast(bytes32,address,bool,bool,uint128,bytes32)",
+  rejections: "ClaimRejected(bytes32,uint128,bool,uint64)",
+  unresolved: "ClaimUnresolved(bytes32,uint128,bool)",
+  executions: "ProposalExecuted(uint256,uint8)",
 } as const;
 
 const cursor = z.object({ index: z.number().int().nonnegative(), block_number: z.number().int().nonnegative() });
@@ -55,9 +60,23 @@ export async function loadLedger(pool: string, { kind, before }: { kind: keyof t
       case "ClaimPaid":
         return { ...common, wallet: decoded.args.claimant, amount: formatUnits(decoded.args.amount, 6), reference: "Claim payment", claimId: decoded.args.claimId };
       case "ClaimApproved":
-        return { ...common, claimId: decoded.args.claimId, appeal: decoded.args.appealRound };
+        return { ...common, claimId: decoded.args.claimId, appeal: decoded.args.appealRound, amount: formatUnits(decoded.args.amount, 6), decision: "Approved" };
       case "TreasuryTransferred":
         return { ...common, wallet: decoded.args.recipient, amount: formatUnits(decoded.args.amount, 6), reference: `Proposal #${decoded.args.proposalId}` };
+      case "ProposalVote":
+        return { ...common, proposalId: decoded.args.proposalId.toString(), wallet: decoded.args.voter, decision: decoded.args.support ? "Support" : "Against" };
+      case "BallotCast":
+        return {
+          ...common, claimId: decoded.args.claimId, wallet: decoded.args.juror,
+          appeal: decoded.args.appealRound, decision: decoded.args.approve ? "Approve" : "Reject",
+          amount: decoded.args.approve ? formatUnits(decoded.args.amount, 6) : undefined,
+          rationaleHash: decoded.args.rationaleHash,
+        };
+      case "ClaimRejected":
+      case "ClaimUnresolved":
+        return { ...common, claimId: decoded.args.claimId, appeal: decoded.args.appealRound, decision: decoded.eventName === "ClaimRejected" ? "Rejected" : "Unresolved" };
+      case "ProposalExecuted":
+        return { ...common, proposalId: decoded.args.proposalId.toString(), decision: "Executed" };
       default:
         throw new Error("Unexpected ledger event.");
     }

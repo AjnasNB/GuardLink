@@ -330,9 +330,18 @@ app.get("/api/v1/governance/public", async (c) => {
   }
 });
 app.get("/api/v1/transparency", async (c) => {
+  const caseId = c.req.query("caseId");
+  const requestedOffset = c.req.query("offset") ?? "0";
+  if (!/^\d{1,6}$/.test(requestedOffset)) return c.json({ error: "Choose a valid archive page." }, 400);
+  const offset = Number(requestedOffset);
   if (c.env.ARKIV_RPC) {
     try {
-      return c.json(await queryPublicRecords(c.env, c.req.query("caseId")));
+      const [records, claim] = await Promise.all([
+        queryPublicRecords(c.env, caseId, offset),
+        caseId ? c.env.DB.prepare("SELECT json_extract(data, '$.chainClaimId') AS chainClaimId, json_array_length(data, '$.votes') AS voteCount, json_array_length(data, '$.appealVotes') AS appealVoteCount FROM claims WHERE id=?")
+          .bind(caseId).first<{ chainClaimId: string | null; voteCount: number | null; appealVoteCount: number | null }>() : null,
+      ]);
+      return c.json(claim?.chainClaimId ? records.map((record) => ({ ...record, ...claim })) : records);
     } catch {
       return c.json(
         { error: "Queryable public records are temporarily unavailable." },
@@ -342,9 +351,9 @@ app.get("/api/v1/transparency", async (c) => {
   }
   return c.json(
     (
-      await c.env.DB.prepare(
-        "SELECT id,kind,public_data,created_at,arkiv_key FROM events ORDER BY created_at DESC LIMIT 100",
-      ).all()
+      await (caseId
+        ? c.env.DB.prepare("SELECT id,kind,public_data,created_at,arkiv_key FROM events WHERE claim_id=? ORDER BY created_at DESC,id LIMIT 100 OFFSET ?").bind(caseId, offset)
+        : c.env.DB.prepare("SELECT id,kind,public_data,created_at,arkiv_key FROM events ORDER BY created_at DESC,id LIMIT 100 OFFSET ?").bind(offset)).all()
     ).results,
   );
 });

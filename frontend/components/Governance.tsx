@@ -242,7 +242,7 @@ export default function Governance({ config, member, busy = false, run, route: m
         {pages.filter(([label]) => !publicView || label !== "Treasury").map(([label, suffix]) => <Link key={suffix} href={base + suffix} aria-current={route === "/governance" + suffix || (label === "Proposals" && isDetail) ? "page" : undefined}>{label}</Link>)}
         {!publicView && <Link href="/governance/proposals">Public proposals <ExternalLink size={14} /></Link>}
         {publicView && <Link href={base + "/new"} aria-current={route === "/governance/new" ? "page" : undefined}>Proposal forms</Link>}
-        <Link href="/ledger">Public ledger <ExternalLink size={14} /></Link>
+        {!publicView && <Link href="/ledger">Public ledger <ExternalLink size={14} /></Link>}
       </nav>
       {error && needsProposals && <p className="error-text" role="alert">{error}</p>}
       {route === "/governance" && (
@@ -270,7 +270,7 @@ export default function Governance({ config, member, busy = false, run, route: m
           {displayed?.length === 0 && <p>No proposals match this filter.</p>}
           {displayed?.map((p) => (
             <Link className="governance-list-row" href={base + "/proposals/" + p.id} key={p.id}>
-              <div><span className="section-note">Proposal #{p.id}</span><h3>{proposalTitle(p)}</h3></div>
+              <div><span className="section-note">Proposal #{p.id}</span><h3>{proposalTitle(p)}</h3><small>{p.yesVotes} support · {p.noVotes} against · {p.eligible} eligible</small></div>
               <span className="status-pill">{p.status}</span><ArrowRight size={18} aria-hidden="true" />
             </Link>
           ))}
@@ -289,6 +289,10 @@ export default function Governance({ config, member, busy = false, run, route: m
           <p>Voting deadline · {new Date(proposal.deadline * 1000).toLocaleString()}</p>
           {proposal.proposer && <p className="governance-address">Proposed by {proposal.proposer}</p>}
           {proposal.creationHash && <a className="text-link" href={"https://testnet.arcscan.app/tx/" + proposal.creationHash} target="_blank" rel="noreferrer">Proposal creation receipt <ExternalLink size={15} /></a>}
+          <div className="governance-actions">
+            <Link className="text-link" href={`/ledger/votes?kind=proposal-votes&proposal=${proposal.id}`}>Verify individual votes <ArrowRight size={15} /></Link>
+            {proposal.status === "Executed" && <Link className="text-link" href={`/ledger/votes?kind=executions&proposal=${proposal.id}`}>Verify execution <ArrowRight size={15} /></Link>}
+          </div>
           {!publicView && <Link className="text-link" href={"/governance/proposals/" + proposal.id}>Share public proposal <ArrowRight size={15} /></Link>}
           <div className="governance-actions">
             {proposal.hasVoted && <span className="status-pill good">Your vote is recorded</span>}

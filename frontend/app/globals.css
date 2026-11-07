@@ -1900,6 +1900,15 @@ input:read-only {
 .ledger-message { padding: 1rem; border-top: 1px solid var(--ledger-line); }
 .ledger-message .button { margin-top: 0.6rem; }
 .ledger-pagination { justify-content: flex-end; border-top: 1px solid var(--ledger-line); }
+.audit-scope { overflow-wrap: anywhere; color: var(--ledger-muted); }
+.audit-scope a { margin-inline-start: 0.5rem; }
+.audit-records .record-row { padding: 0.85rem 1rem; border-top: 1px solid var(--ledger-line); }
+.audit-proof { color: var(--ledger-muted); }
+.audit-proof summary { cursor: pointer; color: var(--ledger-link); }
+.audit-proof dl { margin: 0.5rem 0; }
+.audit-proof dt { margin-top: 0.45rem; font-size: 0.8rem; }
+.audit-proof dd { margin: 0; }
+.audit-proof code { display: block; max-width: 23rem; overflow-wrap: anywhere; font-size: 0.78rem; }
 @media (max-width: 540px) {
   .ledger-search button span { display: none; }
   .ledger-table th,

@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import PublicLedger from "../../components/PublicLedger";
+import PublicAuditNav from "../../components/PublicAuditNav";
 
 export const metadata = { title: "Public transaction ledger" };
 
 export default function LedgerPage() {
   return (
     <main className="workspace-content ledger-page">
-      <nav className="ledger-nav" aria-label="GuardLink public pages">
-        <Link className="text-link" href="/">← GuardLink</Link>
-        <Link className="text-link" href="/transparency">Public case milestones</Link>
-      </nav>
+      <PublicAuditNav current="/ledger" />
       <header className="ledger-heading">
         <span className="ledger-network">Arc Testnet</span>
         <h1>Public transaction ledger</h1>

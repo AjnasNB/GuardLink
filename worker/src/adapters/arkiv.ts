@@ -5,8 +5,8 @@ import {
 } from "@arkiv-network/sdk";
 import { rabdi } from "@arkiv-network/sdk/chains";
 import { str, bytes, defineSchema } from "@arkiv-network/sdk/schema";
-import { and, eq } from "@arkiv-network/sdk/query";
-import { http, stringToBytes, hexToString, type Hex } from "viem";
+import { and, asc, eq } from "@arkiv-network/sdk/query";
+import { http, stringToBytes, hexToString, sha256, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 const Records = defineSchema("guardlink_records_v1", {
   project: str().indexed(),
@@ -124,7 +124,7 @@ export async function publishPending(env: Cloudflare.Env) {
   }
   return { published: count };
 }
-export async function queryPublicRecords(env: Cloudflare.Env, caseId?: string) {
+export async function queryPublicRecords(env: Cloudflare.Env, caseId?: string, offset = 0) {
   const { reader, account } = clients(env);
   const filter = caseId
     ? and(eq("project", "guardlink"), eq("caseId", caseId))
@@ -134,7 +134,9 @@ export async function queryPublicRecords(env: Cloudflare.Env, caseId?: string) {
     .from(Records)
     .where(filter)
     .ownedBy(account.address)
+    .orderBy(asc("$key"))
     .limit(100)
+    .offset(offset)
     .fetch();
   return result.entities.map((row) => {
     const body = JSON.parse(hexToString(row.body.value)) as {
@@ -158,6 +160,7 @@ export async function queryPublicRecords(env: Cloudflare.Env, caseId?: string) {
       created_at: body.createdAt,
       arkiv_key: row.$key,
       owner: row.$owner,
+      payloadHash: sha256(row.body.value),
       swarmReference: row.swarmReference?.value ?? null,
     };
   });

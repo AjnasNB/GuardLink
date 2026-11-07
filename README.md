@@ -34,6 +34,8 @@ A confirmed contribution mints a non-transferable policy NFT to the member's wal
 
 The ledger is scoped to the [GuardLinkPool contract](https://explorer.testnet.arc.io/address/0x335D2CE0c397016ac0E1D6930EB98A1Dfe47c895?tab=token_transfers) and reads its public on-chain events. Private claim documents and member profiles stay in the authenticated workspace. [Public ledger API](https://guardlink.ajnasnb.com/api/v1/ledger/?kind=payouts)
 
+The audit views work without a wallet. Open a proposal for its tally and quorum, then follow individual Arc vote receipts and the execution transaction. The case archive shows synced ballot counts, a link to Arc jury ballots, and Arkiv entity keys and SHA-256 digests of the exact public record payloads. Swarm references identify encrypted bytes. The archive shows the reference without offering the file. [Votes and decisions](https://guardlink.ajnasnb.com/ledger/votes/) · [Proposal #1](https://guardlink.ajnasnb.com/governance/proposals/1/) · [Sample Arkiv case](https://guardlink.ajnasnb.com/transparency/?caseId=dfd3e4f9-9008-4e60-b420-f10ae15c5f81)
+
 ## Make a test contribution
 
 Anyone can try this with their own wallet on Arc Testnet. Set aside **1 test USDC plus transaction fees**. [Circle testnet faucet](https://faucet.circle.com/)
