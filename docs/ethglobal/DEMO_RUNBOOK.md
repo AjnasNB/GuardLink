@@ -43,10 +43,12 @@ For the recording, start `node scripts/demo-switcher.mjs` before sharing your sc
 | Role | Screen to show |
 | --- | --- |
 | Member `0x6E70…ebF6` | [Overview](https://guardlink.ajnasnb.com/app/), [My coverage](https://guardlink.ajnasnb.com/app/coverage/), then [claim GL-377CFC03](https://guardlink.ajnasnb.com/app/claims/377cfc03-c98d-4e89-bb99-178fd6811a2e/) for the same-ID prescription follow-up. |
-| Claim juror `0x1106…Ff8B` | [Review cases](https://guardlink.ajnasnb.com/app/review/), then [pending case GL-242FBE1C](https://guardlink.ajnasnb.com/app/claims/242fbe1c-e32f-403c-851c-b4c11b376b19/) for the editable amount and decision reason. Don't submit unless the matching Arc Testnet signing wallet is connected. |
+| Claim juror `0x1106…Ff8B` | [Review cases](https://guardlink.ajnasnb.com/app/review/), then [pending case GL-004FB7B7](https://guardlink.ajnasnb.com/app/claims/004fb7b7-21cf-4502-bcb8-7414cbbc0a7f/). Show the 0.26 bill, the 0.22 recommendation, the INR reference, and the editable amount and reason. Don't submit unless the matching Arc Testnet signing wallet is connected. |
 | Appeal juror `0xB1e9…201f` | [Review cases](https://guardlink.ajnasnb.com/app/review/), then [case GL-908E7617](https://guardlink.ajnasnb.com/app/claims/908e7617-2163-4cde-a562-f42d775c1501/) for the two panels and confirmed payment. |
 
 For newly analyzed claims, the suggested amount is the smallest of the supported test-USDC bill, requested amount and coverage remaining at the Arc check. A missing, ambiguous or unreadable amount gives no suggestion. Reviewers can enter a different amount and give a reason. An exact match to the [State Health Agency Kerala package master](https://sha.kerala.gov.in/?page_id=157&lang=en) can show a dated INR reference for a supported procedure code; it never sets or converts the test-USDC amount. Existing analyzed cases retain their original results.
+
+Live verification: [claim registration](https://explorer.testnet.arc.io/tx/0xf9d4c5d3c7698a4955a162f47f1dc79441743a1b8da7c84636bf73bf2fc6a983) and [jury assignment](https://explorer.testnet.arc.io/tx/0xa6552bbbdfea905973114daac9e57fb9eb1ed86118e5c70419673fcaa48bc30e) confirmed on Arc Testnet. In Chrome, the assigned juror changed 0.22 to 0.18 without submitting. No vote or payment was sent for this case. To prepare another synthetic pending case, the provisioned operator can run `node scripts/live-claims.mjs --prepare-recommendation` with `GUARDLINK_DEMO_DEPLOYMENT_ROOT` pointing to the local deployment directory. This sends testnet registration and assignment transactions only.
 
 ## What to show
 

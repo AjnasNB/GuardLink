@@ -3,7 +3,7 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {Contract,JsonRpcProvider,NonceManager,keccak256,toUtf8Bytes,parseUnits} from 'ethers';
 import {loadWallet,secretDir} from './wallet-store.mjs';
-import {makeEvidence} from './make-fixtures.mjs';
+import {makeEvidence,makePricingEvidence} from './make-fixtures.mjs';
 const base='https://guardlink.ajnasnb.com';const provider=new JsonRpcProvider('https://rpc.drpc.testnet.arc.io');assert.equal((await provider.getNetwork()).chainId,5042002n);
 const reportPath='docs/ethglobal/demo-run.public.json',report=JSON.parse(readFileSync(reportPath,'utf8'));const deploymentRoot=process.env.GUARDLINK_DEMO_DEPLOYMENT_ROOT??'.';const artifact=JSON.parse(readFileSync(join(deploymentRoot,'onchain/contracts/out/GuardLinkPool.sol/GuardLinkPool.json'),'utf8'));const actors=JSON.parse(readFileSync(join(secretDir,'actors.local.json'),'utf8'));const actor=id=>actors.find(a=>a.id===id);const admin=new NonceManager((await loadWallet(JSON.parse(readFileSync(join(deploymentRoot,'preparation/deployment-wallet.local.json'),'utf8')))).connect(provider));const pool=new Contract(report.pool,artifact.abi,admin);const token=new Contract('0x3600000000000000000000000000000000000000',['function balanceOf(address) view returns(uint256)'],provider);
 function save(){const latest=JSON.parse(readFileSync(reportPath,'utf8'));const transactions=[...new Map([...latest.transactions,...report.transactions].map(tx=>[tx.hash,tx])).values()];writeFileSync(reportPath,JSON.stringify({...latest,cases:report.cases,transactions},(_,v)=>typeof v==='bigint'?v.toString():v,2)+'\n');}
@@ -15,6 +15,33 @@ async function confirmed(label,send){const tx=await send(),receipt=await tx.wait
 async function sync(id,claim,tx){await request(id,`/claims/${claim.id}/sync`,{txHash:tx});return request(id,`/claims/${claim.id}`);}
 async function waitStatus(id,claimId,expected){for(let i=0;i<90;i++){const cl=await request(id,`/claims/${claimId}`);if(expected.includes(cl.status))return cl;await new Promise(r=>setTimeout(r,1500));}throw new Error(`Case ${claimId} did not reach ${expected.join('/')} within135seconds.`);}
 report.cases??={};
+if (process.argv.includes('--prepare-recommendation')) {
+ const id='member-a', requested='0.22', policyId=report.policies[id].id;
+ await login(id);
+ let cl=await request(id,'/claims',{policyId,title:'Synthetic demo: reimbursement recommendation',description:'Fictional eye procedure for testing the evidence amount, coverage cap and a public price reference. No real patient information.',requestedAmount:requested,incidentDate:new Date().toISOString()});
+ console.log(`Prepared case GL-${cl.id.slice(0,8).toUpperCase()} (${cl.id}).`);
+ for (const [kind, bytes] of Object.entries(makePricingEvidence(cl.id,cl.incidentDate))) {
+  const form=new FormData();form.set('kind',kind);form.set('file',new File([bytes],`${kind}.pdf`,{type:'application/pdf'}));
+  cl=await request(id,`/claims/${cl.id}/evidence`,form);
+ }
+ await request(id,`/claims/${cl.id}/analyze`,{});
+ cl=await waitStatus(id,cl.id,['ready_for_review']);
+ assert.equal(cl.recommendation.source,'azure');
+ assert.equal(cl.recommendation.recommendedAmount,'0.220000');
+ assert.equal(parseUnits(cl.recommendation.amountBasis.documentedAmount,6),260000n);
+ assert.equal(cl.recommendation.pricingReference?.code,'SE020A');
+ assert.equal(cl.recommendation.pricingReference.amountInr,'4500');
+ const clientId=keccak256(toUtf8Bytes(cl.id)), chainId=await pool.computeClaimId(actor(id).address,clientId);
+ const submit=await pool.connect(wallets.get(id)).submitClaim(clientId,BigInt(policyId),parseUnits(requested,6),Math.floor(Date.parse(cl.incidentDate)/1000),keccak256(toUtf8Bytes(cl.documents.map(d=>d.sha256).join(':'))));
+ const registered=await submit.wait();assert.equal(registered.status,1);cl=await sync(id,cl,registered.hash);
+ const assign=await pool.assignJury(chainId,['juror-1','juror-2','juror-3'].map(j=>actor(j).address));
+ const assigned=await assign.wait();assert.equal(assigned.status,1);cl=await sync(id,cl,assigned.hash);
+ assert.equal(cl.status,'under_review');assert.equal(cl.votes.length,0);
+ await login('juror-1');const jurorCase=await request('juror-1',`/claims/${cl.id}`);assert.ok(jurorCase.jurors.includes('juror-1'));
+ const proof={caseId:cl.id,chainClaimId:chainId,chainId:5042002,registerTx:registered.hash,assignmentTx:assigned.hash,suggestedAmount:cl.recommendation.recommendedAmount,pricingReference:cl.recommendation.pricingReference,status:cl.status,votes:0,checkedAt:new Date().toISOString()};
+ console.log(JSON.stringify(proof));
+ process.exit(0);
+}
 const scenarios=process.argv.includes('--additional-cases')?[
  ['D','member-a','0.20',false,'Anitha Menon'],
  ['E','member-b','0.35',true,'Ravi Thomas'],

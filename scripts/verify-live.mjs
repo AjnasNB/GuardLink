@@ -4,6 +4,7 @@ import {join} from 'node:path';
 import {Contract,JsonRpcProvider,formatUnits,parseUnits} from 'ethers';
 import {loadWallet,secretDir} from './wallet-store.mjs';
 const base=process.argv[2]??'https://guardlink.ajnasnb.com';
+const deploymentRoot=process.env.GUARDLINK_DEMO_DEPLOYMENT_ROOT??'.';
 const reportPath='docs/ethglobal/demo-run.public.json',report=JSON.parse(readFileSync(reportPath,'utf8'));
 const actors=JSON.parse(readFileSync(join(secretDir,'actors.local.json'),'utf8'));
 const provider=new JsonRpcProvider('https://rpc.drpc.testnet.arc.io');
@@ -30,7 +31,7 @@ assert.equal((await request('member-b',`/evidence/${own.documents[0].id}`)).stat
 const evidence=await request('juror-1',`/evidence/${own.documents[0].id}`);assert.equal(evidence.status,200);assert.ok((await evidence.text()).startsWith('%PDF-'));
 checks.push('Cross-member and unassigned-helper evidence denied; assigned reviewer retrieval works');
 assert.equal((await request('member-a','/organizer')).status,403);
-const operator=await loadWallet(JSON.parse(readFileSync('preparation/deployment-wallet.local.json','utf8')));
+const operator=await loadWallet(JSON.parse(readFileSync(join(deploymentRoot,'preparation/deployment-wallet.local.json'),'utf8')));
 const operatorChallenge=await(await request('operator','/auth/challenge',{wallet:operator.address})).json();
 const operatorLogin=await request('operator','/auth/verify',{id:operatorChallenge.id,signature:await operator.signMessage(operatorChallenge.message)});assert.equal(operatorLogin.status,200);cookies.set('operator',operatorLogin.headers.get('set-cookie').split(';')[0]);
 const rosterResponse=await request('operator','/organizer');assert.equal(rosterResponse.status,200);const roster=await rosterResponse.json();assert.ok(roster.members.length>=9);assert.ok(roster.cases.every(c=>!('description'in c)&&!('documents'in c)));
@@ -48,9 +49,11 @@ for(const [label,cl] of Object.entries(report.cases)){
 }
 const proposal=await pool.getProposal(BigInt(report.governance.id));assert.equal(proposal.executed,true);assert.equal(proposal.yesVotes,9n);assert.equal(proposal.noVotes,0n);assert.equal(await pool.coverageLimit(),6000000n);assert.equal((await pool.policies(1)).limit,5000000n);
 const terms=await(await request('member-a','/terms')).json();assert.equal(terms.coverageLimit,'6');
-const proposals=await(await request('member-a','/governance')).json();assert.equal(proposals[0].status,'Executed');assert.equal(proposals[0].yesVotes,'9');assert.equal(proposals[0].canExecute,false);assert.ok(proposals[0].description.includes('future coverage'));
+const proposals=await(await request('member-a','/governance')).json();const executed=proposals.find(p=>String(p.id)===String(report.governance.id));assert.equal(executed?.status,'Executed');assert.equal(executed.yesVotes,'9');assert.equal(executed.canExecute,false);assert.ok(executed.description.includes('future coverage'));
 checks.push('Executed nine-voter prospective governance; current API terms match chain and prior policy preserved');
 const publicRecords=await(await request('anonymous','/claims/public')).json();assert.ok(publicRecords.every(c=>!('documents'in c)&&!('description'in c)&&!('memberId'in c)));
 checks.push('Public case projections omit evidence and member identity');
-report.poolBalance=formatUnits(await token.balanceOf(report.pool),6);report.lastVerifiedAt=new Date().toISOString();writeFileSync(reportPath,JSON.stringify(report,null,2)+'\n');
-const proof={checkedAt:report.lastVerifiedAt,base,chainId:5042002,pool:report.pool,checks,status:'passed',transactionsSent:0,poolBalance:report.poolBalance};writeFileSync('docs/ethglobal/live-verification.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));
+report.poolBalance=formatUnits(await token.balanceOf(report.pool),6);report.lastVerifiedAt=new Date().toISOString();
+const proof={checkedAt:report.lastVerifiedAt,base,chainId:5042002,pool:report.pool,checks,status:'passed',transactionsSent:0,poolBalance:report.poolBalance};
+if(process.env.GUARDLINK_WRITE_EVIDENCE!=='false'){writeFileSync(reportPath,JSON.stringify(report,null,2)+'\n');writeFileSync('docs/ethglobal/live-verification.json',JSON.stringify(proof,null,2)+'\n');}
+console.log(JSON.stringify(proof));
