@@ -52,6 +52,20 @@ Live verification: [claim registration](https://explorer.testnet.arc.io/tx/0xf9d
 
 ## What to show
 
+### Live jury practice
+
+Three additional synthetic cases were prepared on Arc Testnet on November 7. Each has a bill, discharge summary, prescription, evidence recommendation and an assigned three-person demo panel. The [rehearsal receipt manifest](jury-rehearsal.public.json) records their registration and assignment receipts.
+
+| Case | Suggested test USDC | Recorded practice ballots |
+| --- | --- | --- |
+| [GL-BB55EB1B, itemized hospital bill](https://guardlink.ajnasnb.com/app/claims/bb55eb1b-c56c-4418-8ef9-57c7314bec83/) | 0.22 | Zero at verification |
+| [GL-057BB5BD, post-surgery follow-up](https://guardlink.ajnasnb.com/app/claims/057bb5bd-f8a6-44d5-a9b2-4be7c0c08202/) | 0.18 | One approval from demo juror 2 |
+| [GL-7785B481, outpatient reimbursement](https://guardlink.ajnasnb.com/app/claims/7785b481-d9f6-4dff-8fe1-bb40a08bf843/) | 0.20 | Zero at verification |
+
+Use the local role picker to select **Claim juror**, open **Review cases**, choose a case and scroll to **Your review**. Inspect the private synthetic evidence and expand **Review AI findings**, then choose a decision, enter the supported amount and give a reason. **Sign and record my vote** requires the browser wallet to match the signed-in assigned reviewer. The local role picker supplies a viewing session. To use your own MetaMask account for a ballot, sign in with that account, request and confirm community membership, and have the operator verify and assign it to a case before any ballot on that panel.
+
+The recorded practice ballot used the existing encrypted demo juror 2 signer through the CLI. Its successful receipt, amount, reason hash and API projection were checked. Duplicate and unassigned votes were rejected in contract calls. The [public practice ballot](https://guardlink.ajnasnb.com/ledger/votes/?kind=jury-votes&claim=0x36cc978748725e560fae4066ec083208eb087985e488309b5d3bfd50d2b68eab) can be shared with judges without a private session. All three cases were still awaiting a jury outcome at verification.
+
 1. Member A: My coverage shows policy #1, contribution and remaining limit. My claims opens paid case A with three synthetic documents and an AI-assisted evidence recommendation.
 2. Member B: case B shows the appealed, paid case and its receipt. Explain the distinct initial and appeal panels from the chain ledger.
 3. Assigned juror: Review cases lists only assigned cases. A live pending case provides the decision form; a resolved case cannot receive another vote.

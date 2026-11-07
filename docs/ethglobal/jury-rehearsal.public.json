@@ -1,0 +1,46 @@
+{
+  "chainId": 5042002,
+  "testnet": true,
+  "syntheticEvidence": true,
+  "pool": "0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895",
+  "reviewUrl": "https://guardlink.ajnasnb.com/app/review/",
+  "cases": [
+    {
+      "id": "bb55eb1b-c56c-4418-8ef9-57c7314bec83",
+      "title": "Synthetic jury practice: itemized hospital bill",
+      "chainClaimId": "0x719eada37b0f587d97fef6632fe77158b81c5d6b64122ba4337423e274868d7f",
+      "suggestedAmount": "0.220000",
+      "registrationTx": "0x684f35451119da1e7e0b72d31ecf68e30ea654a415c577b005d966f92051a6a2",
+      "assignmentTx": "0x2fccee18400556a2d05907bb601bc7d9339e8d98d85b6c709e4625ec3531a247",
+      "votesAtVerification": 0
+    },
+    {
+      "id": "057bb5bd-f8a6-44d5-a9b2-4be7c0c08202",
+      "title": "Synthetic jury practice: post-surgery follow-up",
+      "chainClaimId": "0x36cc978748725e560fae4066ec083208eb087985e488309b5d3bfd50d2b68eab",
+      "suggestedAmount": "0.180000",
+      "registrationTx": "0x7cbf3663f7b17be5311d643c89c5fca2b8a86c2fc4961af6631989f70074a2bf",
+      "assignmentTx": "0x24c7012e670c2965e6fb8a56b31b9d95caa560d74bb9bffbd96371c2b18bcdb9",
+      "testBallotTx": "0x6d410fcc31949571b7efda2bc32db5f567ce158eec76d0af9042848f8f84c0d4",
+      "testBallotJuror": "0x8e29d3d1E0F14cc84a659D0d46705eC59dbc1479",
+      "votesAtVerification": 1
+    },
+    {
+      "id": "7785b481-d9f6-4dff-8fe1-bb40a08bf843",
+      "title": "Synthetic jury practice: outpatient reimbursement",
+      "chainClaimId": "0xfbfce065b3bd4a5b08ecdcad560e1077905eb4e121d3754a71dbacd98487a9a8",
+      "suggestedAmount": "0.200000",
+      "registrationTx": "0x8c0a5334008c67b357d575f4cd58e394e9f05517ed0a93d88ddd7231b1fcd9d0",
+      "assignmentTx": "0x320e37909d8f77d62884743e7ab84ec01922a62d4bf27b8f879e860d3c62672e",
+      "votesAtVerification": 0
+    }
+  ],
+  "verified": [
+    "All three cases reached under_review after evidence analysis, Arc registration and assignment to the three original demo jurors.",
+    "The assigned juror can open the decision form, edit the amount and enter a reason.",
+    "One 0.18 test-USDC approval ballot has a successful Arc receipt and the corresponding authenticated claim and public ledger entry.",
+    "The tested contract rejected a duplicate vote and a vote from an unassigned address.",
+    "The practice cases remained under_review after the first ballot."
+  ],
+  "verifiedAt": "2026-11-07T04:01:08.280Z"
+}
