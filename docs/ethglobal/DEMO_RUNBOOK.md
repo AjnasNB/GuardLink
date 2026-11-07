@@ -38,6 +38,16 @@ Open the printed local loopback link within 60 seconds. It redirects to the publ
 
 Repeat with `member-b`, `contact`, `juror-1`, `juror-2`, `juror-3`, `appeal-1`, `appeal-2`, or `appeal-3`. Public addresses and synthetic role names are in `demo-actors.public.json`. Account cookies are shared within one Chrome profile: switching identity changes that profile's session. Use separate Chrome profiles for simultaneous role windows. Do not label the wallets independent human users.
 
+For the recording, start `node scripts/demo-switcher.mjs` before sharing your screen. Open [Demo roles](http://127.0.0.1:8899/) on the provisioned Windows machine. Choose a role; use Chrome Back to return to the role picker. This signs into GuardLink with its test identity, and leaves the existing MetaMask account unchanged. Refresh any other app tab before showing it. The picker is local-only, runs for up to two hours, and cannot sign a vote or a payment from the browser.
+
+| Role | Screen to show |
+| --- | --- |
+| Member `0x6E70…ebF6` | [Overview](https://guardlink.ajnasnb.com/app/), [My coverage](https://guardlink.ajnasnb.com/app/coverage/), then [claim GL-377CFC03](https://guardlink.ajnasnb.com/app/claims/377cfc03-c98d-4e89-bb99-178fd6811a2e/) for the same-ID prescription follow-up. |
+| Claim juror `0x1106…Ff8B` | [Review cases](https://guardlink.ajnasnb.com/app/review/), then [pending case GL-242FBE1C](https://guardlink.ajnasnb.com/app/claims/242fbe1c-e32f-403c-851c-b4c11b376b19/) for the editable amount and decision reason. Don't submit unless the matching Arc Testnet signing wallet is connected. |
+| Appeal juror `0xB1e9…201f` | [Review cases](https://guardlink.ajnasnb.com/app/review/), then [case GL-908E7617](https://guardlink.ajnasnb.com/app/claims/908e7617-2163-4cde-a562-f42d775c1501/) for the two panels and confirmed payment. |
+
+For newly analyzed claims, the suggested amount is the smallest of the supported test-USDC bill, requested amount and coverage remaining at the Arc check. A missing, ambiguous or unreadable amount gives no suggestion. Reviewers can enter a different amount and give a reason. An exact match to the [State Health Agency Kerala package master](https://sha.kerala.gov.in/?page_id=157&lang=en) can show a dated INR reference for a supported procedure code; it never sets or converts the test-USDC amount. Existing analyzed cases retain their original results.
+
 ## What to show
 
 1. Member A: My coverage shows policy #1, contribution and remaining limit. My claims opens paid case A with three synthetic documents and an AI-assisted evidence recommendation.
