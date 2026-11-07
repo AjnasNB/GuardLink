@@ -16,7 +16,7 @@ After his father's eye surgery, the founder's family borrowed while waiting for 
 
 ## The pool and policy NFT
 
-The proposed contribution allocation is **90% for claims and 10% for operating expenses**. The Arc Testnet contract currently deposits **100%** of each contribution into the pool. Its separate treasury vote can authorize a one-off transfer of up to 10% of the free treasury after claim reservations, subject to the contract's rules. Approved claims can wait for funding when available liquidity is insufficient. [Pool contract](onchain/contracts/GuardLinkPool.sol)
+The proposed contribution allocation is **90% for claims and 10% for operating expenses**. The Arc Testnet contract currently deposits **100%** of each contribution into the pool. Its separate treasury vote can authorize a one-off transfer of up to 10% of the free treasury after claim reservations, subject to the contract's rules. Approved claims can wait for funding when available liquidity is insufficient. [Deployed pool source](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol)
 
 ![Proposed contribution allocation of 90 percent to claims and 10 percent to operations.](docs/ethglobal/assets/guardlink-pool-model.svg)
 
@@ -75,7 +75,7 @@ The current demo runs one configured cooperative pool. Its policy terms form one
 
 | Integration | What it does | How to check |
 | --- | --- | --- |
-| **Arc and Arc Studio** | Arc keeps the USDC reserve, policy issuance, voting authority and settlement independently verifiable in one contract. Arc Studio was the starting point for the contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [pool source](onchain/contracts/GuardLinkPool.sol) |
+| **Arc and Arc Studio** | Arc keeps the USDC reserve, policy issuance, voting authority and settlement independently verifiable in one contract. Arc Studio was the starting point for the contract. | [Active pool on ArcScan](https://testnet.arcscan.app/address/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895), [deployed pool source](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol) |
 | **Arkiv** | Public case milestones and governance can be queried by case without scanning every transaction. See **Follow the fund**. | [Arkiv implementation](worker/src/adapters/arkiv.ts), [schema and examples](arkiv/schema.md) |
 | **Swarm** | Swarm holds encrypted evidence files. Arkiv stores the ciphertext reference. The Worker checks case access before retrieving and decrypting evidence. | [Swarm implementation](worker/src/adapters/swarm.ts), [upload and retrieval evidence](arkiv/swarm.md) |
 | **Uniswap v3 and CCTP** | Members can start with a supported token while the cooperative settles in USDC. The verified route swaps WETH on Base Sepolia, bridges USDC with CCTP and deposits on Arc to mint policy #3. | [Route receipts and feedback confirmation](docs/ethglobal/CONVERSION_RUN.md), [Uniswap router call](scripts/contribution-route.mjs#L335), [coverage UI](frontend/components/ContributionRouteProof.tsx), [developer feedback](FEEDBACK.md) |
@@ -84,7 +84,7 @@ Blockchain makes wallet authority and movements from the shared reserve independ
 
 ETHGlobal lists the **$500 Arkiv + Swarm bonus for existing projects** under Arkiv. The bonus shares the Arkiv partner slot. The submission requests the bonus, and its postage batch attribution is still pending. [Official prize criteria](https://ethglobal.com/events/mumbai/prizes) · [Swarm evidence](arkiv/swarm.md)
 
-The GitHub pool source matches the SHA-256 recorded by the Arc Studio pull manifest. The public source also matches the Solidity file returned by Sourcify, which reports creation and runtime matches for the live Arc Testnet pool. [Arc Studio deployment evidence](https://github.com/AjnasNB/GuardLink/blob/main/docs/ethglobal/ARC_STUDIO_EVIDENCE.md)
+The pinned deployment source matches the Arc Studio pull and the Solidity file returned by Sourcify for the live Arc Testnet pool. The timed payout challenge has its own contract version and test suite. [Arc Studio deployment evidence](docs/ethglobal/ARC_STUDIO_EVIDENCE.md) · [Timed payout review](docs/ethglobal/PAYOUT_REVIEW.md)
 
 ### Query Arkiv as a judge
 

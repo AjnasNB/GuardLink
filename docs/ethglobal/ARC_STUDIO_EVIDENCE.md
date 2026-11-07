@@ -19,7 +19,7 @@ The active contract in the capture is [GuardLinkPool on Arc Testnet](https://tes
 | Arc Studio workspace and video | [Public Studio share](https://studio.arc.io/share/arc-integration-deployment-sandbox-5d41cde3zs), [owner workspace](https://studio.arc.io/app/5b1cd267-eb2b-4f67-82cf-0f0d2b15252d), screenshot above, and Studio Contracts view at **2:41** in the uploaded demo. Judge access to the owner workspace requires confirmation. |
 | Working frontend and backend | [Live app](https://guardlink.ajnasnb.com/), [backend health](https://api.guardlink.ajnasnb.com/health), and [public settlement ledger](https://guardlink.ajnasnb.com/ledger/). |
 | Architecture and presentation | [Architecture diagram](ARCHITECTURE.md), [pitch presentation](../../deliverables/GuardLink-Pitch.pptx), and [demo runbook](DEMO_RUNBOOK.md). |
-| Public source and validation | [Public MIT repository](https://github.com/AjnasNB/GuardLink), [USDC contribution](../../onchain/contracts/GuardLinkPool.sol#L232), [payout settlement](../../onchain/contracts/GuardLinkPool.sol#L442), and [contract test log](contract-test-results-current.txt). |
+| Public source and validation | [Public MIT repository](https://github.com/AjnasNB/GuardLink), [deployed USDC contribution](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol#L232), [deployed payout settlement](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol#L442), and [contract test log](contract-test-results-current.txt). |
 
 Circle tools used in the demonstrated flow include Arc Testnet, canonical USDC for reserve and settlement, and CCTP for the optional USDC arrival from Base Sepolia. [Verified contribution route](CONVERSION_RUN.md)
 
@@ -27,4 +27,4 @@ Circle tools used in the demonstrated flow include Arc Testnet, canonical USDC f
 
 On November 6, 2026, we compared the public Solidity source with the Arc Studio pull recorded for `contracts/GuardLinkPool.sol`. The local export has SHA-256 `ddd4d986cb5d1e16f81484d05816c750383e435d42f879d146380b1a4ad489e7`, matching the pull manifest. The GitHub file matches the Solidity source returned by Sourcify. Sourcify reports creation and runtime matches, and Arc RPC returned the runtime bytecode recorded by Sourcify. We also confirmed the deployment receipt and read the owner of Policy #4 directly from Arc.
 
-[Solidity source](../../onchain/contracts/GuardLinkPool.sol) · [Sourcify verification](https://repo.sourcify.dev/5042002/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895) · [Backend health](https://api.guardlink.ajnasnb.com/health)
+[Verified deployment source](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol) · [Sourcify verification](https://repo.sourcify.dev/5042002/0x335d2ce0c397016ac0e1d6930eb98a1dfe47c895) · [Backend health](https://api.guardlink.ajnasnb.com/health)

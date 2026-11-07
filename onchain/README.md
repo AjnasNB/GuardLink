@@ -26,7 +26,8 @@ Voting stays open for a maximum of 72 hours. A proposal can be executed early on
 
 ## ABI and sources
 
-- Contract source: `contracts/GuardLinkPool.sol`
+- [Verified Arc Testnet deployment source](https://github.com/AjnasNB/GuardLink/blob/21db956247406eefe8b178509e50e1dccb951ddd/onchain/contracts/GuardLinkPool.sol)
+- [Timed payout review contract](contracts/GuardLinkPoolWithChallenges.sol) and [review rules](../docs/ethglobal/PAYOUT_REVIEW.md)
 - Test mock (not deployed): `contracts/mocks/MockERC20.sol`
 - ABI: `docs/GuardLinkPool.abi.json` (mock ABI: `docs/MockERC20.abi.json`)
 - Test and review report: `docs/guardlink-report.md`
