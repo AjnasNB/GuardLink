@@ -4,6 +4,8 @@ import {
   WorkflowStep,
 } from "cloudflare:workers";
 import { applyRecommendation, checklist, requiredDocuments } from "@guardlink/domain";
+import { guardlinkAbi } from "@guardlink/domain/abi";
+import { createPublicClient, http, type Address } from "viem";
 import { analyzeDocuments } from "./adapters/azure";
 import { base64, decrypt, event, loadClaim, now, saveClaim } from "./lib";
 export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
@@ -67,6 +69,26 @@ export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
             };
           }),
         );
+        const owner = await this.env.DB.prepare("SELECT wallet FROM members WHERE id=? AND community_id=?")
+          .bind(claim.memberId, claim.communityId).first<{ wallet: string | null }>();
+        let coverage: { remaining: bigint; checkedAt: string } | null = null;
+        if (owner?.wallet && this.env.ARC_POOL_ADDRESS) {
+          try {
+            const client = createPublicClient({ transport: http(this.env.ARC_RPC, { timeout: 6_000, retryCount: 0 }) });
+            const [wallet, start, end, limit, used] = await client.readContract({
+              address: this.env.ARC_POOL_ADDRESS as Address,
+              abi: guardlinkAbi,
+              functionName: "policies",
+              args: [BigInt(claim.policyId)],
+            });
+            const incident = Math.floor(Date.parse(claim.incidentDate) / 1000);
+            if (wallet.toLowerCase() === owner.wallet.toLowerCase() && incident >= Number(start) && incident <= Number(end)) {
+              coverage = { remaining: limit - used, checkedAt: now() };
+            }
+          } catch {
+            // Keep evidence findings available when Arc cannot verify the coverage snapshot.
+          }
+        }
         return {
           ...base,
           evidenceIds: selected.map((document) => document.id),
@@ -77,6 +99,8 @@ export class ClaimAnalysisWorkflow extends WorkflowEntrypoint<
             docs,
             revision,
             claim.requestedAmount,
+            coverage,
+            claim.communityId,
           )),
         };
       },

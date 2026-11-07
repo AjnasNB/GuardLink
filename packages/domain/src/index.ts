@@ -40,6 +40,14 @@ export interface Recommendation {
   missing: DocumentKind[];
   findings: Finding[];
   recommendedAmount: string | null;
+  amountBasis?: {
+    documentedAmount: string;
+    requestedAmount: string;
+    remainingCoverage: string;
+    evidenceId: string;
+    checkedAt: string;
+  };
+  pricingReference?: { code: string; amountInr: string; publishedOn: string; sourceUrl: string };
   evidenceIds: string[];
   source: "azure" | "checklist";
   revision: number;
@@ -101,6 +109,15 @@ export function microUsdc(input: string): bigint {
 }
 export function formatUsdc(value: bigint): string {
   return `${value / 1_000_000n}.${(value % 1_000_000n).toString().padStart(6, "0")}`;
+}
+export function boundedRecommendation(documented: string, requested: string, remaining: bigint): string | null {
+  try {
+    const amount = [microUsdc(documented), microUsdc(requested), remaining]
+      .reduce((lowest, next) => next < lowest ? next : lowest);
+    return amount > 0n ? formatUsdc(amount) : null;
+  } catch {
+    return null;
+  }
 }
 export function checklist(
   documents: Evidence[],
