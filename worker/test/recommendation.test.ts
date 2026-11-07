@@ -8,7 +8,7 @@ test("an AI amount needs the bill, is bounded by coverage and never uses an INR 
   const docs = [evidence("current-bill", "bill"), evidence("discharge", "discharge_summary"), evidence("old-bill", "bill")];
   const checkedAt = "2026-11-07T00:00:00Z";
   let response = {
-    summary: "Synthetic evidence", findings: [], amountStatus: "supported", recommendedAmount: "5.15",
+    summary: "Synthetic evidence", findings: [], amountStatus: "supported", billTotal: "5.15",
     amountEvidenceId: "current-bill", procedureCode: "SE020A", procedureEvidenceId: "discharge",
   };
   t.mock.method(globalThis, "fetch", async () => Response.json({ output: [{ content: [{ type: "output_text", text: JSON.stringify(response) }] }] }));
@@ -23,7 +23,7 @@ test("an AI amount needs the bill, is bounded by coverage and never uses an INR 
   assert.equal((await analyze(null)).recommendedAmount, null);
   assert.equal((await analyze(4_500_000n, "another-community")).pricingReference, undefined);
   const valid = response;
-  for (const fields of [{ amountEvidenceId: "old-bill" }, { amountEvidenceId: "discharge" }, { amountStatus: "conflicting" }, { recommendedAmount: "5 INR" }]) {
+  for (const fields of [{ amountEvidenceId: "old-bill" }, { amountEvidenceId: "discharge" }, { amountStatus: "conflicting" }, { billTotal: "5 INR" }]) {
     response = { ...valid, ...fields };
     const missing = await analyze(4_500_000n);
     assert.equal(missing.recommendedAmount, null);
