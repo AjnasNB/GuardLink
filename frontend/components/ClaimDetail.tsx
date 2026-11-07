@@ -18,6 +18,7 @@ import {
 import { keccak256, toBytes, parseUnits } from "viem";
 import {
   evidenceNameLimit,
+  microUsdc,
   requiredDocuments,
   type Claim,
   type DocumentKind,
@@ -76,6 +77,11 @@ export default function ClaimDetail({
   const reviewer =
     currentPanel.includes(member?.id ?? "") &&
     !currentVotes.some((ballot) => ballot.jurorId === member?.id);
+  const reviewAmount = claim.requestedAmount;
+  const currentSuggestion = claim.recommendation?.revision === claim.revision && claim.recommendation.source === "azure"
+    ? claim.recommendation.recommendedAmount : null;
+  const suggestedAmount = currentSuggestion && /^(0|[1-9]\d*)(\.\d{1,6})?$/.test(currentSuggestion) &&
+    microUsdc(currentSuggestion) > 0n && microUsdc(currentSuggestion) <= microUsdc(reviewAmount) ? currentSuggestion : null;
   const clientId = keccak256(toBytes(claim.id));
   const digest = claim.chainClaimId as `0x${string}`;
   return (
@@ -283,19 +289,24 @@ export default function ClaimDetail({
           )}
           {reviewer && ["under_review", "appealed"].includes(claim.status) && (
             <form
+              key={`${claim.id}:${claim.status}:${claim.revision}`}
               className="panel form-stack"
               onSubmit={(e) => {
                 e.preventDefault();
                 const form = new FormData(e.currentTarget);
                 const approve = form.get("decision") === "approve";
                 void execute(async () => {
+                  const amount = approve ? microUsdc(String(form.get("amount"))) : 0n;
+                  if (approve && (amount <= 0n || amount > microUsdc(reviewAmount))) {
+                    throw new Error(`Enter an amount above zero and no higher than ${reviewAmount} test USDC.`);
+                  }
                   const tx = await poolWrite(
                     config?.poolAddress ?? "",
                     claim.status === "appealed" ? "appealVote" : "vote",
                     [
                       digest,
                       approve,
-                      approve ? parseUnits(String(form.get("amount")), 6) : 0n,
+                      amount,
                       keccak256(toBytes(String(form.get("reason")))),
                     ],
                   );
@@ -311,6 +322,7 @@ export default function ClaimDetail({
               }}
             >
               <h2>Your review</h2>
+              <p>{suggestedAmount ? `AI suggested ${money(suggestedAmount)} test USDC. Check the supporting evidence and change the amount if your review supports a different figure.` : "No AI suggestion is available within this round’s limit. Enter the amount your review supports if you approve."} Explain your decision below.</p>
               <label>
                 Decision
                 <select name="decision">
@@ -323,10 +335,10 @@ export default function ClaimDetail({
                 <input
                   name="amount"
                   type="number"
-                  defaultValue={claim.requestedAmount}
+                  defaultValue={suggestedAmount ?? ""}
+                  max={reviewAmount}
                   min="0.000001"
                   step="0.000001"
-                  max={claim.requestedAmount}
                 />
               </label>
               <label>
